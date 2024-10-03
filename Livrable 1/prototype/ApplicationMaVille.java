@@ -74,12 +74,15 @@ class ApplicationMaVille {
 
     private void inscrireResident() {
         System.out.println("Inscription en tant que résident :");
-        String nom = demanderInfo("Nom complet");
-        String naissance = demanderInfo("Date de naissance (DD/MM/YYYY)");
-        String email = demanderInfo("Adresse courriel");
-        String mdp = demanderInfo("Mot de passe");
-        String telephone = demanderInfo("Numéro de téléphone (optionnel)");
-        String adresse = demanderInfo("Adresse résidentielle");
+
+        Resident nouveauResident = new Resident.ResidentBuilder()
+            .getNom(demanderInfo("Nom complet"))
+            .getDateNaissance(demanderInfo("Date de naissance (DD/MM/YYYY)"))
+            .getEmail(demanderInfo("Adresse courriel"))
+            .getMdp(demanderInfo("Mot de passe"))
+            .getTelephone(demanderInfo("Numéro de téléphone (optionnel)"))
+            .getAdresse(demanderInfo("Adresse résidentielle"))
+            .build();
     }
 
     private void inscrireIntervenant() {
