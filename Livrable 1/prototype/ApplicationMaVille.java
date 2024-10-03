@@ -87,11 +87,14 @@ class ApplicationMaVille {
 
     private void inscrireIntervenant() {
         System.out.println("Inscription en tant qu'intervenant :");
-        String nom = demanderInfo("Nom complet");
-        String email = demanderInfo("Adresse courriel");
-        String mdp = demanderInfo("Mot de passe");
-        String entreprise = demanderInfo("Type d'entreprise");
-        String identifiant = demanderInfo("Identifiant de la ville");
+        
+        Intervenant nouveauIntervenant = new Intervenant.IntervenantBuilder()
+            .getNom(demanderInfo("Nom complet"))
+            .getEmail(demanderInfo("Adresse courriel"))
+            .getMdp(demanderInfo("Mot de passe"))
+            .getTypeEntreprise(demanderInfo("Type d'entreprise"))
+            .getIdentifiant(demanderInfo("Identifiant de la ville"))
+            .build();
     }
 
     private String demanderInfo(String label) {
