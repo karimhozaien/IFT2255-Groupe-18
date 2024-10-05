@@ -6,13 +6,15 @@ class Intervenant {
     private final TypeEntreprise typeEntreprise; 
 
     public enum TypeEntreprise {
-        PRIVATE("Private"),
-        PUBLIC("Public"),
-        PARTICULIER("Particulier");
+        PRIVEE(1, "Privée"),
+        PUBLIQUE(2, "Publique"),
+        PARTICULIER(3, "Particulier");
 
+        private final int valeur;
         private final String affichageType;
 
-        TypeEntreprise(String affichageType) {
+        TypeEntreprise(int valeur, String affichageType) {
+            this.valeur = valeur;
             this.affichageType = affichageType;
         }
 
@@ -20,13 +22,17 @@ class Intervenant {
             return affichageType;
         }
 
-        public static TypeEntreprise stringAType(String type) {
+        public int getValeur() {
+            return valeur;
+        }
+
+        public static TypeEntreprise stringAType(int choix) {
             for (TypeEntreprise typeEntreprise : TypeEntreprise.values()) {
-                if (typeEntreprise.getAffichageType().equalsIgnoreCase(type)) {
+                if (typeEntreprise.getValeur() == choix) {
                     return typeEntreprise;
                 }
             }
-            throw new IllegalArgumentException("Invalid type: " + type);
+            throw new IllegalArgumentException("Ce type d'entreprise d'existe pas.");
         }
     }
     
@@ -38,6 +44,12 @@ class Intervenant {
         this.typeEntreprise = builder.typeEntreprise;
     }
 
+    public String getNom() { return this.nom; }
+    public String getEmail() { return this.email; }
+    public String getMdp() { return this.mdp; }
+    public int getIdentifiant() { return this.identifiant; }
+    public TypeEntreprise getTypeEntreprise() { return this.typeEntreprise; }
+
     public static class IntervenantBuilder {
         private String nom;
         private String email;
@@ -45,34 +57,40 @@ class Intervenant {
         private int identifiant;
         private TypeEntreprise typeEntreprise; 
 
-        public IntervenantBuilder getNom(String nom) {
+        public IntervenantBuilder nom(String nom) {
             this.nom = nom;
             return this;
         }
 
-        public IntervenantBuilder getEmail(String email) {
+        public IntervenantBuilder email(String email) {
             this.email = email;
             return this;
         }
 
-        public IntervenantBuilder getMdp(String mdp) {
+        public IntervenantBuilder mdp(String mdp) {
             this.mdp = mdp;
             return this;
         }
 
-        public IntervenantBuilder getIdentifiant(String identifiant) {
+        public IntervenantBuilder identifiant(String identifiant) {
             this.identifiant = Integer.parseInt(identifiant);
             return this;
         }
 
-        public IntervenantBuilder getTypeEntreprise(String type) {
-            this.typeEntreprise = TypeEntreprise.stringAType(type);
+        public IntervenantBuilder typeEntreprise(int choix) {
+            this.typeEntreprise = TypeEntreprise.stringAType(choix);
             return this;
         }
 
-        public Intervenant build() {
+        public Intervenant build() throws Exception {
+            if (this.nom == null || this.nom.trim().isEmpty()) {
+                throw new Exception("Le nom ne peut pas être vide. Veuillez réessayer.");
+            }
+            if (this.email == null || this.email.trim().isEmpty()) {
+                throw new Exception("L'email ne peut pas être vide. Veuillez réessayer.");
+            }
             // Lancement d'erreurs
-            return null; // Retourne l'instanciation de l'intervenant
+            return new Intervenant(this); // Retourne l'instanciation de l'intervenant
         }
     }
 }

@@ -29,20 +29,20 @@ class ApplicationMaVille {
     }
 
     public void demarrer() {
-        afficherMenuPrincipal();
-        
         while (true) {
+            afficherMenuPrincipal();
             try {
                 System.out.print("Votre choix : ");
                 int choix = scanner.nextInt();
-                scanner.nextLine();
+                scanner.nextLine(); // consume newline
                 
                 if (traiterChoix(choix)) {
+                    System.out.println("Merci d'avoir utilisé l'application MaVille. Au revoir!");
                     break;
                 }
             } catch (Exception e) {
                 System.out.println("Entrée invalide. Veuillez entrer un nombre.");
-                scanner.nextLine();
+                scanner.nextLine(); // consume invalid input
             }
         }
     }
@@ -60,45 +60,25 @@ class ApplicationMaVille {
             if (option.getValeur() == choix) {
                 switch (option) {
                     case RESIDENT:
-                        inscrireResident();
+                        while (!Authentication.inscrireResident(scanner)) {
+                            System.out.println("Voulez-vous réessayer l'inscription en tant que résident ? (O/N)");
+                            if (!scanner.nextLine().trim().toLowerCase().equals("o")) {
+                                return false;
+                            }
+                        }
                         return true;
                     case INTERVENANT:
-                        inscrireIntervenant();
+                        while (!Authentication.inscrireIntervenant(scanner)) {
+                            System.out.println("Voulez-vous réessayer l'inscription en tant qu'intervenant ? (O/N)");
+                            if (!scanner.nextLine().trim().toLowerCase().equals("o")) {
+                                return false;
+                            }
+                        }
                         return true;
                 }
             }
         }
         System.out.println("Option invalide. Veuillez réessayer.");
         return false;
-    }
-
-    private void inscrireResident() {
-        System.out.println("Inscription en tant que résident :");
-
-        Resident nouveauResident = new Resident.ResidentBuilder()
-            .getNom(demanderInfo("Nom complet"))
-            .getDateNaissance(demanderInfo("Date de naissance (DD/MM/YYYY)"))
-            .getEmail(demanderInfo("Adresse courriel"))
-            .getMdp(demanderInfo("Mot de passe"))
-            .getTelephone(demanderInfo("Numéro de téléphone (optionnel)"))
-            .getAdresse(demanderInfo("Adresse résidentielle"))
-            .build();
-    }
-
-    private void inscrireIntervenant() {
-        System.out.println("Inscription en tant qu'intervenant :");
-        
-        Intervenant nouveauIntervenant = new Intervenant.IntervenantBuilder()
-            .getNom(demanderInfo("Nom complet"))
-            .getEmail(demanderInfo("Adresse courriel"))
-            .getMdp(demanderInfo("Mot de passe"))
-            .getTypeEntreprise(demanderInfo("Type d'entreprise"))
-            .getIdentifiant(demanderInfo("Identifiant de la ville"))
-            .build();
-    }
-
-    private String demanderInfo(String label) {
-        System.out.print(label + " : ");
-        return scanner.nextLine();
     }
 }

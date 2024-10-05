@@ -18,6 +18,13 @@ class Resident {
         this.adresse = builder.adresse;
     }
 
+    public String getNom() { return this.nom; }
+    public LocalDate getDateNaissance() { return this.dateNaissance; }
+    public String getEmail() { return this.email; }
+    public String getMdp() { return this.mdp; }
+    public String getTelephone() { return this.telephone; }
+    public String getAdresse() { return this.adresse; }
+
     public static class ResidentBuilder {
         private String nom;
         private LocalDate dateNaissance;
@@ -26,40 +33,40 @@ class Resident {
         private String telephone;
         private String adresse;
 
-        public ResidentBuilder getNom(String nom) {
+        public ResidentBuilder nom(String nom) {
             this.nom = nom;
             return this;
         }
 
-        public ResidentBuilder getDateNaissance(String naissance) {
+        public ResidentBuilder dateNaissance(String naissance) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             this.dateNaissance = LocalDate.parse(naissance.trim(), formatter);
             return this;
         }
 
-        public ResidentBuilder getEmail(String email) {
+        public ResidentBuilder email(String email) {
             this.email = email;
             return this;
         }
 
-        public ResidentBuilder getMdp(String mdp) {
+        public ResidentBuilder mdp(String mdp) {
             this.mdp = mdp;
             return this;
         }
 
-        public ResidentBuilder getTelephone(String telephone) {
+        public ResidentBuilder telephone(String telephone) {
             this.telephone = telephone;
             return this;
         }
 
-        public ResidentBuilder getAdresse(String adresse) {
+        public ResidentBuilder adresse(String adresse) {
             this.adresse = adresse;
             return this;
         }
 
         public Resident build() {
             // Lancement d'erreurs
-            return null; // Retourne l'instanciation du résident
+            return new Resident(this); // Retourne l'instanciation du résident
         }
     }
 }
