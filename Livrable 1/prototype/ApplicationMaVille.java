@@ -1,6 +1,12 @@
 import java.util.Scanner;
 
+/**
+ * Crée deux constantes qui représentent le titre de l'utilisateur :
+ * {@link #RESIDENT} et {@link #INTERVENANT}.
+ */
 enum OptionInscription {
+
+
     RESIDENT(1, "Résident"),
     INTERVENANT(2, "Intervenant");
 
@@ -24,10 +30,27 @@ enum OptionInscription {
 class ApplicationMaVille {
     private Scanner scanner;
 
+    /**
+     * Crée un objet Scanner lors de l'appel du constructeur
+     * pour capturer l'entrée utilisateur.
+     * 
+     * @see java.util.Scanner
+     */
     public ApplicationMaVille() {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Affiche le menu principal. 
+     * <p>
+     * 
+     * Ensuite, demande à l'utilisateur de sélectionner un mode 
+     * d'enregistrement et traite l'entrée de l'utilisateur. 
+     * <p>
+     * 
+     * En cas d'entrée invalide, un message d'erreur est affiché et l'utilisateur 
+     * est invité à réessayer.
+     */
     public void demarrer() {
         while (true) {
             afficherMenuPrincipal();
@@ -47,6 +70,12 @@ class ApplicationMaVille {
         }
     }
 
+    /**
+     * Affiche les messages du menu principal. 
+     * <p>
+     * 
+     * Fait de même pour les différentes options qui s'offrent à l'utilisateur.
+     */
     private void afficherMenuPrincipal() {
         System.out.println("Bienvenue sur l'application MaVille de la ville de Montréal !");
         System.out.println("Voulez-vous vous inscrire en tant que résident ou en tant qu'intervenant ?");
@@ -55,6 +84,24 @@ class ApplicationMaVille {
         }
     }
 
+    /**
+     * Traite l'option choisie dans la méthode {@link #demarrer()}. 
+     * <p>
+     * 
+     * Cette option correspond au type de compte que l'utilisateur souhaite créer. 
+     * <p>
+     * 
+     * À des fins de clarification, le bloc de code suivant est utilisé pour vérifier si l'utilisateur souhaite 
+     * réessayer l'inscription et retourne false si la réponse est différente de "o" :
+     * <pre><code>
+     * if (!scanner.nextLine().trim().toLowerCase().equals("o")) {
+     *     return false;
+     * }
+     * </code></pre>
+     * 
+     * @param choix entier représentant le choix de l'utilisateur
+     * <p>
+     */
     private boolean traiterChoix(int choix) {
         for (OptionInscription option : OptionInscription.values()) {
             if (option.getValeur() == choix) {
@@ -78,6 +125,7 @@ class ApplicationMaVille {
                 }
             }
         }
+
         System.out.println("Option invalide. Veuillez réessayer.");
         return false;
     }
