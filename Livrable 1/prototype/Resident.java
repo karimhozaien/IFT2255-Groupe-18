@@ -9,6 +9,11 @@ class Resident {
     private final String telephone;
     private final String adresse;
 
+    /**
+     * Construit une instance {@link Resident} avec un {@link ResidentBuilder}.
+     *
+     * @param builder le builder contenant les valeurs pour l'initilisation
+     */
     public Resident(ResidentBuilder builder) {
         this.nom = builder.nom;
         this.dateNaissance = builder.dateNaissance;
@@ -64,6 +69,12 @@ class Resident {
             return this;
         }
 
+        /**
+         * Construit un objet de type {@link Resident} avec les paramètres reçus
+         * 
+         * @return l'instance d'un objet {@link Resident}
+         * @throws Exception si les champs nécessaires sont vides
+         */
         public Resident build() {
             // Lancement d'erreurs
             return new Resident(this); // Retourne l'instanciation du résident

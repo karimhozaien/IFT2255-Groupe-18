@@ -5,6 +5,10 @@ class Intervenant {
     private final int identifiant;
     private final TypeEntreprise typeEntreprise; 
 
+    /**
+     * Crée trois constantes qui représentent le type d'entreprise :
+     * {@link #PRIVEE}, {@link #PUBLIQUE} et {@link #PARTICULIER}.
+     */
     public enum TypeEntreprise {
         PRIVEE(1, "Privée"),
         PUBLIQUE(2, "Publique"),
@@ -26,6 +30,11 @@ class Intervenant {
             return valeur;
         }
 
+        /**
+         * Sélectionne parmie les constantes de {@link #TypeEntreprise} le type d'entreprise sélectionné par l'utilisateur
+         * 
+         * @param choix entier représentant le choix de l'utilisateur
+         */
         public static TypeEntreprise stringAType(int choix) {
             for (TypeEntreprise typeEntreprise : TypeEntreprise.values()) {
                 if (typeEntreprise.getValeur() == choix) {
@@ -36,6 +45,11 @@ class Intervenant {
         }
     }
     
+    /**
+     * Construit une instance {@link Intervenant} avec un {@link IntervenantBuilder}.
+     *
+     * @param builder le builder contenant les valeurs pour l'initilisation
+     */
     public Intervenant(IntervenantBuilder builder) {
         this.nom = builder.nom;
         this.email = builder.email;
@@ -49,6 +63,7 @@ class Intervenant {
     public String getMdp() { return this.mdp; }
     public int getIdentifiant() { return this.identifiant; }
     public TypeEntreprise getTypeEntreprise() { return this.typeEntreprise; }
+
 
     public static class IntervenantBuilder {
         private String nom;
@@ -82,6 +97,12 @@ class Intervenant {
             return this;
         }
 
+        /**
+         * Construit un objet de type {@link Intervenant} avec les paramètres reçus
+         * 
+         * @return l'instance d'un objet {@link Intervenant}
+         * @throws Exception si les champs nécessaires sont vides
+         */
         public Intervenant build() throws Exception {
             if (this.nom == null || this.nom.trim().isEmpty()) {
                 throw new Exception("Le nom ne peut pas être vide. Veuillez réessayer.");
