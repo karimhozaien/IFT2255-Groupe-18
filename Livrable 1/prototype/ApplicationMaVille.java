@@ -5,8 +5,6 @@ import java.util.Scanner;
  * {@link #RESIDENT} et {@link #INTERVENANT}.
  */
 enum OptionInscription {
-
-
     RESIDENT(1, "Résident"),
     INTERVENANT(2, "Intervenant");
 
@@ -43,11 +41,9 @@ class ApplicationMaVille {
     /**
      * Affiche le menu principal. 
      * <p>
-     * 
      * Ensuite, demande à l'utilisateur de sélectionner un mode 
      * d'enregistrement et traite l'entrée de l'utilisateur. 
      * <p>
-     * 
      * En cas d'entrée invalide, un message d'erreur est affiché et l'utilisateur 
      * est invité à réessayer.
      */
@@ -73,7 +69,6 @@ class ApplicationMaVille {
     /**
      * Affiche les messages du menu principal. 
      * <p>
-     * 
      * Fait de même pour les différentes options qui s'offrent à l'utilisateur.
      */
     private void afficherMenuPrincipal() {
@@ -87,17 +82,10 @@ class ApplicationMaVille {
     /**
      * Traite l'option choisie dans la méthode {@link #demarrer()}. 
      * <p>
-     * 
      * Cette option correspond au type de compte que l'utilisateur souhaite créer. 
      * <p>
-     * 
      * À des fins de clarification, le bloc de code suivant est utilisé pour vérifier si l'utilisateur souhaite 
      * réessayer l'inscription et retourne false si la réponse est différente de "o" :
-     * <pre><code>
-     * if (!scanner.nextLine().trim().toLowerCase().equals("o")) {
-     *     return false;
-     * }
-     * </code></pre>
      * 
      * @param choix entier représentant le choix de l'utilisateur
      * <p>
@@ -107,26 +95,37 @@ class ApplicationMaVille {
             if (option.getValeur() == choix) {
                 switch (option) {
                     case RESIDENT:
+                        // Essayer d'inscrire le résident
                         while (!Authentication.inscrireResident(scanner)) {
                             System.out.println("Voulez-vous réessayer l'inscription en tant que résident ? (O/N)");
                             if (!scanner.nextLine().trim().toLowerCase().equals("o")) {
-                                return false;
+                                return false; // Sortir si l'utilisateur ne veut pas réessayer
                             }
                         }
+                        // Passer "Résident" à Menu2
+                        new Menu2(scanner, "Résident").afficherMenu(); // Afficher le menu spécifique aux Résidents
                         return true;
                     case INTERVENANT:
+                        // Essayer d'inscrire l'intervenant
                         while (!Authentication.inscrireIntervenant(scanner)) {
                             System.out.println("Voulez-vous réessayer l'inscription en tant qu'intervenant ? (O/N)");
                             if (!scanner.nextLine().trim().toLowerCase().equals("o")) {
-                                return false;
+                                return false; // Sortir si l'utilisateur ne veut pas réessayer
                             }
                         }
+                        // Passer "Intervenant" à Menu2
+                        new Menu2(scanner, "Intervenant").afficherMenu(); // Afficher le menu spécifique aux Intervenants
                         return true;
                 }
             }
         }
-
+        // Si l'option n'est pas valide
         System.out.println("Option invalide. Veuillez réessayer.");
         return false;
+    }
+    
+    public static void main(String[] args) {
+        ApplicationMaVille app = new ApplicationMaVille();
+        app.demarrer();
     }
 }
