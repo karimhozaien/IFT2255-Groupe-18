@@ -3,3 +3,4 @@ MaVille.java
 Resident.java
 Intervenant.java
 Authentification.java
+Menu2.java
