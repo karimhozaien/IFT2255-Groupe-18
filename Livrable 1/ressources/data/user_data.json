@@ -1,0 +1,36 @@
+[
+  {
+    "type": "Resident",
+    "nom": "Noah La Rochelle",
+    "dateNaissance": "18/01/2005",
+    "email": "noahlarochelle1@gmail.com",
+    "mdp": "minecraft18",
+    "telephone": "",
+    "adresse": "12 rue Bancroft"
+  },
+  {
+    "type": "Intervenant",
+    "nom": "Mathias La Rochelle",
+    "email": "mathiaslarochelle1@gmail.com",
+    "mdp": "sngang682",
+    "identifiant": 12345678,
+    "typeEntreprise": "PARTICULIER"
+  },
+  {
+    "type": "Resident",
+    "nom": "Claire Brunet",
+    "dateNaissance": "09/11/1977",
+    "email": "brunet_claire@hotmail.com",
+    "mdp": "jaimeleschatons",
+    "telephone": "",
+    "adresse": "12 rue Bancroft"
+  },
+  {
+    "type": "Intervenant",
+    "nom": "Jean-Pierre Larochelle",
+    "email": "jeeep3@gmail.com",
+    "mdp": "cyclope69",
+    "identifiant": 12345678,
+    "typeEntreprise": "PUBLIQUE"
+  }
+]
