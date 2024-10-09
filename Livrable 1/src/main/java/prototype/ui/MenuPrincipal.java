@@ -2,7 +2,7 @@ package main.java.prototype.ui;
 
 import java.util.Scanner;
 
-public class Menu2 {
+public class MenuPrincipal {
     private final Scanner scanner;
     private final String typeUtilisateur;
 
@@ -12,7 +12,7 @@ public class Menu2 {
      * @param scanner Scanner pour capturer l'entrée utilisateur
      * @param typeUtilisateur Type d'utilisateur (Résident ou Intervenant)
      */
-    public Menu2(Scanner scanner, String typeUtilisateur) {
+    public MenuPrincipal(Scanner scanner, String typeUtilisateur) {
         this.scanner = scanner;
         this.typeUtilisateur = typeUtilisateur;
     }

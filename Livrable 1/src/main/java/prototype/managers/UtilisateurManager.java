@@ -2,21 +2,17 @@ package main.java.prototype.managers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
-import main.java.prototype.utils.GenerateurCodeDeHachage;
-import main.java.prototype.utils.PolymorphicTypeAdapterFactory;
-import main.java.prototype.entities.Intervenant;
-import main.java.prototype.entities.Resident;
-import main.java.prototype.entities.Utilisateur;
+import main.java.prototype.entities.*;
+import main.java.prototype.utils.AnalyseFichiersJson;
 
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UtilisateurManager {
+
     /**
      * Sauvegarde les informations d'un utilisateur au format JSON dans le fichier spécifié par le chemin donné.
      *
@@ -27,118 +23,51 @@ public class UtilisateurManager {
     public void sauvegardeUtilisateurAJSON(Utilisateur utilisateur, String chemin) throws IOException {
         System.out.println("Enregistrement des informations de l'utilisateur...");
 
-        ArrayList<Utilisateur> residentsExistants = new ArrayList<>();
-        try (FileReader lecture = new FileReader(chemin)) {
-            Gson gson = creationGson();
-            Type typeListe = new TypeToken<ArrayList<Resident>>(){}.getType(); // Permet de garder le type de la liste
-            residentsExistants = gson.fromJson(lecture, typeListe);
-        } catch (IOException e) {
-            System.out.println("Impossible de lire le fichier reçu.");
-            e.printStackTrace();
-        }
-
-        residentsExistants = gererExistenceObjets(utilisateur, residentsExistants);
-
-        Gson gson = creationGson();
-        try (FileWriter ecriture = new FileWriter(chemin)) {
-            String json = gson.toJson(residentsExistants);
-            ecriture.write(json);
-        } catch (IOException e) {
-            System.out.println("Impossible d'écrire dans le fichier reçu.");
-            e.printStackTrace();
-        }
-    }
-
-    private void lectureJSON(String chemin) {
-        ArrayList<Utilisateur> residentsExistants = new ArrayList<>();
-        try (FileReader lecture = new FileReader(chemin)) {
-            Gson gson = creationGson();
-            Type typeListe = new TypeToken<ArrayList<Resident>>(){}.getType(); // Permet de garder le type de la liste
-            residentsExistants = gson.fromJson(lecture, typeListe);
-        } catch (IOException e) {
-            System.out.println("Impossible de lire le fichier reçu.");
-            e.printStackTrace();
+        if (utilisateur instanceof Resident) {
+            System.out.println("Utilisateur est une instance de Resident");
+            sauvegarderUtilisateur((Resident) utilisateur, chemin, new TypeToken<ArrayList<Resident>>(){}.getType());
+        } else if (utilisateur instanceof Intervenant) {
+            System.out.println("Utilisateur est une instance de Intervenant");
+            sauvegarderUtilisateur((Intervenant) utilisateur, chemin, new TypeToken<ArrayList<Intervenant>>(){}.getType());
         }
     }
 
     /**
-     * Ajoute un objet {@link Utilisateur} à une liste existante d'utilisateurs. Si la liste
-     * n'existe pas, elle est créée et l'objet utilisateur est ajouté à cette liste.
+     * Méthode générique pour lire et sauvegarder un utilisateur (Resident ou Intervenant) dans un fichier JSON.
      *
-     * @param utilisateur l'objet utilisateur à ajouter à la liste
-     * @param residentsExistants la liste existante d'utilisateurs
-     * @return la liste mise à jour des utilisateurs
+     * @param utilisateur l'utilisateur à sauvegarder
+     * @param chemin le chemin du fichier JSON
+     * @param type le type de la liste d'utilisateurs (Resident ou Intervenant)
+     * @param <T> le type d'utilisateur (Resident ou Intervenant)
      */
-    private static ArrayList<Utilisateur> gererExistenceObjets(Utilisateur utilisateur, ArrayList<Utilisateur> residentsExistants) {
-        if (residentsExistants != null && utilisateur != null) {
-            residentsExistants.add(utilisateur);
-        } else if (utilisateur != null) {
-            residentsExistants = new ArrayList<>();
-            residentsExistants.add(utilisateur);
-        }
+    private <T> void sauvegarderUtilisateur(T utilisateur, String chemin, Type type) {
+        List<T> utilisateurList;
 
-        return residentsExistants;
-    }
+        // Lecture du JSON
+        try (BufferedReader lecture = new BufferedReader(new FileReader(chemin))) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            utilisateurList = gson.fromJson(lecture, type);
 
-    /**
-     * Crée et configure une instance Gson avec des paramètres spécifiques pour la désérialisation polymorphique.
-     * Cette méthode enregistre un TypeAdapterFactory pour gérer la sérialisation et la désérialisation
-     * des différents sous-types de la classe Utilisateur, tels que Resident et Intervenant.
-     *
-     * @return une instance Gson configurée avec la désérialisation polymorphique pour {@link Utilisateur} et ses sous-types,
-     * i.e. {@link Resident} et {@link Intervenant}
-     */
-    private static Gson creationGson() {
-        TypeAdapterFactory runtimeTypeAdapterFactory = PolymorphicTypeAdapterFactory.of(Utilisateur.class, "type")
-                .registerSubtype(Resident.class, "Resident")
-                .registerSubtype(Intervenant.class, "Intervenant");
-
-        return new GsonBuilder()
-                .registerTypeAdapterFactory(runtimeTypeAdapterFactory)
-                .setPrettyPrinting()
-                .create();
-    }
-
-    public static String recupererTypeUtilisateur(String nom, String mdp, String chemin) {
-        ArrayList<Utilisateur> residentsExistants;
-
-        try (FileReader lecture = new FileReader(chemin)) {
-            Gson gson = creationGson();
-            Type typeListe = new TypeToken<ArrayList<Resident>>(){}.getType(); // Permet de garder le type de la liste
-            residentsExistants = gson.fromJson(lecture, typeListe);
-
-            for (Utilisateur utilisateur : residentsExistants) {
-                if (utilisateur.getNom().equals(nom) && utilisateur.getMdp().equals(mdp)) {
-                    return utilisateur.getType();
-                }
+            if (utilisateurList == null) {
+                utilisateurList = new ArrayList<>();
             }
-        } catch (Exception exception) {
-            System.out.println("Impossible de lire le fichier - " + exception.getMessage());
+
+            utilisateurList.add(utilisateur);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
 
-        return null;
+        // Écriture dans le JSON
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(chemin))) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(utilisateurList, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public boolean rechercheUtilisateurDansJSON(int codeDeHachage, String chemin) {
-        ArrayList<Utilisateur> residentsExistants;
-
-        try (FileReader lecture = new FileReader(chemin)) {
-            Gson gson = creationGson();
-            Type typeListe = new TypeToken<ArrayList<Resident>>(){}.getType(); // Permet de garder le type de la liste
-            residentsExistants = gson.fromJson(lecture, typeListe);
-
-            for (Utilisateur utilisateur : residentsExistants) {
-                int codeDeHachageUtilisateurCourant = GenerateurCodeDeHachage
-                        .generationCodeDeHachage(utilisateur.getNom(), utilisateur.getMdp());
-
-                if (codeDeHachageUtilisateurCourant == codeDeHachage) {
-                    return true;
-                }
-            }
-        } catch (Exception exception) {
-            System.out.println("Impossible de vous connecter - " + exception.getMessage());
-        }
-
-        return false;
+    public static String rechercheUtilisateurDansJSON(int codeDeHachage) {
+        return AnalyseFichiersJson.analyserFichiersJson(codeDeHachage);
     }
 }

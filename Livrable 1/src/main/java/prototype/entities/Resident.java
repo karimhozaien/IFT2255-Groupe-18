@@ -1,90 +1,87 @@
 package main.java.prototype.entities;
 
-public class Resident implements Utilisateur {
-    protected final String nom;
-    protected final String dateNaissance;
-    protected final String email;
-    protected final String mdp;
-    protected final String telephone;
-    protected final String adresse;
-    protected final String type = "Resident"; // Set type explicitly
+import com.google.gson.annotations.SerializedName;
 
-    /**
-     * Construit une instance {@link Resident} avec un {@link Builder}.
-     *
-     * @param builder le builder contenant les valeurs pour l'initilisation
-     */
-    public Resident(Builder builder) {
-        this.nom = builder.nom;
+public class Resident extends Utilisateur {
+    @SerializedName("dateNaissance")
+    protected String dateNaissance;
+
+    @SerializedName("telephone")
+    protected String telephone;
+
+    @SerializedName("adresse")
+    protected String adresse;
+
+    private Resident(Builder builder) {
+        super.nom = builder.nom;
+        super.email = builder.email;
+        super.mdp = builder.mdp;
         this.dateNaissance = builder.dateNaissance;
-        this.email = builder.email;
-        this.mdp = builder.mdp;
         this.telephone = builder.telephone;
         this.adresse = builder.adresse;
+        this.type = builder.type;
     }
 
-    public static class Builder {
-        private String nom;
+    public static class Builder extends Utilisateur.Builder {
         private String dateNaissance;
-        private String email;
-        private String mdp;
         private String telephone;
         private String adresse;
 
+        public Builder() {
+            this.dateNaissance = build().getDateNaissance();
+            this.telephone = build().getTelephone();
+            this.adresse = build().getAdresse();
+        }
+
+        @Override
         public Builder nom(String nom) {
-            this.nom = nom;
-            return this;
+            super.nom(nom);
+            return this;  // Return the current Builder instance
         }
 
-        public Builder dateNaissance(String naissance) {
-            this.dateNaissance = naissance;
-            return this;
-        }
-
+        @Override
         public Builder email(String email) {
-            this.email = email;
-            return this;
+            super.email(email);
+            return this;  // Return the current Builder instance
         }
 
+        @Override
         public Builder mdp(String mdp) {
-            this.mdp = mdp;
-            return this;
+            super.mdp(mdp);
+            return this;  // Return the current Builder instance
         }
+
+        public Builder dateNaissance(String dateNaissance) {
+            this.dateNaissance = dateNaissance;
+            return this;
+        } // Added missing closing bracket
 
         public Builder telephone(String telephone) {
             this.telephone = telephone;
             return this;
-        }
+        } // Added missing closing bracket
 
         public Builder adresse(String adresse) {
             this.adresse = adresse;
             return this;
+        } // Added missing closing bracket
+
+        @Override
+        public Builder type(String type) {
+            this.type = type;
+            return this;
         }
 
-        /**
-         * Construit un objet de type {@link Resident} avec les paramètres reçus
-         * 
-         * @return l'instance d'un objet {@link Resident}
-         * @throws Exception si les champs nécessaires sont vides
-         */
-        public Resident build() throws Exception {
-            // Lancement d'erreurs
-            return new Resident(this); // Retourne l'instanciation du résident
+        @Override
+        public Resident build() {
+            return new Resident(this);
         }
     }
 
-    // #####################
-    // -----> Getters <-----
-    // #####################
-    @Override
-    public String getNom() { return this.nom; }
+    // Getters
     public String getDateNaissance() { return this.dateNaissance; }
-    @Override
-    public String getEmail() { return this.email; }
-    @Override
-    public String getMdp() { return this.mdp; }
+
     public String getTelephone() { return this.telephone; }
+
     public String getAdresse() { return this.adresse; }
-    @Override
-    public String getType() { return this.type; }
 }

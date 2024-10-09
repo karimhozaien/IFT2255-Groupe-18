@@ -1,8 +1,7 @@
 package main.java.prototype;
 
 import main.java.prototype.auth.Authentification;
-import main.java.prototype.managers.UtilisateurManager;
-import main.java.prototype.ui.Menu2;
+import main.java.prototype.ui.MenuPrincipal;
 
 import java.util.Scanner;
 
@@ -33,7 +32,7 @@ enum OptionInscription {
 public class ApplicationMaVille {
     private final Scanner scanner;
     private final Authentification auth;
-    private static final String CHEMIN_ABSOLU = "/Users/mathiaslarochelle/Documents/School/A24/IFT2255/Projets/Projet 1/Livrable 1/ressources/data/user_data.json";
+
     /**
      * Crée un objet Scanner lors de l'appel du constructeur
      * pour capturer l'entrée utilisateur.
@@ -60,7 +59,7 @@ public class ApplicationMaVille {
             try {
                 System.out.print("Votre choix : ");
                 int choix = scanner.nextInt();
-                scanner.nextLine(); // consume newline
+                scanner.nextLine();
                 
                 if (auth.traiterChoixAuthentification(choix)) {
                     System.out.println("Merci d'avoir utilisé l'application MaVille. Au revoir!");
@@ -68,7 +67,7 @@ public class ApplicationMaVille {
                 }
             } catch (Exception e) {
                 System.out.println("Entrée invalide. Veuillez entrer un nombre.");
-                scanner.nextLine(); // consume invalid input
+                scanner.nextLine();
             }
         }
     }
@@ -92,7 +91,7 @@ public class ApplicationMaVille {
         System.out.print("Votre choix : ");
 
         int choix = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine();
 
         return traiterChoix(choix);
     }
@@ -104,7 +103,7 @@ public class ApplicationMaVille {
      * @return false, la fonctionnalité de connexion n'étant pas implémentée
      */
     public boolean gererConnexion() {
-        // Implémentez ici la logique de connexion
+        System.out.println("Entrez vos informations de connexion :");
 
         return traiterConnexion();
     }
@@ -121,23 +120,29 @@ public class ApplicationMaVille {
         }
     }
 
+    /**
+     * Gère le processus de connexion de l'utilisateur en demandant le nom d'utilisateur et le mot de passe,
+     * en vérifiant les identifiants et en fournissant des options pour réessayer en cas d'échec.
+     *
+     * @return true si l'utilisateur s'est connecté avec succès; false si l'utilisateur choisit de ne pas réessayer la connexion.
+     */
     private boolean traiterConnexion() {
-        System.out.println("Entrez vos informations de connexion :");
         System.out.println("Nom d'utilisateur : ");
         String nomUtilisateur = scanner.nextLine();
         System.out.println("Mot de passe : ");
         String motDePasse = scanner.nextLine();
 
-        while (!Authentification.connexionUtilisateur(nomUtilisateur, motDePasse)) {
+        while (!Authentification.itererTantQueConnexionUtilisateur(nomUtilisateur, motDePasse)) {
             System.out.println("Voulez-vous réessayer votre connexion ? (O/N)");
             if (!scanner.nextLine().trim().equalsIgnoreCase("o")) {
                 return false; // Sortir si l'utilisateur ne veut pas réessayer
             }
+
+            traiterConnexion();
         }
         System.out.println("Connexion réussie !");
         // Passer du type récupérer au Menu2
-        String typeDeUtilisateur = UtilisateurManager.recupererTypeUtilisateur(nomUtilisateur, motDePasse, CHEMIN_ABSOLU);
-        new Menu2(scanner, typeDeUtilisateur).afficherMenu();
+        new MenuPrincipal(scanner, Authentification.connexionUtilisateur(nomUtilisateur, motDePasse)).afficherMenu();
         return true;
     }
 
@@ -166,7 +171,7 @@ public class ApplicationMaVille {
                         }
                         System.out.println("Inscription réussie !");
                         // Passer "Résident" à Menu2
-                        new Menu2(scanner, "Résident").afficherMenu(); // Afficher le menu spécifique aux Résidents
+                        new MenuPrincipal(scanner, "Résident").afficherMenu(); // Afficher le menu spécifique aux Résidents
                         return true;
                     case INTERVENANT:
                         // Essayer d'inscrire l'intervenant
@@ -178,7 +183,7 @@ public class ApplicationMaVille {
                         }
                         System.out.println("Inscription réussie !");
                         // Passer "Intervenant" à Menu2
-                        new Menu2(scanner, "Intervenant").afficherMenu(); // Afficher le menu spécifique aux Intervenants
+                        new MenuPrincipal(scanner, "Intervenant").afficherMenu(); // Afficher le menu spécifique aux Intervenants
                         return true;
                 }
             }

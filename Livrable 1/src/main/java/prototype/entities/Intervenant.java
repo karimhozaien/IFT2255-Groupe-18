@@ -1,14 +1,15 @@
 package main.java.prototype.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Scanner;
 
-public class Intervenant implements Utilisateur {
-    protected final String nom;
-    protected final String email;
-    protected final String mdp;
-    protected final int identifiant;
-    protected final TypeEntreprise typeEntreprise;
-    protected final String type = "Intervenant"; // Set type explicitly
+public class Intervenant extends Utilisateur {
+    @SerializedName("identifiant")
+    protected int identifiant;
+
+    @SerializedName("typeEntreprise")
+    protected TypeEntreprise typeEntreprise;
 
     /**
      * Crée trois constantes qui représentent le type d'entreprise :
@@ -35,11 +36,6 @@ public class Intervenant implements Utilisateur {
             return valeur;
         }
 
-        /**
-         * Sélectionne parmie les constantes de {@link #TypeEntreprise} le type d'entreprise sélectionné par l'utilisateur
-         * 
-         * @param choix entier représentant le choix de l'utilisateur
-         */
         public static TypeEntreprise stringAType(int choix) {
             for (TypeEntreprise typeEntreprise : TypeEntreprise.values()) {
                 if (typeEntreprise.getValeur() == choix) {
@@ -49,37 +45,39 @@ public class Intervenant implements Utilisateur {
             throw new IllegalArgumentException("Ce type d'entreprise d'existe pas.");
         }
     }
-    
-    /**
-     * Construit une instance {@link Intervenant} avec un {@link Builder}.
-     *
-     * @param builder le builder contenant les valeurs pour l'initilisation
-     */
-    public Intervenant(Builder builder) {
-        this.nom = builder.nom;
-        this.email = builder.email;
-        this.mdp = builder.mdp;
+
+    private Intervenant(Builder builder) {
+        super.nom = builder.nom;
+        super.email = builder.email;
+        super.mdp = builder.mdp;
         this.identifiant = builder.identifiant;
         this.typeEntreprise = builder.typeEntreprise;
+        this.type = builder.type;
     }
 
-    public static class Builder {
-        private String nom;
-        private String email;
-        private String mdp;
+    public static class Builder extends Utilisateur.Builder {
         private int identifiant;
         private TypeEntreprise typeEntreprise;
+        private String type;
 
+        public Builder() {
+            this.identifiant = build().getIdentifiant();
+            this.typeEntreprise = build().getTypeEntreprise();
+        }
+
+        @Override
         public Builder nom(String nom) {
             this.nom = nom;
             return this;
         }
 
+        @Override
         public Builder email(String email) {
             this.email = email;
             return this;
         }
 
+        @Override
         public Builder mdp(String mdp) {
             this.mdp = mdp;
             return this;
@@ -95,37 +93,23 @@ public class Intervenant implements Utilisateur {
             return this;
         }
 
-        /**
-         * Construit un objet de type {@link Intervenant} avec les paramètres reçus
-         *
-         * @return l'instance d'un objet {@link Intervenant}
-         * @throws Exception si les champs nécessaires sont vides
-         */
-        public Intervenant build() throws Exception {
-            if (this.nom == null || this.nom.trim().isEmpty()) {
-                throw new Exception("Le nom ne peut pas être vide. Veuillez réessayer.");
-            }
-            if (this.email == null || this.email.trim().isEmpty()) {
-                throw new Exception("L'email ne peut pas être vide. Veuillez réessayer.");
-            }
-            // Lancement d'erreurs
-            return new Intervenant(this); // Retourne l'instanciation de l'intervenant
+        @Override
+        public Builder type(String type) {
+            this.type = type;
+            return this;
+        }
+
+        @Override
+        public Intervenant build() {
+            return new Intervenant(this);
         }
     }
 
     // #####################
     // -----> Getters <-----
     // #####################
-    @Override
-    public String getNom() { return this.nom; }
-    @Override
-    public String getEmail() { return this.email; }
-    @Override
-    public String getMdp() { return this.mdp; }
     public int getIdentifiant() { return this.identifiant; }
     public TypeEntreprise getTypeEntreprise() { return this.typeEntreprise; }
-    @Override
-    public String getType() { return this.type; }
 
     // ##################################
     // -----> Méthodes auxiliaires <-----
