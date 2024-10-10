@@ -5,71 +5,52 @@ import main.java.prototype.ui.MenuPrincipal;
 
 import java.util.Scanner;
 
-/**
- * Crée deux constantes qui représentent le titre de l'utilisateur :
- * {@link #RESIDENT} et {@link #INTERVENANT}.
- */
 enum OptionInscription {
     RESIDENT(1, "Résident"),
     INTERVENANT(2, "Intervenant");
 
-    private final int VALEUR;
-    private final String DESCRIPTION;
+    private final int valeur;
+    private final String description;
 
     OptionInscription(int valeur, String description) {
-        this.VALEUR = valeur;
-        this.DESCRIPTION = description;
+        this.valeur = valeur;
+        this.description = description;
     }
 
     public int getValeur() {
-        return VALEUR;
+        return valeur;
     }
+
     public String getDescription() {
-        return DESCRIPTION;
+        return description;
     }
 }
 
 public class ApplicationMaVille {
-    private final Scanner scanner;
-    private final Authentification auth;
+    private final Scanner scanner = new Scanner(System.in);
+    private final Authentification auth = new Authentification(this);
 
-    /**
-     * Crée un objet Scanner lors de l'appel du constructeur
-     * pour capturer l'entrée utilisateur.
-     * 
-     * @see java.util.Scanner
-     */
-    public ApplicationMaVille() {
-        this.scanner = new Scanner(System.in);
-        this.auth = new Authentification(this);
-    }
-
-    /**
-     * Affiche le menu principal. 
-     * <p>
-     * Ensuite, demande à l'utilisateur de sélectionner un mode 
-     * d'enregistrement et traite l'entrée de l'utilisateur. 
-     * <p>
-     * En cas d'entrée invalide, un message d'erreur est affiché et l'utilisateur 
-     * est invité à réessayer.
-     */
     public void demarrer() {
         while (true) {
             afficherOptionsAuthentification();
+            System.out.print("Votre choix : ");
             try {
-                System.out.print("Votre choix : ");
                 int choix = scanner.nextInt();
                 scanner.nextLine();
-                
                 if (auth.traiterChoixAuthentification(choix)) {
-                    System.out.println("Merci d'avoir utilisé l'application MaVille. Au revoir!");
-                    break;
+                    quitter();
                 }
             } catch (Exception e) {
                 System.out.println("Entrée invalide. Veuillez entrer un nombre.");
                 scanner.nextLine();
+                break;
             }
         }
+    }
+
+    public void quitter() {
+        System.out.println("Merci d'avoir utilisé l'application MaVille. Au revoir!");
+        System.exit(0); // Termine le programme
     }
 
     private void afficherOptionsAuthentification() {
@@ -80,121 +61,82 @@ public class ApplicationMaVille {
         }
     }
 
-    /**
-     * Gère le processus d'enregistrement en affichant le menu approprié
-     * et en traitant le choix de l'utilisateur.
-     *
-     * @return true si le traitement du choix d'enregistrement a réussi, false sinon
-     */
     public boolean gererEnregistrement() {
-        afficherMenuEnregistrement();
-        System.out.print("Votre choix : ");
-
-        int choix = scanner.nextInt();
-        scanner.nextLine();
-
-        return traiterChoix(choix);
+        return gererChoix("Voulez-vous vous inscrire en tant que résident ou intervenant ?",
+                OptionInscription.values());
     }
-    
-    /**
-     * Gère le processus de connexion en affichant le menu approprié
-     * et implémente la logique nécessaire pour traiter la connexion.
-     *
-     * @return false, la fonctionnalité de connexion n'étant pas implémentée
-     */
+
     public boolean gererConnexion() {
         System.out.println("Entrez vos informations de connexion :");
-
         return traiterConnexion();
     }
 
-    /**
-     * Affiche les messages du menu principal. 
-     * <p>
-     * Fait de même pour les différentes options qui s'offrent à l'utilisateur.
-     */
-    private void afficherMenuEnregistrement() {
-        System.out.println("Voulez-vous vous inscrire en tant que résident ou en tant qu'intervenant ?");
-        for (OptionInscription option : OptionInscription.values()) {
+    private boolean gererChoix(String message, OptionInscription[] options) {
+        System.out.println(message);
+        for (OptionInscription option : options) {
             System.out.println("[" + option.getValeur() + "] " + option.getDescription());
         }
+        System.out.print("Votre choix : ");
+        return traiterChoix(scanner.nextInt());
     }
 
-    /**
-     * Gère le processus de connexion de l'utilisateur en demandant le nom d'utilisateur et le mot de passe,
-     * en vérifiant les identifiants et en fournissant des options pour réessayer en cas d'échec.
-     *
-     * @return true si l'utilisateur s'est connecté avec succès; false si l'utilisateur choisit de ne pas réessayer la connexion.
-     */
     private boolean traiterConnexion() {
-        System.out.println("Nom d'utilisateur : ");
-        String nomUtilisateur = scanner.nextLine();
-        System.out.println("Mot de passe : ");
-        String motDePasse = scanner.nextLine();
+        while (true) {
+            System.out.print("Nom d'utilisateur : ");
+            String nomUtilisateur = scanner.nextLine();
+            System.out.print("Mot de passe : ");
+            String motDePasse = scanner.nextLine();
 
-        while (!Authentification.itererTantQueConnexionUtilisateur(nomUtilisateur, motDePasse)) {
-            System.out.println("Voulez-vous réessayer votre connexion ? (O/N)");
-            if (!scanner.nextLine().trim().equalsIgnoreCase("o")) {
-                return false; // Sortir si l'utilisateur ne veut pas réessayer
+            // Vérifie la connexion
+            if (Authentification.itererTantQueConnexionUtilisateur(nomUtilisateur, motDePasse)) {
+                System.out.println("Connexion réussie !");
+                new MenuPrincipal(scanner, Authentification.connexionUtilisateur(nomUtilisateur, motDePasse)).afficherMenu();
+                return true; // Connexion réussie
             }
 
-            traiterConnexion();
+            // Si la connexion échoue
+            System.out.println("Échec de la connexion. Voulez-vous réessayer ? (O/N)");
+            if (!scanner.nextLine().trim().equalsIgnoreCase("o")) {
+                quitter(); // Sortie si l'utilisateur ne veut pas réessayer
+            }
         }
-        System.out.println("Connexion réussie !");
-        // Passer du type récupérer au Menu2
-        new MenuPrincipal(scanner, Authentification.connexionUtilisateur(nomUtilisateur, motDePasse)).afficherMenu();
-        return true;
     }
 
-    /**
-     * Traite l'option choisie dans la méthode {@link #demarrer()}. 
-     * <p>
-     * Cette option correspond au type de compte que l'utilisateur souhaite créer. 
-     * <p>
-     * À des fins de clarification, le bloc de code suivant est utilisé pour vérifier si l'utilisateur souhaite 
-     * réessayer l'inscription et retourne false si la réponse est différente de "o" :
-     * 
-     * @param choix entier représentant le choix de l'utilisateur
-     * <p>
-     */
+
     public boolean traiterChoix(int choix) {
         for (OptionInscription option : OptionInscription.values()) {
             if (option.getValeur() == choix) {
-                switch (option) {
-                    case RESIDENT:
-                        // Essayer d'inscrire le résident
-                        while (!Authentification.inscrireResident(scanner)) {
-                            System.out.println("Voulez-vous réessayer l'inscription en tant que résident ? (O/N)");
-                            if (!scanner.nextLine().trim().equalsIgnoreCase("o")) {
-                                return false; // Sortir si l'utilisateur ne veut pas réessayer
-                            }
-                        }
-                        System.out.println("Inscription réussie !");
-                        // Passer "Résident" à Menu2
-                        new MenuPrincipal(scanner, "Résident").afficherMenu(); // Afficher le menu spécifique aux Résidents
-                        return true;
-                    case INTERVENANT:
-                        // Essayer d'inscrire l'intervenant
-                        while (!Authentification.inscrireIntervenant(scanner)) {
-                            System.out.println("Voulez-vous réessayer l'inscription en tant qu'intervenant ? (O/N)");
-                            if (!scanner.nextLine().trim().equalsIgnoreCase("o")) {
-                                return false; // Sortir si l'utilisateur ne veut pas réessayer
-                            }
-                        }
-                        System.out.println("Inscription réussie !");
-                        // Passer "Intervenant" à Menu2
-                        new MenuPrincipal(scanner, "Intervenant").afficherMenu(); // Afficher le menu spécifique aux Intervenants
-                        return true;
-                }
+                return inscrireUtilisateur(option);
             }
         }
-        // Si l'option n'est pas valide
         System.out.println("Option invalide. Veuillez réessayer.");
         return false;
     }
-    
+
+    private boolean inscrireUtilisateur(OptionInscription option) {
+        Scanner inputScanner = new Scanner(System.in);
+        while (true) {
+            boolean success;
+            if (option == OptionInscription.RESIDENT) {
+                success = Authentification.inscrireResident(inputScanner);
+            } else {
+                success = Authentification.inscrireIntervenant(inputScanner);
+            }
+
+            if (success) {
+                System.out.println("Inscription réussie !");
+                new MenuPrincipal(scanner, option.getDescription()).afficherMenu();
+                return true;
+            }
+
+            System.out.printf("Voulez-vous réessayer l'inscription en tant que %s ? (O/N)%n", option.getDescription());
+            if (!inputScanner.nextLine().trim().equalsIgnoreCase("o")) {
+                return false;
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        ApplicationMaVille app = new ApplicationMaVille();
-        app.demarrer();
+        new ApplicationMaVille().demarrer();
     }
 }
