@@ -16,3 +16,7 @@ MaVille est une application en ligne de commande conçue pour améliorer la comm
 - **Inscription** : Créer un compte avec identifiant municipal.
 - **Consulter les requêtes** : Accéder aux demandes de travaux soumises par les résidents.
 - **Soumettre des projets** : Proposer et gérer des projets de travaux, avec la possibilité de mettre à jour les informations (dates, description, statut).
+
+## Exécuter le fichier JAR
+```shell
+java -jar path/to/file/prototype.jar
