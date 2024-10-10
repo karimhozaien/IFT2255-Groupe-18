@@ -89,7 +89,6 @@ private boolean traiterChoix(int choix) {
                 // Ajoutez votre logique ici
                 break;
             case 0: // Option pour quitter
-                System.out.println("Merci d'avoir utilisé l'application MaVille. Au revoir!");
                 return true; // Indique que l'utilisateur souhaite quitter
             default:
                 System.out.println("Option invalide pour résident. Veuillez réessayer.");

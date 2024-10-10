@@ -30,7 +30,6 @@ public class AnalyseFichiersJson {
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    System.out.println("Processing file: " + file.getName());
                     type = lecture(file, codeDeHachage);
 
                     if (type != null) {
@@ -65,11 +64,9 @@ public class AnalyseFichiersJson {
 
             if (utilisateurList != null) {
                 for (Utilisateur utilisateur : utilisateurList) {
-                    System.out.println(utilisateur.getNom() + " : " + utilisateur.getMdp());
                     int codeDeHachageUtilisateurCourant = GenerateurCodeDeHachage
                             .generationCodeDeHachage(utilisateur.getNom(), utilisateur.getMdp());
 
-                    System.out.println("HEERREEE");
                     if (codeDeHachageUtilisateurCourant == codeDeHachage) {
                         return utilisateur.getType();
                     }
