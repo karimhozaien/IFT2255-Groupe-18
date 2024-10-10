@@ -789,14 +789,14 @@
              
                 <h3 class="subsection-title">Cas d'utilisation</h3>
                 <div class="use-case">
-                    <img class="use-case-diagram" src="../../documents/diagrammes/diagramme%20cas%20d'utilisation/diagramme.png" alt="Diagramme de cas d'utilisation">
+                    <img class="use-case-diagram" src="../../documents/diagrammes/diagramme cas d'utilisation/CU.svg" alt="Diagramme de cas d'utilisation">
                     <p class="use-case-notes">
                         <em>
                             Notes à propos du diagramme <br>
-                            - <strong>Choix des acteurs</strong> : Rien a précisé pour le résident et l'intervenant étant donné que ce sont les acteurs principaux des exigences et ceux qui utilisent le produit. Cependant, nous avons 
-                            fait la généralisation "Utilisateur" parce que le processus de connexion est le même pour ces deux là.  <br>
-                            - <strong>Choix des relations</strong> : Nous avons décidé de faire deux CU distincts pour l'enregistrement d'un utilisateur à un compte. Nous aurions pu le réduire à un seul mais étant donné qu'un 
-                            CU cible doit avoir deux relations &lt;&lt;include&gt;&gt; et que "Se connecter" nécessite un enregistrement, nous avons dû le laisser comme cela.
+                            - <strong>Choix des acteurs</strong> : Deux acteurs, soit les résidents et les intervenants, vont utiliser l'application. Nous avons ajouté la généralisation "Utilisateur" parce que
+                             le processus de connexion est le même pour ces deux là. Nous avons aussi un administrateur qui va modérer la plateforme.  <br>
+                            - <strong>Choix des relations</strong> : Nous avons deux relations &lt;&lt;extend&gt;&gt; qui démontrent que le CU d'extention peut seulement être exécuté
+                            si le CU de base a été exécuté en premier.
                         </em>
                     </p>
                 </div>
@@ -945,6 +945,66 @@
                 <div class="scenario" id="cu-3">
                     <div class="scenario-meta">
                         <h4 class="cu-name">
+                            <strong>CU:</strong> Paramètres pour modifier le profil
+                        </h4>
+                        <p class="cu-goal">
+                            <strong>Objectif:</strong> En cas de changements, l'usager peut directrement le modifier dans son compte.
+                        </p>
+                        
+                        <hr>
+                
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Acteurs</h5>
+                            <ul class="bare-list cu-actors">
+                                <li class="cu-actor">Résidant</li>
+                                <li class="cu-actor">Intervenant</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Préconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">S’être préalablement enregistré en tant que résident ou intervenant.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Postconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Aucun</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scenario-main">
+                        <h5 class="scenario-main-title">Scénario principal</h5>
+                        <ol class="scenario-main-steps">
+                            <li class="scenario-main-step">L’utilisateur ouvre l’application MaVille.</li>
+                            <li class="scenario-main-step">Il clique sur l’option ''Paramètres utilisateur''.</li>
+                            <li class="scenario-main-step">Il modifie le paramètre de son choix.</li>
+                            <li class="scenario-main-step">Il confirme le changement.</li>
+                            <li class="scenario-main-step">Le système confirme que les changements sont valides.</li>
+                            <li class="scenario-main-step">L’utilisateur reçoit la confirmation que ses données ont été modifiées.</li>
+                        </ol>
+                
+                        <div class="scenario-alt">
+                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                            <ol class="bare-list scenario-alt-steps">
+                                <li class="scenario-alt-step" value="4">
+                                    Le système rejette certaines informations mal entrées.
+                                    <ol class="bare-list">
+                                        <li value="4">L’application demande à l’utilisateur de ré-entrer ses informations.</li>
+                                        <li value="4">Le scénario reprend à l’étape 4.</li>
+                                    </ol>
+                                </li>
+                                
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scenario" id="cu-3">
+                    <div class="scenario-meta">
+                        <h4 class="cu-name">
                             <strong>CU:</strong> Se connecter
                         </h4>
                         <p class="cu-goal">
@@ -1065,6 +1125,61 @@
                     </div>
                 </div>
                 
+                <div class="scenario" id="cu-4">
+                    <div class="scenario-meta">
+                        <h4 class="cu-name">
+                            <strong>CU:</strong> Évaluer les travaux réalisés
+                        </h4>
+                        <p class="cu-goal">
+                            <strong>Objectif:</strong> Permet aux résidents de donner leur avis sur un intervenant ainsi que sur les travaux que celui-ci a réalisé.
+                        </p>
+                        
+                        <hr>
+                
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Acteurs</h5>
+                            <ul class="bare-list cu-actors">
+                                <li class="cu-actor">Résident</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Préconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">S’être connecté avec son compte résident.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Postconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Aucun</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scenario-main">
+                        <h5 class="scenario-main-title">Scénario principal</h5>
+                        <ol class="scenario-main-steps">
+                            <li class="scenario-main-step">Le résident se connecte à la plateforme à l’aide de ses données personnelles.</li>
+                            <li class="scenario-main-step">Le système apporte le résident à la page d’accueil dédiée aux résidents.</li>
+                            <li class="scenario-main-step">Ce dernier sélectionne l’option d’affichage ''Évaluer des travaux''.</li>
+                            <li class="scenario-main-step">Le résident sélectionne les travaux qu'il souhaite évaluer.</li>
+                            <li class="scenario-main-step">Le résident donne une note et des commentaires.</li>
+                            <li class="scenario-main-step">Le résident envoie son évaluation.</li>
+                        </ol>
+                
+                        <div class="scenario-alt">
+                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                            <ol class="bare-list scenario-alt-steps">
+                                <li class="scenario-alt-step" value="1">
+                                    Aucun.
+                                
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="scenario" id="cu-5">
                     <div class="scenario-meta">
                         <h4 class="cu-name">
@@ -1106,6 +1221,60 @@
                             <li class="scenario-main-step">Des options de filtrage lui sont proposées afin qu’il puisse affiner sa recherche.</li>
                             <li class="scenario-main-step">Le résident entre les informations qu'il désire.</li>
                             <li class="scenario-main-step">S'il y a des travaux selon les contraintes sélectionnées, le système les affiche.</li>
+                        </ol>
+                
+                        <div class="scenario-alt">
+                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                            <ol class="bare-list scenario-alt-steps">
+                                <li class="scenario-alt-step" value="1">
+                                    Aucun
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scenario" id="cu-5">
+                    <div class="scenario-meta">
+                        <h4 class="cu-name">
+                            <strong>CU:</strong> Participation à la planification des travaux.
+                        </h4>
+                        <p class="cu-goal">
+                            <strong>Objectif:</strong> Donner son avis sur des travaux en cours et à venir.
+                        </p>
+                        
+                        <hr>
+                
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Acteurs</h5>
+                            <ul class="bare-list cu-actors">
+                                <li class="cu-actor">Résident</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Préconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">S’être connecté avec son compte résident.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Postconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Aucun</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scenario-main">
+                        <h5 class="scenario-main-title">Scénario principal</h5>
+                        <ol class="scenario-main-steps">
+                            <li class="scenario-main-step">Le résident se connecte à la plateforme à l’aide de ses données personnelles.</li>
+                            <li class="scenario-main-step">Le système apporte le résident à la page d’accueil dédiée aux résidents.</li>
+                            <li class="scenario-main-step">Ce dernier sélectionne l’option ''Participer à la planification des travaux''.</li>
+                            <li class="scenario-main-step">Le résident selectionne les travaux en question.</li>
+                            <li class="scenario-main-step">Le résident écrit ses préférence.</li>
+                            <li class="scenario-main-step">Le résident envoie ses préférences.</li>
                         </ol>
                 
                         <div class="scenario-alt">
@@ -1386,28 +1555,130 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="scenario" id="cu-10">
+                    <div class="scenario-meta">
+                        <h4 class="cu-name">
+                            <strong>CU:</strong> Modifier ou désactiver des comptes
+                        </h4>
+                        <p class="cu-goal">
+                            <strong>Objectif:</strong> L'administrateur peut modifier ou désactiver des comptes à sa discrétion.
+                        </p>
+                        
+                        <hr>
+                
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Acteurs</h5>
+                            <ul class="bare-list cu-actors">
+                                <li class="cu-actor">Admin</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Préconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Doit être sur l'application en mode Admin.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Postconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Le changement est mis à jour dans la base de données.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scenario-main">
+                        <h5 class="scenario-main-title">Scénario principal</h5>
+                        <ol class="scenario-main-steps">
+                            <li class="scenario-main-step">L'admin recherche le compte grace au code d'utilisateur.</li>
+                            <li class="scenario-main-step">L'admin effectue les changements désirés.</li>
+                            <li class="scenario-main-step">L'admin confirme les changements.</li>
+                        </ol>
+                
+                        <div class="scenario-alt">
+                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                            <ol class="bare-list scenario-alt-steps">
+                                <li class="scenario-alt-step" value="2">
+                                    Aucun
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scenario" id="cu-10">
+                    <div class="scenario-meta">
+                        <h4 class="cu-name">
+                            <strong>CU:</strong> Assurer le respect des conditions d'utilisation de la plateforme.
+                        </h4>
+                        <p class="cu-goal">
+                            <strong>Objectif:</strong> L'administrateur retirer toute publication dans l'application qui 
+                            sont trompeuses ou qui ne respetent pas les conditions d'utilisations.
+                        </p>
+                        
+                        <hr>
+                
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Acteurs</h5>
+                            <ul class="bare-list cu-actors">
+                                <li class="cu-actor">Admin</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Préconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Doit être sur l'application en mode Admin.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Postconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Le changement est mis à jour dans la base de données.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scenario-main">
+                        <h5 class="scenario-main-title">Scénario principal</h5>
+                        <ol class="scenario-main-steps">
+                            <li class="scenario-main-step">L'admin sélectionne la publication à supprimer.</li>
+                            <li class="scenario-main-step">L'admin confirme la suppression.</li>
+                        </ol>
+                
+                        <div class="scenario-alt">
+                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                            <ol class="bare-list scenario-alt-steps">
+                                <li class="scenario-alt-step" value="2">
+                                    Aucun
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
                   
                 <h3 class="subsection-title">Diagramme d'activités</h3>
                 <div class="activity-container">
                     <div class="activity">
-                        <h4>Inscription du résident</h4>
-                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes%20d'activites/Inscription.png" alt="Diagramme d'activités">
+                        <h4>Diagramme d'activités principal</h4>
+                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes d'activites/DA général.svg" alt="Diagramme d'activités">
                     </div>
                     <div class="activity">
                         <h4>Notifications de travaux</h4>
-                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes%20d'activites/Notification.png" alt="Diagramme d'activités">
+                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes d'activites/Recevoir des notifications.svg" alt="Diagramme d'activités">
                     </div>
                     <div class="activity">
                         <h4>Recherche et consultation de travaux</h4>
-                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes%20d'activites/Recherche%20et%20Consultation.png" alt="Diagramme d'activités">
+                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes d'activites/Recherche et consultation de travaux.svg" alt="Diagramme d'activités">
                     </div>
                     <div class="activity">
                         <h4>Signaler un problème</h4>
-                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes%20d'activites/Signaler%20un%20problème.png" alt="Diagramme d'activités">
+                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes d'activites/signaler un problème.svg" alt="Diagramme d'activités">
                     </div>
                     <div class="activity">
                         <h4>Soumettre une requête</h4>
-                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes%20d'activites/Soumettre%20une%20requete.png" alt="Diagramme d'activités">
+                        <img class="activity-diagram" src="../../documents/diagrammes/diagrammes d'activites/Soumettre une requête.svg" alt="Diagramme d'activités">
                     </div>
                 </div>
             </section>
