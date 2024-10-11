@@ -754,9 +754,9 @@
                         <em>
                             Notes à propos du diagramme <br>
                             - <strong>Choix des acteurs</strong> : Deux acteurs, soit les résidents et les intervenants, vont utiliser l'application. Nous avons ajouté la généralisation "Utilisateur" parce que
-                             le processus de connexion est le même pour ces deux là. Nous avons aussi un administrateur qui va modérer la plateforme.  <br>
-                            - <strong>Choix des relations</strong> : Nous avons deux relations &lt;&lt;extend&gt;&gt; qui démontrent que le CU d'extention peut seulement être exécuté
-                            si le CU de base a été exécuté en premier. Nous avons aussi la relation &lt;&lt;include&gt;&gt; qui se réfère au fait que l'utilisateur sera automatiquement connecté à la plateforme après s'être enregistré.
+                             le processus de connexion est le même pour ces deux là. Nous avons aussi un administrateur qui est nécessaire à la réalisation de certains CU.  <br>
+                            - <strong>Choix des relations</strong> : Nous avons des relations &lt;&lt;extend&gt;&gt; qui démontrent que le CU d'extention peut seulement être exécuté
+                            si le CU de base a été exécuté en premier. Dans certains cas, un administrateur est nécessaire pour réaliser le cas. Nous avons aussi la relation &lt;&lt;include&gt;&gt; qui se réfère au fait que l'utilisateur sera automatiquement connecté à la plateforme après s'être enregistré.
                         </em>
                     </p>
                 </div>
@@ -1631,121 +1631,6 @@
                                         <li value="2">Afficher un message d’erreur et tenter une nouvelle tentative plus tard.</li>
                                     </ol>
                                 </li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="scenario" id="cu-10">
-                    <div class="scenario-meta">
-                        <h4 class="cu-name">
-                            <strong>CU:</strong> Modifier ou désactiver des comptes
-                        </h4>
-                        <p class="cu-goal">
-                            <strong>Objectif:</strong> L'administrateur peut modifier ou désactiver des comptes à sa discrétion.
-                        </p>
-                        
-                        <hr>
-                
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Acteurs</h5>
-                            <ul class="bare-list cu-actors">
-                                <li class="cu-actor">Admin</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Préconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Doit être sur l'application en mode Admin.</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Postconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Le changement est mis à jour dans la base de données.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="scenario-main">
-                        <h5 class="scenario-main-title">Scénario principal</h5>
-                        <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">L'admin accède à l'onglet "Utilisateurs".</li>
-                            <li class="scenario-main-step">L'admin recherche le compte grace au code d'utilisateur.</li>
-                            <li class="scenario-main-step">L'admin effectue les changements désirés.</li>
-                            <li class="scenario-main-step">L'admin confirme les changements.</li>
-                        </ol>
-                
-                        <div class="scenario-alt">
-                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
-                            <ol class="bare-list scenario-alt-steps">
-                                <li class="scenario-alt-step" value="1">
-                                        
-                                        Un utilisateur décide de contester la décision d'un admin.</li>
-                                        <li><strong>SOLUTION</strong>: Le dossier sera analysé puis le compte touché pourra éventuellement être réactivé.
-                                    </li>
-                                
-                                
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="scenario" id="cu-10">
-                    <div class="scenario-meta">
-                        <h4 class="cu-name">
-                            <strong>CU:</strong> Assurer le respect des conditions d'utilisation de la plateforme.
-                        </h4>
-                        <p class="cu-goal">
-                            <strong>Objectif:</strong> L'administrateur peut retirer toute publication dans l'application qui 
-                            est trompeuse ou qui ne respecte pas les conditions d'utilisations.
-                        </p>
-                        
-                        <hr>
-                
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Acteurs</h5>
-                            <ul class="bare-list cu-actors">
-                                <li class="cu-actor">Admin</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Préconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Doit être sur l'application en mode Admin.</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Postconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Le changement est mis à jour dans la base de données.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="scenario-main">
-                        <h5 class="scenario-main-title">Scénario principal</h5>
-                        <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">L'admin accède aux publications via l'application.</li>
-                            <li class="scenario-main-step">L'admin apperçoit une publication problématique.</li>
-                            <li class="scenario-main-step">L'admin sélectionne la publication pour la supprimer.</li>
-                            <li class="scenario-main-step">L'admin confirme la suppression.</li>
-                        </ol>
-                
-                        <div class="scenario-alt">
-                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
-                            <ol class="bare-list scenario-alt-steps">
-                                <li class="scenario-alt-step" value="1">
-                                        
-                                        L'administrateur n'est pas sûr s'il devrait supprimer une publication.</li>
-                                        <li><strong>SOLUTION</strong>: L'admin peut marquer la publication comme ''À vérifier'' et celle-ci 
-                                            sera revue par d'autres admin pour une décision finale.
-    
-                                    </li>
-                                
-                                
                             </ol>
                         </div>
                     </div>
