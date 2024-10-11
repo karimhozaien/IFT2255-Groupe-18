@@ -614,7 +614,7 @@
                     <span class="member-role">Chargé de...</span>
                 </li>
                 <li class="member">
-                    <img class="member-pic" src="" alt="" >
+                    <img class="member-pic" src="../assets/members pic/dean_pic.JPG" alt="Photo de Dean" >
                     <div class="member-identification">
                         <span class="member-name">Dean MOLOSNIC</span>
                         <span class="member-id">20261396</span>
@@ -653,7 +653,6 @@
                         <h3 class="nav-item-title"><a class="nav-item-title__link" href="#requirements">Exigences</a></h3>
                         <ul class="bare-list nav-item-details">
                             <li class="dash">Glossaire</li>
-                            <li class="dash">Persona</li>
                             <li class="dash">Cas d'utilisation</li>
                             <li class="dash">Diagramme d'activités</li>
                         </ul>
@@ -746,46 +745,7 @@
                 </dl>
                 
 
-                <h3 class="subsection-title">Persona (optionnel)</h3>
-
-                <ul class="bare-list personas">
-                    <li class="persona">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                            <span class="persona-name">Bob &ndash; <em>Comptable</em></span>
-                            <div class="persona-stat">
-                                <span class="persona-type persona-type--pp" title="Pratico-pratique">PP</span>
-                                <span class="persona-market">40%</span>
-                            </div>
-                        </div>
-                        <span class="persona-info">Homme célibataire de 42 ans vivant au Canada</span>
-                        <div class="persona-goal">
-                            <h4 class="persona-title">Buts</h4>
-                            <ul class="bare-list">
-                                <li class="check">But principal</li>
-                                <li class="check">But secondaire</li>
-                                <li class="check">Avantages</li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="persona">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                            <span class="persona-name">Eva &ndash; <em>Pharmacienne</em></span>
-                            <div class="persona-stat">
-                                <span class="persona-type persona-type--eco" title="Ecolo">ECO</span>
-                                <span class="persona-market">20%</span>
-                            </div>
-                        </div>
-                        <span class="persona-info">Femme mariée de 34 ans vivant au Canada</span>
-                        <div class="persona-goal">
-                            <h4 class="persona-title">Buts</h4>
-                            <ul class="bare-list">
-                                <li class="check">But principal</li>
-                                <li class="check">But secondaire</li>
-                                <li class="check">Avantages</li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
+                
              
                 <h3 class="subsection-title">Cas d'utilisation</h3>
                 <div class="use-case">
@@ -796,7 +756,7 @@
                             - <strong>Choix des acteurs</strong> : Deux acteurs, soit les résidents et les intervenants, vont utiliser l'application. Nous avons ajouté la généralisation "Utilisateur" parce que
                              le processus de connexion est le même pour ces deux là. Nous avons aussi un administrateur qui va modérer la plateforme.  <br>
                             - <strong>Choix des relations</strong> : Nous avons deux relations &lt;&lt;extend&gt;&gt; qui démontrent que le CU d'extention peut seulement être exécuté
-                            si le CU de base a été exécuté en premier.
+                            si le CU de base a été exécuté en premier. Nous avons aussi la relation &lt;&lt;include&gt;&gt; qui se réfère au fait que l'utilisateur sera automatiquement connecté à la plateforme après s'être enregistré.
                         </em>
                     </p>
                 </div>
@@ -839,10 +799,6 @@
                             </ul>
                         </div>
                         
-                        <div class="cu-part cu-part--notes">
-                            <h5 class="cu-part-title">Notes</h5>
-                            <p class="cu-notes">Notes additionnelles et hypothèses</p>
-                        </div>
                     </div>
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
@@ -971,7 +927,7 @@
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Aucun</li>
+                                <li class="dash">Les paramètres du profil sont mis à jour.</li>
                             </ul>
                         </div>
                     </div>
@@ -1031,7 +987,7 @@
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Aucun</li>
+                                <li class="dash">La platefrome permet à l'utilisateur d'accéder à son compte.</li>
                             </ul>
                         </div>
                     </div>
@@ -1096,7 +1052,7 @@
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Aucun</li>
+                                <li class="dash">Les consultations sont conservées dans l'historique de recherche du résident</li>
                             </ul>
                         </div>
                     </div>
@@ -1153,7 +1109,7 @@
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Aucun</li>
+                                <li class="dash">L'évaluation est enregistrée</li>
                             </ul>
                         </div>
                     </div>
@@ -1172,9 +1128,12 @@
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
                                 <li class="scenario-alt-step" value="1">
-                                    Aucun.
+                                        Le résident décide de ne pas envoyer d'évaluations.</li>
+                                        <li><strong>SOLUTION</strong>: L'évaluation des travaux n'est pas obligatoire, le résident peut simplement décider de 
+                                            ne pas évaluer et cliquer sur annuler.
+                                    </li>
                                 
-                                </li>
+                                
                             </ol>
                         </div>
                     </div>
@@ -1208,7 +1167,7 @@
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Aucun</li>
+                                <li class="dash">Les entrées sont conservées dans l'historique de recherche du résident</li>
                             </ul>
                         </div>
                     </div>
@@ -1227,7 +1186,8 @@
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
                                 <li class="scenario-alt-step" value="1">
-                                    Aucun
+                                    Le résident effectue une recherche avec des critères trop spécifiques.</li>
+                                    <li><strong>SOLUTION</strong>: L'application affiche ''Recherche trop spécifique'' et propose de retirer des filtres.
                                 </li>
                             </ol>
                         </div>
@@ -1262,7 +1222,7 @@
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Aucun</li>
+                                <li class="dash">Les préferences du résident sont enregistrées.</li>
                             </ul>
                         </div>
                     </div>
@@ -1281,8 +1241,11 @@
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
                                 <li class="scenario-alt-step" value="1">
-                                    Aucun
-                                </li>
+                                        Délai de soumission dépassé.</li>
+                                        <li><strong>SOLUTION</strong>: La planification de travaux aura une date limite et ne sera plus accessible après l'échéance.
+                                    </li>
+                                
+                                
                             </ol>
                         </div>
                     </div>
@@ -1323,18 +1286,20 @@
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
                         <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">Le résident connecté sélectionne le type de problème et ajoute une description.</li>
-                            <li class="scenario-main-step">L'administrateur peut faire un suivi selon le mode de communication établi (courriel/téléphone).</li>
+                            <li class="scenario-main-step">Le résident va dans l'onglet "Signaler un problème".</li>
+                            <li class="scenario-main-step">Le résident rédige son signalement.</li>
+                            <li class="scenario-main-step">Le résident à la possibilité de joindre des documents pour appuyer le signalement.</li>
+                            <li class="scenario-main-step">Le résident envoie son signalement pour révision.</li>
                         </ol>
                 
                         <div class="scenario-alt">
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
                                 <li class="scenario-alt-step" value="2">
-                                    Problème déjà signalé par un autre résident.
+                                    Les documents dépassent la taille maximale permise.
                                     <ol class="bare-list">
-                                        <li value="2">Affiche un message disant que le problème est déjà en cours de traitement.</li>
-                                        <li value="2">Le scénario se termine.</li>
+                                        <li value="2">Le message "La taille de vos documents ne doit pas dépasser 20 Mo" s'affiche.</li>
+                                        <li value="2">Le résident peut envoyer son signalement une fois que les correctifs sont apportés.</li>
                                     </ol>
                                 </li>
                             </ol>
@@ -1495,8 +1460,123 @@
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
                                 <li class="scenario-alt-step" value="1">
-                                    Aucun.
-                                </li>
+                                        
+                                        Champs de formulaire incomplets ou incorrects.</li>
+                                        <li><strong>SOLUTION</strong>: L'intervenant aura la possibilité d'ajouter et de modifier ses informations pendant le processus d'approbation.
+                                    </li>
+                                
+                                
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scenario" id="cu-9">
+                    <div class="scenario-meta">
+                        <h4 class="cu-name">
+                            <strong>CU:</strong> Consulter les préférences des résidents pour la planification des travaux.
+                        </h4>
+                        <p class="cu-goal">
+                            <strong>Objectif:</strong> Les intervenants peuvent consulter les préférences des résidents et ajuster leurs travaux en conséquence.
+                        </p>
+                        
+                        <hr>
+                
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Acteurs</h5>
+                            <ul class="bare-list cu-actors">
+                                <li class="cu-actor">Intervenant</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Préconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Doit être connecté avec un compte intervenant valide.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Postconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Le système garde en mémoire les préférences épinglées pour permettre à l'intervenant de revenir les consulter.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scenario-main">
+                        <h5 class="scenario-main-title">Scénario principal</h5>
+                        <ol class="scenario-main-steps">
+                            <li class="scenario-main-step">L’intervenant se connecte à l’application.</li>
+                            <li class="scenario-main-step">Il sélectionne “Consulter les préférences”.</li>
+                            <li class="scenario-main-step">Il peut lire les préférences des résidents.</li>
+                            <li class="scenario-main-step">Si une préférence l'interpelle, il peut l'épingler.</li>
+                        </ol>
+                
+                        <div class="scenario-alt">
+                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                            <ol class="bare-list scenario-alt-steps">
+                                <li class="scenario-alt-step" value="1">
+                                        
+                                        Une préférence non pertinente à été épinglée par erreur.</li>
+                                        <li><strong>SOLUTION</strong>: L'intervenant à la possibilité de retirer l'épingle de la préférence.
+                                    </li>
+                                
+                                
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scenario" id="cu-9">
+                    <div class="scenario-meta">
+                        <h4 class="cu-name">
+                            <strong>CU:</strong> Consulter la liste de requêtes de travaux.
+                        </h4>
+                        <p class="cu-goal">
+                            <strong>Objectif:</strong> Permettre à l'intervenant d'appliquer à des requêtes de travaux envoyées par les résidents en soumettant leur proposition.
+                        </p>
+                        
+                        <hr>
+                
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Acteurs</h5>
+                            <ul class="bare-list cu-actors">
+                                <li class="cu-actor">Intervenant</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Préconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Doit être connecté avec un compte intervenant valide.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Postconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Le système enregistre la proposition et envoie une notification au résident.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scenario-main">
+                        <h5 class="scenario-main-title">Scénario principal</h5>
+                        <ol class="scenario-main-steps">
+                            <li class="scenario-main-step">L’intervenant se connecte à l’application.</li>
+                            <li class="scenario-main-step">Il sélectionne “Voir les requêtes de travaux”.</li>
+                            <li class="scenario-main-step">Il sélectionne une requête qui n'a aucune proposition.</li>
+                            <li class="scenario-main-step">Il applique à la requête et soumet une proposition.</li>
+                        </ol>
+                
+                        <div class="scenario-alt">
+                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                            <ol class="bare-list scenario-alt-steps">
+                                <li class="scenario-alt-step" value="1">
+                                        Le résident a soumit une requête farfelue ou ridicule.</li>
+                                        <li><strong>SOLUTION</strong>: L'intervenant peut signaler l'annonce, et un administrateur la supprimera en cas d'abus.
+                                    </li>
+                                
+                                
                             </ol>
                         </div>
                     </div>
@@ -1591,6 +1671,7 @@
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
                         <ol class="scenario-main-steps">
+                            <li class="scenario-main-step">L'admin accède à l'onglet "Utilisateurs".</li>
                             <li class="scenario-main-step">L'admin recherche le compte grace au code d'utilisateur.</li>
                             <li class="scenario-main-step">L'admin effectue les changements désirés.</li>
                             <li class="scenario-main-step">L'admin confirme les changements.</li>
@@ -1599,9 +1680,13 @@
                         <div class="scenario-alt">
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
-                                <li class="scenario-alt-step" value="2">
-                                    Aucun
-                                </li>
+                                <li class="scenario-alt-step" value="1">
+                                        
+                                        Un utilisateur décide de contester la décision d'un admin.</li>
+                                        <li><strong>SOLUTION</strong>: Le dossier sera analysé puis le compte touché pourra éventuellement être réactivé.
+                                    </li>
+                                
+                                
                             </ol>
                         </div>
                     </div>
@@ -1613,8 +1698,8 @@
                             <strong>CU:</strong> Assurer le respect des conditions d'utilisation de la plateforme.
                         </h4>
                         <p class="cu-goal">
-                            <strong>Objectif:</strong> L'administrateur retirer toute publication dans l'application qui 
-                            sont trompeuses ou qui ne respetent pas les conditions d'utilisations.
+                            <strong>Objectif:</strong> L'administrateur peut retirer toute publication dans l'application qui 
+                            est trompeuse ou qui ne respecte pas les conditions d'utilisations.
                         </p>
                         
                         <hr>
@@ -1643,16 +1728,81 @@
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
                         <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">L'admin sélectionne la publication à supprimer.</li>
+                            <li class="scenario-main-step">L'admin accède aux publications via l'application.</li>
+                            <li class="scenario-main-step">L'admin apperçoit une publication problématique.</li>
+                            <li class="scenario-main-step">L'admin sélectionne la publication pour la supprimer.</li>
                             <li class="scenario-main-step">L'admin confirme la suppression.</li>
                         </ol>
                 
                         <div class="scenario-alt">
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
-                                <li class="scenario-alt-step" value="2">
-                                    Aucun
-                                </li>
+                                <li class="scenario-alt-step" value="1">
+                                        
+                                        L'administrateur n'est pas sûr s'il devrait supprimer une publication.</li>
+                                        <li><strong>SOLUTION</strong>: L'admin peut marquer la publication comme ''À vérifier'' et celle-ci 
+                                            sera revue par d'autres admin pour une décision finale.
+    
+                                    </li>
+                                
+                                
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scenario" id="cu-10">
+                    <div class="scenario-meta">
+                        <h4 class="cu-name">
+                            <strong>CU:</strong> Faire le suivi des problèmes signalés.
+                        </h4>
+                        <p class="cu-goal">
+                            <strong>Objectif:</strong> L'administrateur peut accéder aux signalements des résidents et prendre une décision en conséquence.
+                        </p>
+                        
+                        <hr>
+                
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Acteurs</h5>
+                            <ul class="bare-list cu-actors">
+                                <li class="cu-actor">Admin</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Préconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Doit être sur l'application en mode Admin.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cu-part">
+                            <h5 class="cu-part-title">Postconditions</h5>
+                            <ul class="bare-list cu-conditions">
+                                <li class="dash">Le signalement est marqué comme "lu".</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="scenario-main">
+                        <h5 class="scenario-main-title">Scénario principal</h5>
+                        <ol class="scenario-main-steps">
+                            <li class="scenario-main-step">L'admin accède à l'onglet ''Signalements''.</li>
+                            <li class="scenario-main-step">L'admin lit les signalements.</li>
+                            <li class="scenario-main-step">Le signalement est marqué comme lu.</li>
+                        </ol>
+                
+                        <div class="scenario-alt">
+                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                            <ol class="bare-list scenario-alt-steps">
+                                <li class="scenario-alt-step" value="1">
+                                        
+                                        Le signalement d'un résident révèle un problème grave.</li>
+                                        <li><strong>SOLUTION</strong>: L'admin peut marquer le signalement comme ''Urgent'' et ses collègues seront 
+                                            averti pour ensuite régler la situation.
+    
+                                    </li>
+                                
+                                
                             </ol>
                         </div>
                     </div>
