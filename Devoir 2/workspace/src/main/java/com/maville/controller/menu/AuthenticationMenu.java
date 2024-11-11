@@ -1,9 +1,14 @@
 package com.maville.controller.menu;
 
 import com.maville.controller.auth.Authenticate;
+import com.maville.model.Intervenant;
 import com.maville.view.AuthenticationView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AuthenticationMenu extends Menu {
+    private Authenticate authenticate;
     private static final String[] LOGIN_INFO_MESSAGES = {
             "Adresse courriel",
             "Mot de passe"
@@ -26,7 +31,7 @@ public class AuthenticationMenu extends Menu {
     // Logique de connexion
     public void logInManager() {
         AuthenticationView.authMessage();
-        AuthenticationView.authType();
+        AuthenticationView.showAuthType();
 
         int option = scanner.nextInt();
         selection(option, "login"); // Passe "login" en tant qu'argument pour indiquer la connexion
@@ -35,7 +40,7 @@ public class AuthenticationMenu extends Menu {
     // Logique d'inscription
     public void signUpManager() {
         AuthenticationView.authMessage();
-        AuthenticationView.authType();
+        AuthenticationView.showAuthType();
 
         int option = scanner.nextInt();
         selection(option, "signup"); // Passe "signup" en tant qu'argument pour indiquer l'inscription
@@ -46,19 +51,35 @@ public class AuthenticationMenu extends Menu {
     protected void selection(int option, String action) {
         switch (action) {
             case "login":
-                AuthenticationView.logInMessage();
-                scanner.nextLine();
-
-                collectUserInfo(LOGIN_INFO_MESSAGES);
+                handleLogIn(option);
                 break;
             case "signup":
-                // Cas d'inscription
                 handleSignUp(option);
                 break;
             default:
                 System.out.println("Action inconnue.");
                 break;
         }
+    }
+
+    private void handleLogIn(int option) {
+        String userType;
+        switch (option) {
+            case 1:
+                userType = "résident";
+                break;
+            case 2:
+                userType = "intervenant";
+                break;
+            default:
+                System.out.println("XXXXXX");
+                return;
+        }
+        AuthenticationView.showLogInMessage(userType);
+        scanner.nextLine();
+
+        authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
+        authenticate.logIn(userType);
     }
 
     private void handleSignUp(int option) {
@@ -79,16 +100,49 @@ public class AuthenticationMenu extends Menu {
                 return;
         }
 
-        AuthenticationView.signUpMessage(userType);
-        scanner.nextLine(); // Consomme la nouvelle ligne restante
-        collectUserInfo(infoMessages);
+        AuthenticationView.showSignUpMessage(userType);
+        scanner.nextLine();
+
+        authenticate = new Authenticate(collectUserInfo(infoMessages));
+        authenticate.signUp(userType); // Construction du User
     }
 
-    private void collectUserInfo(String[] infoMessages) {
+    private List<String> collectUserInfo(String[] infoMessages) {
+        List<String> userInfo = new ArrayList<>();
         for (String message : infoMessages) {
             AuthenticationView.printMessage(message);
             String input = scanner.nextLine();
+            userInfo.add(input);
             System.out.println("Vous avez entré : " + input); // Pour vérification
+        }
+
+        return userInfo;
+    }
+
+    public static int getInput() {
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                AuthenticationView.showInvalidInputMessage();
+            }
+        }
+    }
+
+
+    public static int askForCompanyType() {
+        Intervenant.CompanyType[] companyTypes = Intervenant.CompanyType.values();
+
+        while (true) {
+            AuthenticationView.showCompanyTypePrompt();
+            AuthenticationView.showCompanyTypes(companyTypes);
+
+            int choice = getInput();
+            if (choice >= 1 && choice <= companyTypes.length) {
+                return choice;
+            } else {
+                AuthenticationView.showInvalidChoiceMessage(companyTypes.length);
+            }
         }
     }
 }
