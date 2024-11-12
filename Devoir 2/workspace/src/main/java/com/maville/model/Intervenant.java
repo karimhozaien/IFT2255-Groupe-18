@@ -1,9 +1,12 @@
 package com.maville.model;
 
-public class Intervenant extends User {
-    protected int identifier;
-    protected CompanyType companyType;
+import com.maville.view.MenuView;
 
+public class Intervenant extends User {
+    private final int identifier;
+    private final CompanyType companyType;
+
+    // Enum for Company Types
     public enum CompanyType {
         PRIVATE(1, "Private"),
         PUBLIC(2, "Public"),
@@ -35,48 +38,31 @@ public class Intervenant extends User {
         }
     }
 
-    private Intervenant(Builder builder) {
-        super.name = builder.name;
-        super.email = builder.email;
-        super.password = builder.password;
+    // Constructor
+    private Intervenant(IntervenantBuilder builder) {
+        super(builder);
         this.identifier = builder.identifier;
         this.companyType = builder.companyType;
     }
 
-    public static class Builder extends User.Builder {
+    // Builder Class for Intervenant
+    public static class IntervenantBuilder extends User.Builder<IntervenantBuilder> {
         private int identifier;
         private CompanyType companyType;
 
-        public Builder() {
-            this.identifier = build().getIdentifier();
-            this.companyType = build().getCompanyType();
-        }
-
-        @Override
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        @Override
-        public Builder email(String email) {
-            this.email = email;
-            return this;
-        }
-
-        @Override
-        public Builder password(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder identifier(String identifier) {
+        // Methods to set builder fields
+        public IntervenantBuilder identifier(String identifier) {
             this.identifier = Integer.parseInt(identifier);
             return this;
         }
 
-        public Builder companyType(int choice) {
+        public IntervenantBuilder companyType(int choice) {
             this.companyType = CompanyType.stringToType(choice);
+            return this;
+        }
+
+        @Override
+        protected IntervenantBuilder self() {
             return this;
         }
 
@@ -87,6 +73,18 @@ public class Intervenant extends User {
     }
 
     // Getters
-    public int getIdentifier() { return this.identifier; }
-    public CompanyType getCompanyType() { return this.companyType; }
+    public int getIdentifier() {
+        return this.identifier;
+    }
+
+    public CompanyType getCompanyType() {
+        return this.companyType;
+    }
+
+    @Override
+    public void print() {
+        super.print();
+        MenuView.printMessage("Identifier: " + this.identifier);
+        MenuView.printMessage("Company Type: " + this.companyType.getDisplayType());
+    }
 }

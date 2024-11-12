@@ -79,7 +79,7 @@ public class AuthenticationMenu extends Menu {
         scanner.nextLine();
 
         authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
-        authenticate.logIn(userType);
+        authenticate.logIn();
     }
 
     private void handleSignUp(int option) {
@@ -129,7 +129,6 @@ public class AuthenticationMenu extends Menu {
         }
     }
 
-
     public static int askForCompanyType() {
         Intervenant.CompanyType[] companyTypes = Intervenant.CompanyType.values();
 
@@ -144,5 +143,12 @@ public class AuthenticationMenu extends Menu {
                 AuthenticationView.showInvalidChoiceMessage(companyTypes.length);
             }
         }
+    }
+
+
+    // Méthode pour demander un nouvel identifiant
+    public static String demanderNouvelIdentifiant() {
+        System.out.print("Entrez un identifiant valide (8 chiffres) : ");
+        return scanner.nextLine();
     }
 }
