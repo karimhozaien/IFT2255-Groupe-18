@@ -3,6 +3,7 @@ package com.maville.controller.menu;
 import com.maville.controller.auth.Authenticate;
 import com.maville.model.Intervenant;
 import com.maville.view.AuthenticationView;
+import com.maville.view.MenuView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class AuthenticationMenu extends Menu {
         String userType;
         switch (option) {
             case 1:
-                userType = "résident";
+                userType = "resident";
                 break;
             case 2:
                 userType = "intervenant";
@@ -79,7 +80,10 @@ public class AuthenticationMenu extends Menu {
         scanner.nextLine();
 
         authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
-        authenticate.logIn();
+
+        if (authenticate.logIn()) { // Construction du User
+            Menu.showUserMenu(userType);
+        }
     }
 
     private void handleSignUp(int option) {
@@ -88,7 +92,7 @@ public class AuthenticationMenu extends Menu {
 
         switch (option) {
             case 1:
-                userType = "résident";
+                userType = "resident";
                 infoMessages = SIGNUP_RESIDENT_INFO_MESSAGES;
                 break;
             case 2:
@@ -104,7 +108,9 @@ public class AuthenticationMenu extends Menu {
         scanner.nextLine();
 
         authenticate = new Authenticate(collectUserInfo(infoMessages));
-        authenticate.signUp(userType); // Construction du User
+        if (authenticate.signUp(userType)) { // Construction du User
+            Menu.showUserMenu(userType);
+        }
     }
 
     private List<String> collectUserInfo(String[] infoMessages) {

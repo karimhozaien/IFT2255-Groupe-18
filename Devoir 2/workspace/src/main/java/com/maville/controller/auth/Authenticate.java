@@ -10,34 +10,34 @@ import java.util.List;
 
 public class Authenticate {
     List<String> userInfo;
-    User currentSignUpUser;
     String currentLogInUserId;
 
     public Authenticate(List<String> userInfo) {
         this.userInfo = userInfo;
     }
 
-    public void logIn() {
+    public boolean logIn() {
         UserRepository instanceUserRepo = UserRepository.getInstance();
-
         currentLogInUserId = instanceUserRepo.fetchUser(userInfo); // Le UUID est suffisant
+
+        return currentLogInUserId != null;
     }
 
-    public void signUp(String userType) {
+    public boolean signUp(String userType) {
         UserRepository instanceUserRepo = UserRepository.getInstance();
+        User currentSignUpUser = switch (userType) {
+            case "resident" -> signUpResident();
+            case "intervenant" -> signUpIntervenant();
+            default -> null;
+        };
 
-        switch (userType) {
-            case "résident":
-                currentSignUpUser = signUpResident();
-                break;
-            case "intervenant":
-                currentSignUpUser = signUpIntervenant();
-                break;
-        }
         if (currentSignUpUser != null) {
             currentSignUpUser.print();
             instanceUserRepo.saveUser(currentSignUpUser);
+            currentLogInUserId = currentSignUpUser.getId();
         }
+
+        return currentLogInUserId != null;
     }
 
     private User signUpResident() {

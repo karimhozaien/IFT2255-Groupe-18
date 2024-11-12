@@ -4,11 +4,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class PasswordUtil {
     private static PasswordUtil instance;
-    String strongSalt;
 
-    private PasswordUtil() {
-        strongSalt = BCrypt.gensalt(10);
-    }
+    private PasswordUtil() {}
 
     public static PasswordUtil getInstance() {
         if (instance == null) {
@@ -18,6 +15,7 @@ public class PasswordUtil {
     }
 
     public String hashPassword(String password) {
+        String strongSalt = BCrypt.gensalt(10);
         return BCrypt.hashpw(password, strongSalt);
     }
 
