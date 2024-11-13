@@ -18,6 +18,10 @@ public class MenuView {
             "Mettre à jour les travaux",
             "Quitter"
     };
+    private static final String[] AUTH_TYPES = {
+            "S'enregistrer",
+            "Se connecter"
+    };
     private static final String USER_CHOICE_MESSAGE = "Choisissez l'une des options : ";
 
 
@@ -34,8 +38,9 @@ public class MenuView {
     }
 
     public static void authMessage() {
-        printMessage("[1] S'enregistrer");
-        printMessage("[2] Se connecter");
+        for (int i = 0; i < AUTH_TYPES.length; i++) {
+            printMessage("[" + (i + 1) + "] " + AUTH_TYPES[i]);
+        }
     }
 
     public static void residentMenuMessages() {
@@ -50,14 +55,6 @@ public class MenuView {
             printMessage("[" + ((i + 1) % INTERVENANT_MENU_MESSAGES.length) + "] " + INTERVENANT_MENU_MESSAGES[i]);
         }
         printMessage(USER_CHOICE_MESSAGE);
-    }
-
-    public static int getIntervenantOptionSize() {
-        return INTERVENANT_MENU_MESSAGES.length;
-    }
-
-    public static int getResidentOtionSize() {
-        return RESIDENT_MENU_MESSAGES.length;
     }
 
     public static void printMessage(String message) {

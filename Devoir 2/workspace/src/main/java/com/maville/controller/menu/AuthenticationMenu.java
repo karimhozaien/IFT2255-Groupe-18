@@ -3,7 +3,6 @@ package com.maville.controller.menu;
 import com.maville.controller.auth.Authenticate;
 import com.maville.model.Intervenant;
 import com.maville.view.AuthenticationView;
-import com.maville.view.MenuView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +30,19 @@ public class AuthenticationMenu extends Menu {
 
     // Logique de connexion
     public void logInManager() {
-        AuthenticationView.authMessage();
+        AuthenticationView.showAuthMessage();
         AuthenticationView.showAuthType();
 
-        int option = scanner.nextInt();
+        int option = SCANNER.nextInt();
         selection(option, "login"); // Passe "login" en tant qu'argument pour indiquer la connexion
     }
 
     // Logique d'inscription
     public void signUpManager() {
-        AuthenticationView.authMessage();
+        AuthenticationView.showAuthMessage();
         AuthenticationView.showAuthType();
 
-        int option = scanner.nextInt();
+        int option = SCANNER.nextInt();
         selection(option, "signup"); // Passe "signup" en tant qu'argument pour indiquer l'inscription
     }
 
@@ -77,7 +76,7 @@ public class AuthenticationMenu extends Menu {
                 return;
         }
         AuthenticationView.showLogInMessage(userType);
-        scanner.nextLine();
+        SCANNER.nextLine();
 
         authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
 
@@ -105,7 +104,7 @@ public class AuthenticationMenu extends Menu {
         }
 
         AuthenticationView.showSignUpMessage(userType);
-        scanner.nextLine();
+        SCANNER.nextLine();
 
         authenticate = new Authenticate(collectUserInfo(infoMessages));
         if (authenticate.signUp(userType)) { // Construction du User
@@ -117,7 +116,7 @@ public class AuthenticationMenu extends Menu {
         List<String> userInfo = new ArrayList<>();
         for (String message : infoMessages) {
             AuthenticationView.printMessage(message);
-            String input = scanner.nextLine();
+            String input = SCANNER.nextLine();
             userInfo.add(input);
             System.out.println("Vous avez entré : " + input); // Pour vérification
         }
@@ -125,10 +124,10 @@ public class AuthenticationMenu extends Menu {
         return userInfo;
     }
 
-    public static int getInput() {
+    private static int getInput() {
         while (true) {
             try {
-                return Integer.parseInt(scanner.nextLine().trim());
+                return Integer.parseInt(SCANNER.nextLine().trim());
             } catch (NumberFormatException e) {
                 AuthenticationView.showInvalidInputMessage();
             }
@@ -139,7 +138,7 @@ public class AuthenticationMenu extends Menu {
         Intervenant.CompanyType[] companyTypes = Intervenant.CompanyType.values();
 
         while (true) {
-            AuthenticationView.showCompanyTypePrompt();
+            AuthenticationView.showCompanyTypeMessage();
             AuthenticationView.showCompanyTypes(companyTypes);
 
             int choice = getInput();
@@ -149,12 +148,5 @@ public class AuthenticationMenu extends Menu {
                 AuthenticationView.showInvalidChoiceMessage(companyTypes.length);
             }
         }
-    }
-
-
-    // Méthode pour demander un nouvel identifiant
-    public static String demanderNouvelIdentifiant() {
-        System.out.print("Entrez un identifiant valide (8 chiffres) : ");
-        return scanner.nextLine();
     }
 }

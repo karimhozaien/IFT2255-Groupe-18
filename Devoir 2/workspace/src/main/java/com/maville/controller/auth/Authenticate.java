@@ -9,8 +9,8 @@ import com.maville.model.User;
 import java.util.List;
 
 public class Authenticate {
-    List<String> userInfo;
-    String currentLogInUserId;
+    private List<String> userInfo;
+    private String currentLogInUserId;
 
     public Authenticate(List<String> userInfo) {
         this.userInfo = userInfo;
