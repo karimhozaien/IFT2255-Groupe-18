@@ -40,14 +40,14 @@ public class ResidentActivityController {
 
     public void searchWorks() {
         // TODO
-        // Demander à l'utilisateur s'il veut filter par 1. Quartier, 2. Type de travaux
+        // Demander à l'utilisateur s'il veut chercher par 1. Titre, 2. Quartier, 3. Type de travaux
     }
 
     public void participateToSchedule() {
         // TODO
     }
 
-    public void submitRequest() {
+    public void submitWorkRequest() {
         // TODO
     }
 

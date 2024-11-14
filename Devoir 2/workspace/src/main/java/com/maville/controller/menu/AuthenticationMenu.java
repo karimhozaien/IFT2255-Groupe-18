@@ -3,7 +3,6 @@ package com.maville.controller.menu;
 import com.maville.controller.auth.Authenticate;
 import com.maville.model.Intervenant;
 import com.maville.view.AuthenticationView;
-
 import java.util.ArrayList;
 import java.util.List;
 

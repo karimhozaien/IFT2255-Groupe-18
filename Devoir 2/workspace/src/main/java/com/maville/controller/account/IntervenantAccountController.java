@@ -17,14 +17,4 @@ public class IntervenantAccountController implements AccountController {
         // TODO
         return null; // replace
     }
-
-    public boolean activateAccount(Resident resident) {
-        // TODO
-        return false; // replace
-    }
-
-    public boolean deactivateAccount(Resident resident) {
-        // TODO
-        return false; // replace
-    }
 }

@@ -42,7 +42,7 @@ public class DefaultMenu extends Menu {
                     break;
                 case 4:
                     // Soumettre une requête de travaux
-                    residentAC.submitRequest();
+                    residentAC.submitWorkRequest();
                     System.out.println("Soumission d'une requête de travaux...");
                     break;
                 case 5:
