@@ -6,8 +6,16 @@ import com.maville.model.DatabaseConnectionManager;
 public class MaVille {
 
     public static void main(String[] args) {
+        DatabaseConnectionManager.connect();
+
         DefaultMenu menu = new DefaultMenu();
-        DatabaseConnectionManager.initialize();
         menu.welcome();
+
+        exitApplication();
+    }
+
+    private static void exitApplication() {
+        DatabaseConnectionManager.close();
+        System.exit(0);
     }
 }

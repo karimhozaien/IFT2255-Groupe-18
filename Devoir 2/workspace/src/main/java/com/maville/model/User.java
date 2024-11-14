@@ -4,23 +4,24 @@ import com.maville.view.MenuView;
 import java.util.UUID;
 
 public class User {
-    protected final String id;
+    protected final String ID;
     protected String name;
     protected String email;
     protected String password;
 
     protected User(Builder<?> builder) {
-        this.id = builder.id;
+        this.ID = builder.id;
         this.name = builder.name;
         this.email = builder.email;
         this.password = builder.password;
     }
 
-    public String getId() { return id; }
+    public String getID() { return ID; }
     public String getName() { return name; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }
 
+    // Fonction helper
     public void print() {
         MenuView.printMessage("Name: " + this.name);
         MenuView.printMessage("Email: " + this.email);

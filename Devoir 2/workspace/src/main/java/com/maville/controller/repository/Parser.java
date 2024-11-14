@@ -1,9 +1,6 @@
 package com.maville.controller.repository;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import com.maville.controller.repository.WorkRepository.Result.Record;
 import com.maville.model.Project;
@@ -15,25 +12,36 @@ public class Parser {
         this.records = records;
     }
 
+    /**
+     * Analyse les {@code records} pour créer une liste de projets.
+     *
+     * @return Une liste de {@code Project} construite à partir des informations contenues dans chaque {@code Record}.
+     */
     public List<Project> initializeParsing() {
         List<Project> projects = new ArrayList<>();
 
         for (Record record : records) {
             Project project = new Project(record.getId(),
-                    record.getTitle(),
+                    createTitle(record),
                     parseTypeOfWork(record),
                     record.getAffectedNeighbourhood(),
                     record.getAffectedStreets(),
                     parseDate(record.getStartDate()),
                     parseDate(record.getEndDate()),
-                    parseWorkSchedule(record)
+                    parseWorkSchedule(record),
+                    Project.WorkStatus.ONGOING
             );
-
-            System.out.println(project);
             projects.add(project);
         }
-
         return projects;
+    }
+
+    private String createTitle(Record record) {
+        String typeOfWork = record.getTypeOfWorkRaw();
+        if (typeOfWork.trim().equals("Autre")) {
+            typeOfWork = "Travaux";
+        }
+        return typeOfWork + " direction " + record.getAffectedStreets();
     }
 
     private String parseDate(String date) {

@@ -9,6 +9,7 @@ import java.util.List;
 
 public class AuthenticationMenu extends Menu {
     private Authenticate authenticate;
+    private Menu menu;
     private static final String[] LOGIN_INFO_MESSAGES = {
             "Adresse courriel",
             "Mot de passe"
@@ -81,7 +82,7 @@ public class AuthenticationMenu extends Menu {
         authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
 
         if (authenticate.logIn()) { // Construction du User
-            Menu.showUserMenu(userType);
+            menu.showUserMenu(userType);
         }
     }
 
@@ -108,7 +109,7 @@ public class AuthenticationMenu extends Menu {
 
         authenticate = new Authenticate(collectUserInfo(infoMessages));
         if (authenticate.signUp(userType)) { // Construction du User
-            Menu.showUserMenu(userType);
+            menu.showUserMenu(userType);
         }
     }
 

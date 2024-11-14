@@ -16,6 +16,11 @@ public class Authenticate {
         this.userInfo = userInfo;
     }
 
+    /**
+     * Tente de connecter l'utilisateur avec les informations fournies.
+     *
+     * @return {@code true} si la connexion est réussie, sinon {@code false}.
+     */
     public boolean logIn() {
         UserRepository instanceUserRepo = UserRepository.getInstance();
         currentLogInUserId = instanceUserRepo.fetchUser(userInfo); // Le UUID est suffisant
@@ -23,6 +28,12 @@ public class Authenticate {
         return currentLogInUserId != null;
     }
 
+    /**
+     * Inscrit un nouvel utilisateur du type spécifié.
+     *
+     * @param userType Le type de l'utilisateur à inscrire (ex. "resident" ou "intervenant").
+     * @return {@code true} si l'inscription est réussie, sinon {@code false}.
+     */
     public boolean signUp(String userType) {
         UserRepository instanceUserRepo = UserRepository.getInstance();
         User currentSignUpUser = switch (userType) {
@@ -34,12 +45,16 @@ public class Authenticate {
         if (currentSignUpUser != null) {
             currentSignUpUser.print();
             instanceUserRepo.saveUser(currentSignUpUser);
-            currentLogInUserId = currentSignUpUser.getId();
+            currentLogInUserId = currentSignUpUser.getID();
         }
-
         return currentLogInUserId != null;
     }
 
+    /**
+     * Crée un nouvel utilisateur de type {@code Resident} avec les informations d'inscription fournies.
+     *
+     * @return Un objet {@code Resident} si l'inscription réussit, sinon {@code null}.
+     */
     private User signUpResident() {
         try {
             return new Resident.ResidentBuilder()
@@ -57,6 +72,11 @@ public class Authenticate {
         }
     }
 
+    /**
+     * Crée un nouvel utilisateur de type {@code Intervenant} avec les informations d'inscription fournies.
+     *
+     * @return Un objet {@code Intervenant} si l'inscription réussit, sinon {@code null}.
+     */
     private User signUpIntervenant() {
         try {
             return new Intervenant.IntervenantBuilder()

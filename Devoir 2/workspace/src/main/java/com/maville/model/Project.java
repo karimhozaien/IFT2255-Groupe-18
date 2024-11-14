@@ -1,11 +1,8 @@
 package com.maville.model;
 
-import com.squareup.moshi.Json;
-
 import java.util.List;
 
 public class Project {
-
     private String id;
     private String title;
     private TypeOfWork typeOfWork;
@@ -58,91 +55,36 @@ public class Project {
     }
 
     // Getters
-    public String getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public TypeOfWork getTypeOfWork() {
-        return typeOfWork;
-    }
-
-    public String getAffectedNeighbourhood() {
-        return affectedNeighbourhood;
-    }
-
-    public String getAffectedStreets() {
-        return affectedStreets;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public List<String> getWorkSchedule() {
-        return workSchedule;
-    }
-
-    public WorkStatus getWorkStatus() {
-        return workStatus;
-    }
+    public String getId() { return id; }
+    public String getTitle() { return title; }
+    public TypeOfWork getTypeOfWork() { return typeOfWork; }
+    public String getAffectedNeighbourhood() { return affectedNeighbourhood; }
+    public String getAffectedStreets() { return affectedStreets; }
+    public String getStartDate() { return startDate; }
+    public String getEndDate() { return endDate; }
+    public List<String> getWorkSchedule() { return workSchedule; }
+    public WorkStatus getWorkStatus() { return workStatus; }
 
     // Setters
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setTypeOfWork(TypeOfWork typeOfWork) {
-        this.typeOfWork = typeOfWork;
-    }
-
-    public void setAffectedNeighbourhood(String affectedNeighbourhood) {
-        this.affectedNeighbourhood = affectedNeighbourhood;
-    }
-
-    public void setAffectedStreets(String affectedStreets) {
-        this.affectedStreets = affectedStreets;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setWorkSchedule(List<String> workSchedule) {
-        this.workSchedule = workSchedule;
-    }
-
-    public void setWorkStatus(WorkStatus workStatus) {
-        this.workStatus = workStatus;
-    }
+    public void setId(String id) { this.id = id; }
+    public void setTitle(String title) { this.title = title; }
+    public void setTypeOfWork(TypeOfWork typeOfWork) { this.typeOfWork = typeOfWork; }
+    public void setAffectedNeighbourhood(String affectedNeighbourhood) { this.affectedNeighbourhood = affectedNeighbourhood; }
+    public void setAffectedStreets(String affectedStreets) { this.affectedStreets = affectedStreets; }
+    public void setStartDate(String startDate) { this.startDate = startDate; }
+    public void setEndDate(String endDate) { this.endDate = endDate; }
+    public void setWorkSchedule(List<String> workSchedule) { this.workSchedule = workSchedule; }
+    public void setWorkStatus(WorkStatus workStatus) { this.workStatus = workStatus; }
 
     @Override
     public String toString() {
-        return "Project{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", typeOfWork=" + typeOfWork +
-                ", affectedNeighbourhood='" + affectedNeighbourhood + '\'' +
-                ", affectedStreets='" + affectedStreets + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", workSchedule='" + workSchedule + '\'' +
-                ", workStatus=" + workStatus +
-                '}';
+        return  id + ". " +
+                title + ", " +
+                typeOfWork + ", " +
+                affectedNeighbourhood + ", " +
+                affectedStreets + ", " +
+                startDate + ", " +
+                endDate + ", " +
+                workSchedule;
     }
 }

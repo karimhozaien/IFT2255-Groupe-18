@@ -3,16 +3,8 @@ package com.maville.view;
 import com.maville.model.Intervenant;
 
 public class AuthenticationView extends MenuView {
-    private static final String AUTH_TYPE_MESSAGE = "En tant que résident ou intervenant ?";
-    private static final String COMPANY_TYPE_MESSAGE = "Quel est le type de votre entreprise ?";
-    private static final String INVALID_INPUT_MESSAGE = "Veuillez entrer un nombre valide.";
-    private static final String[] USER_TYPES = {
-            "Résident",
-            "Intervenant"
-    };
-
     public static void showAuthMessage() {
-        printMessage(AUTH_TYPE_MESSAGE);
+        printMessage("En tant que résident ou intervenant ?");
     }
 
     public static void showLogInMessage(String userType) {
@@ -24,13 +16,12 @@ public class AuthenticationView extends MenuView {
     }
 
     public static void showAuthType() {
-        for (int i = 0; i < USER_TYPES.length; i++) {
-            printMessage("[" + (i + 1) + "] " + USER_TYPES[i]);
-        }
+        printMessage("[1] Résident");
+        printMessage("[2] Intervenant");
     }
 
     public static void showCompanyTypeMessage() {
-        printMessage(COMPANY_TYPE_MESSAGE);
+        printMessage("Quel est le type de votre entreprise ?");
     }
 
     public static void showCompanyTypes(Intervenant.CompanyType[] companyTypes) {
@@ -44,6 +35,6 @@ public class AuthenticationView extends MenuView {
     }
 
     public static void showInvalidInputMessage() {
-        printMessage(INVALID_INPUT_MESSAGE);
+        printMessage("Veuillez entrer un nombre valide.");
     }
 }

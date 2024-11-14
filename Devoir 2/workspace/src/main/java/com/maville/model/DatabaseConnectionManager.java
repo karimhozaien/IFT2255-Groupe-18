@@ -1,8 +1,5 @@
 package com.maville.model;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,7 +10,6 @@ public class DatabaseConnectionManager {
     private static DatabaseConnectionManager instance;
     private Connection connection;
 
-    // Singleton instance access
     public static DatabaseConnectionManager getInstance() {
         if (instance == null) {
             instance = new DatabaseConnectionManager();
@@ -30,7 +26,7 @@ public class DatabaseConnectionManager {
     }
 
     // Initialize the database and create tables if they don't exist
-    public static void initialize() {
+    public static void connect() {
         try {
             DatabaseConnectionManager dbManager = getInstance();
             Connection conn = dbManager.getConnection();
@@ -38,6 +34,21 @@ public class DatabaseConnectionManager {
             dbManager.initializeDatabaseTables(conn); // Initialize tables if needed
         } catch (SQLException e) {
             System.out.println("Error during database initialization: " + e.getMessage());
+        }
+    }
+
+    public static void close() {
+        if (instance != null && instance.connection != null) {
+            try {
+                if (!instance.connection.isClosed()) {
+                    instance.connection.close();
+                    System.out.println("Database connection closed.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Error closing the database connection: " + e.getMessage());
+            } finally {
+                instance = null; // Reset the instance to allow a new connection in the future
+            }
         }
     }
 

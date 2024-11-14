@@ -5,15 +5,13 @@ import com.maville.model.DatabaseConnectionManager;
 import com.maville.model.Intervenant;
 import com.maville.model.Resident;
 import com.maville.model.User;
-
 import java.sql.*;
 import java.util.List;
 
 public class UserRepository {
     private static UserRepository instance;
 
-    private UserRepository() {
-    }
+    private UserRepository() {}
 
     public static UserRepository getInstance() {
         if (instance == null) {
@@ -22,11 +20,19 @@ public class UserRepository {
         return instance;
     }
 
+    /**
+     * Recherche un utilisateur dans la base de données à partir des informations fournies.
+     * Vérifie si le mot de passe fourni correspond à celui stocké dans la base de données.
+     *
+     * @param userInfo Une liste contenant l'email et le mot de passe de l'utilisateur.
+     * @return L'ID de l'utilisateur si les informations sont valides ; {@code null} sinon.
+     */
     public String fetchUser(List<String> userInfo) {
         String email = userInfo.get(0);
         String password = userInfo.get(1);
         String selectSQL = "SELECT * FROM Users WHERE email = ?";
 
+        // Établir la connexion
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {
 
@@ -37,39 +43,44 @@ public class UserRepository {
                     String hashedPasswordFromDB = rs.getString("password");
                     String idFromDB = rs.getString("id");
 
-                    if (PasswordUtil.getInstance().verifyPassword(password, hashedPasswordFromDB)) {
+                    // Vérification du hachage du mot de passe
+                    if (PasswordUtil.verifyPassword(password, hashedPasswordFromDB)) {
                         return idFromDB;
                     } else {
-                        // Password doesn't match
-                        System.out.println("Invalid password.");
+                        // Mot de passe incorrect ?
+                        System.out.println("Mot de passe invalide.");
                         return null;
                     }
                 } else {
-                    // Email doesn't exist in the database
-                    System.out.println("No user found with email: " + email);
+                    // Le email n'existe pas dans la DB
+                    System.out.println("Aucun utilisateur trouvé avec cette adresse : " + email);
                     return null;
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error logging user: " + e.getMessage());
+            System.out.println("Erreur lors de la connexion : " + e.getMessage());
             return null;
         }
     }
 
+    /**
+     * Enregistre un nouvel utilisateur dans la base de données. Gère les différences
+     * entre les types d'utilisateurs {@code Resident} et {@code Intervenant}.
+     *
+     * @param user L'utilisateur à enregistrer, qui peut être un {@code Resident} ou un {@code Intervenant}.
+     */
     public void saveUser(User user) {
         String insertSQL = "INSERT INTO Users(id, name, password, email, user_type, identifier, company_type, birthday, phone_number, residential_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
 
-            // Set common fields
-            pstmt.setString(1, user.getId());
+            pstmt.setString(1, user.getID());
             pstmt.setString(2, user.getName());
-            pstmt.setString(3, PasswordUtil.getInstance().hashPassword(user.getPassword()));
+            pstmt.setString(3, PasswordUtil.hashPassword(user.getPassword()));
             pstmt.setString(4, user.getEmail());
             pstmt.setString(5, user instanceof Resident ? "resident" : "intervenant");
 
-            // Set type-specific fields
             if (user instanceof Intervenant intervenant) {
                 pstmt.setInt(6, intervenant.getIdentifier());
                 pstmt.setString(7, intervenant.getCompanyType().toString());
@@ -84,12 +95,11 @@ public class UserRepository {
                 pstmt.setString(10, resident.getResidentialAddress());
             }
 
-            // Execute the update
             pstmt.executeUpdate();
-            System.out.println("User saved successfully.");
+            System.out.println("L'utilisateur a été sauvegardé."); // Message helper
 
         } catch (SQLException e) {
-            System.out.println("Error saving user: " + e.getMessage());
+            System.out.println("Erreur lors de l'enregistrement : " + e.getMessage());
         }
     }
 }
