@@ -1,7 +1,7 @@
 package com.maville;
 
 import com.maville.controller.menu.DefaultMenu;
-import com.maville.model.DatabaseConnectionManager;
+import com.maville.controller.services.DatabaseConnectionManager;
 
 public class MaVille {
 

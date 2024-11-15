@@ -14,7 +14,7 @@ public abstract class Menu {
         selection(option, "");
     }
 
-    public void showUserMenu(String userType) {
+    public static void showUserMenu(String userType) {
         while (true) {
             switch (userType) {
                 case "resident":
@@ -26,7 +26,6 @@ public abstract class Menu {
             }
 
             int option = SCANNER.nextInt();
-
             if (DefaultMenu.handleMainMenuOption(option, userType)) {
                 break;
             }

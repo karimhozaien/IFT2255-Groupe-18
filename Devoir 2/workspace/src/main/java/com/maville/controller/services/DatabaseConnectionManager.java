@@ -1,4 +1,4 @@
-package com.maville.model;
+package com.maville.controller.services;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -55,9 +55,9 @@ public class DatabaseConnectionManager {
     // Create necessary tables in the database
     public void initializeDatabaseTables(Connection conn) throws SQLException {
         if (isTableInitialized(conn, "Users")) {
-            System.out.println("Table User already exists.");
+            System.out.println("La table User existe déjà.");
         } else {
-            System.out.println("Creating table User...");
+            System.out.println("Création de la table Users...");
             String userTableSQL =
                     "CREATE TABLE IF NOT EXISTS Users (" +
                             "id TEXT PRIMARY KEY," +
@@ -78,17 +78,43 @@ public class DatabaseConnectionManager {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);
             }
-            System.out.println("Table User created.");
+            System.out.println("La table Users a été créée.");
         }
 
-        if (isTableInitialized(conn, "Works")) {
-            System.out.println("Table Work already exists.");
+        if (isTableInitialized(conn, "Projects")) {
+            System.out.println("La table Projects existe déja.");
         } else {
-            // TODO: Create the "Work" table here.
+            System.out.println("Création de la table Projects...");
+            String userTableSQL =
+                    "CREATE TABLE IF NOT EXISTS Projects (" +
+                        "id TEXT PRIMARY KEY," +
+                        "title TEXT NOT NULL," +
+                        "type_of_work TEXT NOT NULL CHECK(type_of_work IN (" +
+                            "'ROAD', " +
+                            "'GAS/ELECTRICITY', " +
+                            "'CONSTRUCTION/RENOVATION', " +
+                            "'LANDSCAPE', " +
+                            "'PUBLIC_TRANSPORT', " +
+                            "'SIGNAGE/LIGHTING', " +
+                            "'UNDERGROUND', " +
+                            "'RESIDENTIAL', " +
+                            "'URBAN_MAINTENANCE', " +
+                            "'TELECOMMUNICATIONS_NETWORKS'" +
+                            "))," +
+                        "affected_neighbourhood TEXT NOT NULL," +
+                        "affected_streets TEXT NOT NULL," +
+                        "start_date TEXT NOT NULL," +
+                        "end_date TEXT NOT NULL," +
+                        "work_schedule TEXT," +
+                        "work_status TEXT CHECK(work_status IN ('ONGOING', 'PLANNED'))" +
+                    ");";
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(userTableSQL);
+            }
+            System.out.println("La table Projects a été créée.");
         }
     }
 
-    // Check if a table exists
     private boolean isTableInitialized(Connection conn, String tableName) throws SQLException {
         var metaData = conn.getMetaData();
         try (var rs = metaData.getTables(null, null, tableName, null)) {

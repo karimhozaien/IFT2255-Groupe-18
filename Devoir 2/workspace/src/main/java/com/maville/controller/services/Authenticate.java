@@ -1,4 +1,4 @@
-package com.maville.controller.auth;
+package com.maville.controller.services;
 
 import com.maville.controller.menu.AuthenticationMenu;
 import com.maville.controller.repository.UserRepository;

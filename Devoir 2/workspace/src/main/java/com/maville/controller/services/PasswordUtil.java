@@ -1,4 +1,4 @@
-package com.maville.controller.auth;
+package com.maville.controller.services;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 

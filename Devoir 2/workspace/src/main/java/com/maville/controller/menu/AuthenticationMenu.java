@@ -1,6 +1,6 @@
 package com.maville.controller.menu;
 
-import com.maville.controller.auth.Authenticate;
+import com.maville.controller.services.Authenticate;
 import com.maville.model.Intervenant;
 import com.maville.view.AuthenticationView;
 import java.util.ArrayList;
@@ -8,7 +8,8 @@ import java.util.List;
 
 public class AuthenticationMenu extends Menu {
     private Authenticate authenticate;
-    private Menu menu;
+
+    // TODO : METTRE TOUT CA DANS AUTHENTICATIONVIEW
     private static final String[] LOGIN_INFO_MESSAGES = {
             "Adresse courriel",
             "Mot de passe"
@@ -81,7 +82,7 @@ public class AuthenticationMenu extends Menu {
         authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
 
         if (authenticate.logIn()) { // Construction du User
-            menu.showUserMenu(userType);
+            DefaultMenu.showUserMenu(userType);
         }
     }
 
@@ -108,7 +109,7 @@ public class AuthenticationMenu extends Menu {
 
         authenticate = new Authenticate(collectUserInfo(infoMessages));
         if (authenticate.signUp(userType)) { // Construction du User
-            menu.showUserMenu(userType);
+            DefaultMenu.showUserMenu(userType);
         }
     }
 

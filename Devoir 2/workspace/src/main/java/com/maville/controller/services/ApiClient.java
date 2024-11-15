@@ -1,4 +1,4 @@
-package com.maville.controller.api;
+package com.maville.controller.services;
 
 import java.io.IOException;
 import okhttp3.OkHttpClient;
@@ -7,7 +7,6 @@ import okhttp3.Response;
 
 public class ApiClient {
     final OkHttpClient client = new OkHttpClient();
-    String myAPIUrl = "https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=cc41b532-f12d-40fb-9f55-eb58c9a2b12b";
     private String jsonResponse;
 
     /**
@@ -16,7 +15,7 @@ public class ApiClient {
      *
      * @throws IOException Si une erreur survient lors de l'exécution de la requête HTTP.
      */
-    public void connect() throws IOException {
+    public void connect(String myAPIUrl) throws IOException {
         Request request = new Request.Builder()
                 .url(myAPIUrl)
                 .build();

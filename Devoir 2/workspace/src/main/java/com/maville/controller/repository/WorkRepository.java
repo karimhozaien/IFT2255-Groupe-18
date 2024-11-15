@@ -1,6 +1,8 @@
 package com.maville.controller.repository;
 
-import com.maville.controller.api.ApiClient;
+import com.maville.controller.services.ApiClient;
+import com.maville.controller.services.Parser;
+import com.maville.controller.services.TextUtil;
 import com.maville.model.Project;
 import com.maville.model.Project.TypeOfWork;
 import com.squareup.moshi.Json;
@@ -10,7 +12,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class WorkRepository {
+    String worksAPI = "https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=cc41b532-f12d-40fb-9f55-eb58c9a2b12b";
+    String roadObstructionsAPI = "https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=a2bc8014-488c-495d-941b-e7ae1999d1bd";
+
     /**
      * Parse un objet JSON et extrait une liste de {@code Result.Record} à partir du champ `records` de la réponse.
      *
@@ -29,47 +35,80 @@ public class WorkRepository {
         return apiResponse.result.records;
     }
 
-    /**
-     * Récupère une liste de projets en se connectant à l'API des travaux en cours, en récupérant les données JSON,
-     * puis en analysant ces données pour extraire les projets.
-     *
-     * @return Une liste de {@code Project} obtenue à partir des données JSON de l'API.
-     * @throws IOException Si une erreur survient lors de la connexion à l'API ou de l'analyse des données JSON.
-     */
-    public List<Project> getProjects() throws IOException {
+
+    private <T> List<T> fetchAndParseRecords(String apiUrl, String option, Class<T> type) throws IOException {
         ApiClient apiClient = new ApiClient();
-        apiClient.connect(); // Connection important avant de récupérer le Json
+        apiClient.connect(apiUrl); // Connection à l'API
 
         List<Result.Record> records = getRecords(apiClient.getJsonResponse());
-        Parser parser = new Parser(records);
-        return parser.initializeParsing();
+        Parser<T> parser = new Parser<>(records);
+        return parser.initializeParsing(option, type);
     }
 
-    /**
-     * Filtre une liste de projets selon un type de critère et la valeur de ce dernier.
-     *
-     * @param criteria Le type de critère par lequel l'utilisateur veut filtrer.
-     * @param criteriaField La valeur du type de critère à filtrer.
-     * @return Une liste de {@code Project} filtrée par la valeur du type de critère.
-     * @throws IOException Quand l'analyse des données JSON lance une erreur à partir de {@code getProjects()}.
-     */
-    public List<Project> getFilteredProjects(String criteria, String criteriaField) throws IOException {
-        List<Project> filteredProjects = new ArrayList<>();
+    public List<Project> getProjects() throws IOException {
+        return fetchAndParseRecords(worksAPI, "works", Project.class);
+    }
 
-        for (Project project : getProjects()) {
-            if (criteria.equals("quartier")) {
-                if (project.getAffectedNeighbourhood().toLowerCase().contains(criteriaField.toLowerCase())) {
-                    filteredProjects.add(project);
-                }
-            } else if (criteria.equals("travail")) {
-                if (project.getTitle().toLowerCase().contains(criteriaField.toLowerCase())) {
-                    filteredProjects.add(project);
-                }
+    public List<String> getRoadObstructions() throws IOException {
+        return fetchAndParseRecords(roadObstructionsAPI, "road_obstructions", String.class);
+    }
+
+    public List<String> getFilteredRoadObstructions(String criteria, String criteriaField) throws IOException {
+        return parseItems(criteria, criteriaField, String.class);
+    }
+
+    public List<Project> getFilteredProjects(String criteria, String criteriaField) throws IOException {
+        return parseItems(criteria, criteriaField, Project.class);
+    }
+
+    // Surcharge de la méthode au-dessus
+    public List<Project> getFilteredProjects(String searchTerm) throws IOException {
+        List<Project> allProjects = getProjects();
+        List<Project> filteredProjects = new ArrayList<>();
+        searchTerm = TextUtil.removeAccents(searchTerm).toLowerCase(); // Retirer les accents
+
+        for (Project project : allProjects) {
+            if (project.getTitle().toLowerCase().contains(searchTerm) ||
+                    project.getAffectedNeighbourhood().toLowerCase().contains(searchTerm) ||
+                    project.getTypeOfWork().toString().toLowerCase().contains(searchTerm)) {
+                filteredProjects.add(project);
             }
         }
         return filteredProjects;
     }
 
+    private <T> List<T> parseItems(String criteria, String criteriaField, Class<T> type) throws IOException {
+        List<T> filteredItems = new ArrayList<>();
+
+        if (type.equals(Project.class)) {
+            for (Project project : getProjects()) {
+                if (criteria.equals("quartier")) {
+                    if (project.getAffectedNeighbourhood().toLowerCase().contains(criteriaField.toLowerCase())) {
+                        filteredItems.add(type.cast(project));
+                    }
+                } else if (criteria.equals("travail")) {
+                    if (project.getTitle().toLowerCase().contains(criteriaField.toLowerCase())) {
+                        filteredItems.add(type.cast(project));
+                    }
+                }
+            }
+        } else if (type.equals(String.class)) {
+            for (String roadObsutruction : getRoadObstructions()) {
+                if (criteria.equals("rue")) {
+                    if (roadObsutruction.toLowerCase().contains(criteriaField.toLowerCase())) {
+                        filteredItems.add(type.cast(roadObsutruction));
+                    }
+                } else if (criteria.equals("travail")) {
+                    // TODO : avec Postman et le id_request
+                }
+            }
+        }
+
+        return filteredItems;
+    }
+
+
+    // ######################## Classes utilisés pour le casting avec Mochi's Adapters ########################
     // Classe ApiResponse pour le Json au complet
     public static class ApiResponse {
         public Result result;
@@ -82,6 +121,7 @@ public class WorkRepository {
 
         // Classe Record pour l'objet "records" qui contient tous les projets en cours
         public static class Record {
+            // Travaux
             @Json(name = "_id")
             private String id;
             @Json(name = "reason_category")
@@ -94,7 +134,6 @@ public class WorkRepository {
             private String startDate;
             @Json(name = "duration_end_date")
             private String endDate;
-
             @Json(name = "duration_days_mon_start_time")
             private String mondayStartTime;
             @Json(name = "duration_days_mon_end_time")
@@ -123,6 +162,16 @@ public class WorkRepository {
             private String sundayStartTime;
             @Json(name = "duration_days_sun_end_time")
             private String sundayEndTime;
+
+            // Entraves
+            @Json(name = "id_request")
+            private String idRequest;
+            @Json(name = "streetid")
+            private String streetId;
+            @Json(name = "streetimpactwidth")
+            private String streetImpactWidth;
+            @Json(name = "streetimpacttype")
+            private String streetImpactType;
 
             public TypeOfWork getTypeOfWork() {
                 if (typeOfWork != null) {
@@ -171,12 +220,19 @@ public class WorkRepository {
                 return formattedStartTime + "-" + formattedEndTime;
             }
 
+            // Getters pour travaux
             public String getId() { return id; }
             public String getTypeOfWorkRaw() { return this.typeOfWork; }
             public String getAffectedNeighbourhood() { return affectedNeighbourhood; }
             public String getAffectedStreets() { return affectedStreets; }
             public String getStartDate() { return startDate; }
             public String getEndDate() { return endDate; }
+
+            // Getters pour entraves
+            public String getIdRequest() { return idRequest; }
+            public String getStreetId() { return streetId; }
+            public String getStreetImpactWidth() { return streetImpactWidth; }
+            public String getStreetImpactType() { return streetImpactType; }
         }
     }
 }

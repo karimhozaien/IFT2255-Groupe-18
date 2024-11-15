@@ -31,21 +31,26 @@ public class DefaultMenu extends Menu {
                     System.out.println("Consultation des travaux...");
                     break;
                 case 2:
+                    // Consultation des entraves routières
+                    residentAC.consultRoadObstructions();
+                    System.out.println("Consultation des entraves...");
+                    break;
+                case 3:
                     // Rechercher des travaux
                     residentAC.searchWorks();
                     System.out.println("Recherche des travaux...");
                     break;
-                case 3:
+                case 4:
                     // Permettre une planification participative
                     residentAC.participateToSchedule();
                     System.out.println("Participer à une planification...");
                     break;
-                case 4:
+                case 5:
                     // Soumettre une requête de travaux
                     residentAC.submitWorkRequest();
                     System.out.println("Soumission d'une requête de travaux...");
                     break;
-                case 5:
+                case 6:
                     // Recevoir des notifications personalisées
                     residentAC.receivePersonalizedNotifications();
                     System.out.println("Réception des notifications...");

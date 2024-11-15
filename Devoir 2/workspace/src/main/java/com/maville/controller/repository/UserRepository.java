@@ -1,7 +1,7 @@
 package com.maville.controller.repository;
 
-import com.maville.controller.auth.PasswordUtil;
-import com.maville.model.DatabaseConnectionManager;
+import com.maville.controller.services.PasswordUtil;
+import com.maville.controller.services.DatabaseConnectionManager;
 import com.maville.model.Intervenant;
 import com.maville.model.Resident;
 import com.maville.model.User;
