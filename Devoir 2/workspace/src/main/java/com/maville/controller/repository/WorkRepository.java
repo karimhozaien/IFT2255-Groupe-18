@@ -5,7 +5,6 @@ import com.maville.controller.services.*;
 import com.maville.model.Project;
 import com.maville.model.Project.TypeOfWork;
 import com.maville.model.WorkRequestForm;
-import com.maville.view.MenuView;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -15,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -116,7 +114,8 @@ public class WorkRepository {
                 }
             } else if (criteria.equals("travail")) {
                 try {
-                    List<List<String>> filteredRoadObstructions = ApisManager.testParallelComputing(Project.getTypeOfWork(criteriaField));
+                    ApisManager apisManager = new ApisManager();
+                    List<List<String>> filteredRoadObstructions = apisManager.parallelComputingForRequests(Project.getTypeOfWork(criteriaField));
                     for (List<String> filteredRoadObstruction : filteredRoadObstructions) {
                         for (String s : filteredRoadObstruction) {
                             filteredItems.add(type.cast(s.split("\\. ")[1]));
