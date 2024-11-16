@@ -17,7 +17,6 @@ public class DatabaseConnectionManager {
         return instance;
     }
 
-    // Establish and return the shared connection
     public Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             connection = DriverManager.getConnection(URL);
@@ -112,6 +111,24 @@ public class DatabaseConnectionManager {
                 stmt.execute(userTableSQL);
             }
             System.out.println("La table Projects a été créée.");
+        }
+
+
+        if (isTableInitialized(conn, "WorkRequests")) {
+            System.out.println("La table WorkRequests existe déjà.");
+        } else {
+            System.out.println("Création de la table WorkRequests...");
+            String userTableSQL =
+                    "CREATE TABLE IF NOT EXISTS WorkRequests (" +
+                        "title TEXT NOT NULL," +
+                        "description TEXT," +
+                        "project_type TEXT NOT NULL," +
+                        "expected_date TEXT NOT NULL" +
+                    ");";
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(userTableSQL);
+            }
+            System.out.println("La table WorkRequests a été créée.");
         }
     }
 

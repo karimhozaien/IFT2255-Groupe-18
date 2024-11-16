@@ -36,7 +36,7 @@ public class Project {
     // Enum for WorkStatus
     public enum WorkStatus {
         ONGOING,
-        PLANNED
+        PLANNED;
     }
 
     // Enum for TypeOfWork
@@ -51,7 +51,7 @@ public class Project {
         RESIDENTIAL,
         URBAN_MAINTENANCE,
         TELECOMMUNICATION_NETWORKS,
-        OTHER
+        OTHER;
     }
 
     // Getters
@@ -78,13 +78,42 @@ public class Project {
 
     @Override
     public String toString() {
-        return  id + ". " +
-                title + ", " +
+        return title + ", " +
                 typeOfWork + ", " +
                 affectedNeighbourhood + ", " +
                 affectedStreets + ", " +
                 startDate + ", " +
                 endDate + ", " +
-                workSchedule;
+                workSchedule + ", " +
+                workStatus;
+    }
+
+    public static TypeOfWork getTypeOfWork(String typeOfWork) {
+        if (typeOfWork != null) {
+            // Matching partielle dans typeOfWork
+            if (typeOfWork.contains("souterraine")) {
+                return TypeOfWork.UNDERGROUND;
+            } else if (typeOfWork.contains("routier")) {
+                return TypeOfWork.ROAD;
+            } else if (typeOfWork.contains("gaz") || typeOfWork.contains("électricité")) {
+                return TypeOfWork.GAS_ELECTRICITY;
+            } else if (typeOfWork.contains("construction") || typeOfWork.contains("rénovation")) {
+                return TypeOfWork.CONSTRUCTION_RENOVATION;
+            } else if (typeOfWork.contains("paysagement")) {
+                return TypeOfWork.LANDSCAPE;
+            } else if (typeOfWork.contains("transports publics")) {
+                return TypeOfWork.PUBLIC_TRANSPORT;
+            } else if (typeOfWork.contains("signalisation") || typeOfWork.contains("éclairage")) {
+                return TypeOfWork.SIGNAGE_LIGHTING;
+            } else if (typeOfWork.contains("résidentiels")) {
+                return TypeOfWork.RESIDENTIAL;
+            } else if (typeOfWork.contains("Entretien")) {
+                return TypeOfWork.URBAN_MAINTENANCE;
+            } else if (typeOfWork.contains("télécommunication")) {
+                return TypeOfWork.TELECOMMUNICATION_NETWORKS;
+            }
+        }
+
+        return TypeOfWork.OTHER;
     }
 }

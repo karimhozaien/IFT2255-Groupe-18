@@ -97,7 +97,6 @@ public class UserRepository {
 
             pstmt.executeUpdate();
             System.out.println("L'utilisateur a été sauvegardé."); // Message helper
-
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement : " + e.getMessage());
         }

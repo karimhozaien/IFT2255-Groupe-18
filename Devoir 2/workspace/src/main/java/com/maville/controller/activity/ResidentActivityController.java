@@ -36,7 +36,7 @@ public class ResidentActivityController {
                     MenuView.showResults(workRepo.getFilteredProjects("travail", type));
                     break;
                 case 3:
-                    MenuView.showResults(workRepo.getProjects());
+                    MenuView.showResults(workRepo.getOngoingProjects());
                     break;
             }
         } catch (IOException e) {
@@ -51,6 +51,7 @@ public class ResidentActivityController {
         MenuView.askFilter("Rue", "Type de travaux", "Autre");
         try {
             int option = scanner.nextInt();
+            scanner.nextLine();
             switch (option) {
                 case 1:
                     MenuView.printMessage("Entrez le nom de la rue : ");
@@ -60,7 +61,8 @@ public class ResidentActivityController {
                 case 2:
                     MenuView.printMessage("Entrez le type de travaux : ");
                     String type = scanner.nextLine();
-                    MenuView.showResults(workRepo.getFilteredRoadObstructions("travail", type));
+                    List<String> filteredRoadObstructions = workRepo.getFilteredRoadObstructions("travail", type);
+                    MenuView.showResults(filteredRoadObstructions);
                     break;
                 case 3:
                     MenuView.showResults(workRepo.getRoadObstructions());
@@ -96,6 +98,8 @@ public class ResidentActivityController {
                 workRequestInfo.get(2),
                 workRequestInfo.get(3)
         );
+        WorkRepository workRepo = new WorkRepository();
+        workRepo.saveWorkRequest(workRequestForm);
     }
 
     public void receivePersonalizedNotifications() {

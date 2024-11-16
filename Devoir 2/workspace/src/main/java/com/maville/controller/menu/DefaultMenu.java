@@ -1,5 +1,6 @@
 package com.maville.controller.menu;
 
+import com.maville.controller.activity.IntervenantActivityController;
 import com.maville.controller.activity.ResidentActivityController;
 
 public class DefaultMenu extends Menu {
@@ -27,33 +28,33 @@ public class DefaultMenu extends Menu {
             switch (option) {
                 case 1:
                     // Consultation des travaux
-                    residentAC.consultWorks();
                     System.out.println("Consultation des travaux...");
+                    residentAC.consultWorks();
                     break;
                 case 2:
                     // Consultation des entraves routières
-                    residentAC.consultRoadObstructions();
                     System.out.println("Consultation des entraves...");
+                    residentAC.consultRoadObstructions();
                     break;
                 case 3:
                     // Rechercher des travaux
-                    residentAC.searchWorks();
                     System.out.println("Recherche des travaux...");
+                    residentAC.searchWorks();
                     break;
                 case 4:
                     // Permettre une planification participative
-                    residentAC.participateToSchedule();
                     System.out.println("Participer à une planification...");
+                    residentAC.participateToSchedule();
                     break;
                 case 5:
                     // Soumettre une requête de travaux
-                    residentAC.submitWorkRequest();
                     System.out.println("Soumission d'une requête de travaux...");
+                    residentAC.submitWorkRequest();
                     break;
                 case 6:
                     // Recevoir des notifications personalisées
-                    residentAC.receivePersonalizedNotifications();
                     System.out.println("Réception des notifications...");
+                    residentAC.receivePersonalizedNotifications();
                     break;
                 case 0: // Option pour quitter
                     return true;
@@ -62,6 +63,8 @@ public class DefaultMenu extends Menu {
                     break;
             }
         } else if (userType.equals("intervenant")) {
+            IntervenantActivityController intervenantAC = new IntervenantActivityController();
+
             switch (option) {
                 case 1:
                     // Soumettre de nouveaux travaux
@@ -70,6 +73,10 @@ public class DefaultMenu extends Menu {
                 case 2:
                     // Mettre à jour les travaux
                     System.out.println("Mise à jour des travaux...");
+                    break;
+                case 3:
+                    intervenantAC.consultWorkRequests();
+                    System.out.println("Consultation des requêtes...");
                     break;
                 case 0: // Option pour quitter
                     return true;

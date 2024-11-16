@@ -1,6 +1,10 @@
 package com.maville.controller.activity;
 
-import com.maville.model.Resident;
+import com.maville.controller.repository.WorkRepository;
+import com.maville.model.WorkRequestForm;
+import com.maville.view.MenuView;
+
+import java.util.List;
 
 public class IntervenantActivityController {
     public boolean submitProject() {
@@ -13,17 +17,10 @@ public class IntervenantActivityController {
         return false; // replace
     }
 
-    public boolean activateAccount(Resident resident) {
-        // TODO
-        return false; // replace
-    }
-
-    public boolean deactivateAccount(Resident resident) {
-        // TODO
-        return false; // replace
-    }
-
     public void consultWorkRequests() {
         // TODO
+        WorkRepository workRepository = new WorkRepository();
+        List<WorkRequestForm> workRequests= workRepository.fetchWorkRequests();
+        MenuView.showResults(workRequests);
     }
 }

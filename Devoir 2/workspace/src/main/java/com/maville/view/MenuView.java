@@ -38,6 +38,7 @@ public class MenuView {
     public static void intervenantMenuMessages() {
         printMessage("[1] Soumettre de nouveaux travaux");
         printMessage("[2] Mettre à jour les travaux");
+        printMessage("[3] Consulter les requêtes de travaux");
         printMessage("[0] Quitter");
         printMessage("Choisissez l'une des options : ");
     }
@@ -53,16 +54,16 @@ public class MenuView {
         List<String> infos = new ArrayList<>();
         printMessage("Entrez les informations suivantes pour la requête :");
 
-        printMessageInline("Titre :");
+        printMessageInline("Titre : ");
         infos.add(getStringInput());
 
-        printMessageInline("Description :");
+        printMessageInline("Description : ");
         infos.add(getStringInput());
 
-        printMessageInline("Type de travaux :");
+        printMessageInline("Type de travaux : ");
         infos.add(getStringInput());
 
-        printMessageInline("Date de fin espéré :");
+        printMessageInline("Date de fin espéré : ");
         infos.add(getStringInput());
 
         return infos;
