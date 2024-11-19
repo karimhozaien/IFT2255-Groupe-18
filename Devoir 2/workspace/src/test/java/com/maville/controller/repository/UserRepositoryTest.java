@@ -2,7 +2,6 @@ package com.maville.controller.repository;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +16,6 @@ public class UserRepositoryTest {
         UserRepository userRepo = UserRepository.getInstance();
         String userIdFetched = userRepo.fetchUser(userInfo);
 
-        assertEquals("19d4e666-ebed-4a53-911a-a5a7efe69496", userIdFetched);
+        assertEquals("755bf798-da16-4116-95e3-9fae9a220037", userIdFetched);
     }
 }

@@ -1,7 +1,7 @@
-package com.maville.controller;
+package com.maville.controller.services;
 
 import static org.junit.Assert.assertTrue;
-import com.maville.controller.services.Authenticate;
+
 import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;

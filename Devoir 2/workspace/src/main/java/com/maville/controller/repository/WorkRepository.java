@@ -132,7 +132,7 @@ public class WorkRepository {
     }
 
     // TODO : MODIFIER CERTAINS TRUCS, MANQUE DE LOGIQUE
-    private List<Project> fetchPlannedProjects() {
+    public List<Project> fetchPlannedProjects() {
         List<Project> plannedProjects = new ArrayList<>();
         String selectSQL = "SELECT * FROM Projects";
 
