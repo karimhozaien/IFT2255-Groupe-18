@@ -92,4 +92,8 @@ public class Authenticate {
             return null;
         }
     }
+
+    public void setUserInfo(List<String> userInfo) {
+        this.userInfo = userInfo;
+    }
 }

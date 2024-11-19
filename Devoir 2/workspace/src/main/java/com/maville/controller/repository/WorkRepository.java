@@ -1,6 +1,6 @@
 package com.maville.controller.repository;
 
-import com.maville.ApisManager;
+import com.maville.controller.services.ApisManager;
 import com.maville.controller.services.*;
 import com.maville.model.Project;
 import com.maville.model.Project.TypeOfWork;

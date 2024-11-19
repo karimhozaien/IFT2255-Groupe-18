@@ -1,8 +1,6 @@
-package com.maville;
+package com.maville.controller.services;
 
 import com.maville.controller.repository.WorkRepository;
-import com.maville.controller.services.ApiClient;
-import com.maville.controller.services.Parser;
 import com.maville.model.Project;
 
 import java.io.IOException;
