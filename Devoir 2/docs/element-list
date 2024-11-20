@@ -1,9 +1,0 @@
-com.maville
-com.maville.controller.account
-com.maville.controller.activity
-com.maville.controller.api
-com.maville.controller.auth
-com.maville.controller.menu
-com.maville.controller.repository
-com.maville.model
-com.maville.view

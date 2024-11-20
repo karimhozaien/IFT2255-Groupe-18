@@ -28,7 +28,6 @@ public class User {
         MenuView.printMessage("Password: " + this.password);
     }
 
-    // Generic Builder to support subclass builders
     public static abstract class Builder<T extends Builder<T>> {
         protected String id;
         protected String name;
