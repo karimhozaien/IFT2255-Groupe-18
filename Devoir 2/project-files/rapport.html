@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFT2255 | Rapport DM1</title>
+    <title>IFT2255 | Rapport DM2</title>
     <link rel="shortcut icon" href="./../favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <style>
@@ -442,6 +442,15 @@
             background-color: #d5d5d5;
         }
 
+        .class-diagram {
+            display: block;
+            height: auto; /* ajustement */
+            max-width: 1100px; /* ajustement */
+            border-radius: 4px;
+            background-color: #d5d5d5;
+        }
+
+
         .use-case-notes {
             margin-left: 12px;
         }
@@ -589,7 +598,7 @@
     <header class="report-header">
         <div class="title-section">
             <div>
-                <h1 class="report-title">Rapport du livrable 1</h1>
+                <h1 class="report-title">Rapport du livrable 2</h1>
                 <p class="report-summary">
                     <em>Court résumé du rapport</em> &ndash; Le rapport se concentre sur la création d'une application permettant aux citoyens de voir les projets de construction en ville, de soumettre des propositions et 
                     de participer à la planification des travaux. Il vise à améliorer la communication autour des perturbations liées aux travaux, aidant ainsi les résidents à mieux planifier leurs déplacements et à participer 
@@ -671,6 +680,22 @@
                             <li class="dash">Besoins matériels</li>
                             <li class="dash">Stockage</li>
                             <li class="dash">Intégration</li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <h3 class="nav-item-title"><a class="nav-item-title__link" href="#conception">Conception</a></h3>
+                        <ul class="bare-list nav-item-details">
+                            <li class="dash">Architecture</li>
+                            <li class="dash">Diagramme de classes</li>
+                            <li class="dash">Diagrammes de séquence</li>
+                            <li class="dash">Choix du design</li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <h3 class="nav-item-title"><a class="nav-item-title__link" href="#implementation">Implémentation</a></h3>
+                        <ul class="bare-list nav-item-details">
+                            <li class="dash">Implémentation du design</li>
+                            <li class="dash">Tests unitaires</li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -784,10 +809,11 @@
                 <h3 class="subsection-title">Scénarios</h3>
                 <dl class="glossary">
                     <dt class="glossary-term">Notes</dt>
-                    <dd class="glossary-def">Petite spécification : tous les CUs contiennent implicitement la précondition qu'un utilisateur doit être connecté à un réseau sans fil.</dd>
+                    <dd class="glossary-def">Petite spécification : tous les CUs contiennent implicitement la précondition qu'un utilisateur doit être connecté à un réseau sans fil et avoir téléchargé l'application.</dd>
                 </dl>
 
                 <div class="scenario" id="cu-1">
+
                     <div class="scenario-meta">
                         <h4 class="cu-name">
                             <strong>CU:</strong> S'enregistrer en tant que résident
@@ -795,41 +821,34 @@
                         <p class="cu-goal">
                             <strong>Objectif:</strong> Un résident désire créer un compte dans l’application MaVille
                         </p>
-                        
-                        <hr>
-
+                        <hr/>
                         <div class="cu-part">
                             <h5 class="cu-part-title">Acteurs</h5>
                             <ul class="bare-list cu-actors">
                                 <li class="cu-actor">Résident</li>
                             </ul>
                         </div>
-                        
                         <div class="cu-part">
                             <h5 class="cu-part-title">Préconditions</h5>
                             <ul class="bare-list cu-conditions">
                                 <li class="dash">Avoir plus de 16 ans.</li>
                             </ul>
                         </div>
-                        
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
                                 <li class="dash">Informations du résident enregistrées dans la base de données de l’application.</li>
                             </ul>
                         </div>
-                        
                     </div>
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
                         <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">Le résident ouvre l’application MaVille.</li>
                             <li class="scenario-main-step">Une fois l’application ouverte, il sélectionne l’option “S’enregistrer en tant que résident”.</li>
                             <li class="scenario-main-step">Le résident entre ses informations personnelles.</li>
                             <li class="scenario-main-step">Le système valide les informations.</li>
-                            <li class="scenario-main-step">Ce dernier confirme que le résident est désormais bien inscrit</li>
+                            <li class="scenario-main-step">Ce dernier confirme que le résident est désormais bien inscrit.</li>
                         </ol>
-
                         <div class="scenario-alt">
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
@@ -853,6 +872,7 @@
                         </div>
                     </div>
                 </div>
+                
 
                 <div class="scenario" id="cu-2">
                     <div class="scenario-meta">
@@ -869,6 +889,7 @@
                             <h5 class="cu-part-title">Acteurs</h5>
                             <ul class="bare-list cu-actors">
                                 <li class="cu-actor">Intervenant</li>
+                                <li class="cu-actor">Administrateur (Admin)</li>
                             </ul>
                         </div>
                         
@@ -1194,19 +1215,22 @@
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
                         <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">Le résident se connecte à la plateforme à l’aide de ses données personnelles.</li>
-                            <li class="scenario-main-step">Le système apporte le résident à la page d’accueil dédiée aux résidents.</li>
-                            <li class="scenario-main-step">Ce dernier sélectionne l’option d’affichage de recherche des travaux.</li>
+                            <li class="scenario-main-step">Le résident sélectionne l’option d’affichage de recherche des travaux.</li>
                             <li class="scenario-main-step">Des options de filtrage lui sont proposées afin qu’il puisse affiner sa recherche.</li>
                             <li class="scenario-main-step">Le résident entre les informations qu'il désire.</li>
-                            <li class="scenario-main-step">S'il y a des travaux selon les contraintes sélectionnées, le système les affiche.</li>
+                            <li class="scenario-main-step">Le système affiche les travaux selon le type de filtrage et informations entrées.</li>
+                            <li class="scenario-main-step">
                         </ol>
                 
                         <div class="scenario-alt">
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
-                                <li class="scenario-alt-step" value="1">
-                                    Le résident effectue une recherche avec des critères trop spécifiques.</li>
+                                <li class="scenario-alt-step" value="3">
+                                    Les critères entrés par le résident ne sont pas applicables dans le cas de la recherche.</li>
+                                    <ol class="bare-list">
+                                        <li value="2">Un message d'erreur s'affiche.</li>
+                                        <li value="2">Le résident est demandé de réentrer ces critères de filtrage.</li>
+                                    </ol>
                                     <li><strong>SOLUTION</strong>: L'application affiche ''Recherche trop spécifique'' et propose de retirer des filtres.
                                 </li>
                             </ol>
@@ -1271,169 +1295,147 @@
                     </div>
                 </div>
                 
-                <div class="scenario" id="cu-6">
-                    <div class="scenario-meta">
-                        <h4 class="cu-name">
-                            <strong>CU:</strong> Signaler un problème
-                        </h4>
-                        <p class="cu-goal">
-                            <strong>Objectif:</strong> Permettre au citoyen de signaler un problème avec l’application ou autre. Donner du feedback.
-                        </p>
-                        
-                        <hr>
                 
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Acteurs</h5>
-                            <ul class="bare-list cu-actors">
-                                <li class="cu-actor">Résident</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Préconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Être connecté avec un compte résident.</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Postconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Le problème est enregistré dans le système et envoyé à l’équipe de gestion du feedback (HR).</li>
-                            </ul>
-                        </div>
+
+                <div class="scenario" id="cu-9">
+                    <div class="scenario-meta">
+                      <h4 class="cu-name"><strong>CU:</strong> Soumettre une requête de travaux</h4>
+                      <p class="cu-goal"><strong>Objectif:</strong> Permettre à un résident de soumettre une requête pour des travaux.</p>
+                      <hr>
+                      <div class="cu-part">
+                        <h5 class="cu-part-title">Acteurs</h5>
+                        <ul class="bare-list cu-actors">
+                          <li class="cu-actor">Résident</li>
+                        </ul>
+                      </div>
+                      <div class="cu-part">
+                        <h5 class="cu-part-title">Préconditions</h5>
+                        <ul class="bare-list cu-conditions">
+                          <li class="dash">L'utilisateur est connecté à la plateforme.</li>
+                        </ul>
+                      </div>
+                      <div class="cu-part">
+                        <h5 class="cu-part-title">Postconditions</h5>
+                        <ul class="bare-list cu-conditions">
+                          <li class="dash">La requête est enregistrée dans la base de données et visible pour les autorités compétentes.</li>
+                        </ul>
+                      </div>
                     </div>
                     <div class="scenario-main">
-                        <h5 class="scenario-main-title">Scénario principal</h5>
-                        <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">Le résident va dans l'onglet "Signaler un problème".</li>
-                            <li class="scenario-main-step">Le résident rédige son signalement.</li>
-                            <li class="scenario-main-step">Le résident à la possibilité de joindre des documents pour appuyer le signalement.</li>
-                            <li class="scenario-main-step">Le résident envoie son signalement pour révision.</li>
-                        </ol>
-                
-                        <div class="scenario-alt">
-                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
-                            <ol class="bare-list scenario-alt-steps">
-                                <li class="scenario-alt-step" value="2">
-                                    Les documents dépassent la taille maximale permise.
-                                    <ol class="bare-list">
-                                        <li value="2">Le message "La taille de vos documents ne doit pas dépasser 20 Mo" s'affiche.</li>
-                                        <li value="2">Le résident peut envoyer son signalement une fois que les correctifs sont apportés.</li>
-                                    </ol>
-                                </li>
+                      <h5 class="scenario-main-title">Scénario principal</h5>
+                      <ol class="scenario-main-steps">
+                        <li class="scenario-main-step">Le résident se connecte à la plateforme.</li>
+                        <li class="scenario-main-step">Il sélectionne l'option "Soumettre une requête de travaux".</li>
+                        <li class="scenario-main-step">Le résident remplit les champs requis (type de travaux, localisation, etc.).</li>
+                        <li class="scenario-main-step">Le résident soumet la requête.</li>
+                        <li class="scenario-main-step">Le système enregistre la requête et l'envoie aux autorités compétentes.</li>
+                      </ol>
+                      <div class="scenario-alt">
+                        <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                        <ol class="bare-list scenario-alt-steps">
+                          <li class="scenario-alt-step" value="3"> Les informations fournies sont incomplètes :
+                            <ol class="bare-list">
+                              <li value="3">Le système demande à l'utilisateur de compléter les champs manquants.</li>
+                              <li value="3">Le scénario reprend à l'étape 3.</li>
                             </ol>
-                        </div>
+                          </li>
+                        </ol>
+                      </div>
                     </div>
-                </div>
-
+                  </div>
+                
                 <div class="scenario" id="cu-7">
                     <div class="scenario-meta">
-                        <h4 class="cu-name">
-                            <strong>CU:</strong> Soumettre une requête
-                        </h4>
-                        <p class="cu-goal">
-                            <strong>Objectif:</strong> Permettre aux résidents de soumettre des demandes de travaux spécifiques.
-                        </p>
-                        
-                        <hr>
-                
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Acteurs</h5>
-                            <ul class="bare-list cu-actors">
-                                <li class="cu-actor">Résident</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Préconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Doit être connecté avec un compte résident.</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Postconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Requête soumise et enregistrée dans le système.</li>
-                            </ul>
-                        </div>
+                      <h4 class="cu-name"><strong>CU:</strong> Recevoir des notifications</h4>
+                      <p class="cu-goal"><strong>Objectif:</strong> Permettre à l'utilisateur de recevoir des notifications sur les travaux ou les mises à jour importantes.</p>
+                      <hr>
+                      <div class="cu-part">
+                        <h5 class="cu-part-title">Acteurs</h5>
+                        <ul class="bare-list cu-actors">
+                          <li class="cu-actor">Résident</li>
+                          <li class="cu-actor">Intervenant</li>
+                        </ul>
+                      </div>
+                      <div class="cu-part">
+                        <h5 class="cu-part-title">Préconditions</h5>
+                        <ul class="bare-list cu-conditions">
+                          <li class="dash">L'utilisateur a activé les notifications dans les paramètres de son compte.</li>
+                        </ul>
+                      </div>
+                      <div class="cu-part">
+                        <h5 class="cu-part-title">Postconditions</h5>
+                        <ul class="bare-list cu-conditions">
+                          <li class="dash">L'utilisateur reçoit des notifications sur les travaux, mises à jour ou autres événements importants.</li>
+                        </ul>
+                      </div>
                     </div>
                     <div class="scenario-main">
-                        <h5 class="scenario-main-title">Scénario principal</h5>
-                        <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">Le résident se connecte à l’application.</li>
-                            <li class="scenario-main-step">Il sélectionne l’option “Soumettre une requête de travaux”.</li>
-                            <li class="scenario-main-step">Il remplit le formulaire avec le titre, la description, le type de travaux et la date.</li>
-                            <li class="scenario-main-step">Le résident soumet la requête.</li>
-                        </ol>
-                
-                        <div class="scenario-alt">
-                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
-                            <ol class="bare-list scenario-alt-steps">
-                                <li class="scenario-alt-step" value="3">
-                                    La requête est incomplète ou contient des erreurs.
-                                    <ol class="bare-list">
-                                        <li value="3">Demander au résident de corriger et de ré-entrer les informations avant de re-soumettre.</li>
-                                    </ol>
-                                </li>
+                      <h5 class="scenario-main-title">Scénario principal</h5>
+                      <ol class="scenario-main-steps">
+                        <li class="scenario-main-step">L'utilisateur active les notifications dans les paramètres de son profil.</li>
+                        <li class="scenario-main-step">Le système enregistre cette préférence.</li>
+                        <li class="scenario-main-step">Lorsqu'un événement pertinent se produit (ex : nouveaux travaux, mise à jour de travaux, etc.), le système envoie une notification à l'utilisateur.</li>
+                        <li class="scenario-main-step">L'utilisateur reçoit la notification sur son appareil (mobile, email, etc.).</li>
+                      </ol>
+                      <div class="scenario-alt">
+                        <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                        <ol class="bare-list scenario-alt-steps">
+                          <li class="scenario-alt-step" value="2"> L'utilisateur a désactivé les notifications :
+                            <ol class="bare-list">
+                              <li value="2">Le système n'envoie pas de notification.</li>
+                              <li value="2">Le scénario se termine.</li>
                             </ol>
-                        </div>
+                          </li>
+                        </ol>
+                      </div>
                     </div>
-                </div>
-                
-                <div class="scenario" id="cu-8">
+                  </div>
+
+                  <div class="scenario" id="cu-11">
                     <div class="scenario-meta">
-                        <h4 class="cu-name">
-                            <strong>CU:</strong> Recevoir des notifications personnalisées
-                        </h4>
-                        <p class="cu-goal">
-                            <strong>Objectif:</strong> Informer les résidents des changements dans les projets affectant leur quartier.
-                        </p>
-                        
-                        <hr>
-                
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Acteurs</h5>
-                            <ul class="bare-list cu-actors">
-                                <li class="cu-actor">Résident</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Préconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Doit être abonné aux notifications.</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="cu-part">
-                            <h5 class="cu-part-title">Postconditions</h5>
-                            <ul class="bare-list cu-conditions">
-                                <li class="dash">Le système enregistre le choix du résident dans la base de données et envoie les notifications quand il faut.</li>
-                            </ul>
-                        </div>
+                      <h4 class="cu-name"><strong>CU:</strong> Faire le suivi des problèmes signalés</h4>
+                      <p class="cu-goal"><strong>Objectif:</strong> Permettre à l'utilisateur de suivre l'évolution des problèmes qu'il a signalés.</p>
+                      <hr>
+                      <div class="cu-part">
+                        <h5 class="cu-part-title">Acteurs</h5>
+                        <ul class="bare-list cu-actors">
+                          <li class="cu-actor">Résident</li>
+                          <li class="cu-actor">Intervenant</li>
+                        </ul>
+                      </div>
+                      <div class="cu-part">
+                        <h5 class="cu-part-title">Préconditions</h5>
+                        <ul class="bare-list cu-conditions">
+                          <li class="dash">L'utilisateur a signalé un problème via la plateforme.</li>
+                        </ul>
+                      </div>
+                      <div class="cu-part">
+                        <h5 class="cu-part-title">Postconditions</h5>
+                        <ul class="bare-list cu-conditions">
+                          <li class="dash">Le statut du problème est consultable et mis à jour régulièrement.</li>
+                        </ul>
+                      </div>
                     </div>
                     <div class="scenario-main">
-                        <h5 class="scenario-main-title">Scénario principal</h5>
-                        <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">Le système vérifie les mises à jour pertinentes pour le résident.</li>
-                            <li class="scenario-main-step">Il envoie les notifications sur les projets dans leur quartier ou rue.</li>
-                        </ol>
-                
-                        <div class="scenario-alt">
-                            <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
-                            <ol class="bare-list scenario-alt-steps">
-                                <li class="scenario-alt-step" value="2">
-                                    Le résident ne reçoit pas ou partiellement les notifications attendues.
-                                    <ol class="bare-list">
-                                        <li value="2">Il est contraint de vérifier les paramètres de notifications dans son profil.</li>
-                                    </ol>
-                                </li>
+                      <h5 class="scenario-main-title">Scénario principal</h5>
+                      <ol class="scenario-main-steps">
+                        <li class="scenario-main-step">L'utilisateur se connecte à son compte.</li>
+                        <li class="scenario-main-step">Il sélectionne l'option "Suivi de mes problèmes signalés".</li>
+                        <li class="scenario-main-step">Le système affiche la liste des problèmes signalés et leur statut (en cours, résolu, etc.).</li>
+                        <li class="scenario-main-step">L'utilisateur peut consulter les détails de chaque signalement.</li>
+                      </ol>
+                      <div class="scenario-alt">
+                        <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
+                        <ol class="bare-list scenario-alt-steps">
+                          <li class="scenario-alt-step" value="3"> Le problème est en cours de traitement :
+                            <ol class="bare-list">
+                              <li value="3">Le système affiche une estimation du temps restant pour la résolution.</li>
                             </ol>
-                        </div>
+                          </li>
+                        </ol>
+                      </div>
                     </div>
-                </div>
+                  </div>
                 
                 <div class="scenario" id="cu-9">
                     <div class="scenario-meta">
@@ -1494,14 +1496,14 @@
                 <div class="scenario" id="cu-9">
                     <div class="scenario-meta">
                         <h4 class="cu-name">
-                            <strong>CU:</strong> Consulter les préférences des résidents pour la planification des travaux.
+                            <strong>CU:</strong> Consulter les préférences des résidents pour la planification des travaux
                         </h4>
                         <p class="cu-goal">
-                            <strong>Objectif:</strong> Les intervenants peuvent consulter les préférences des résidents et ajuster leurs travaux en conséquence.
+                            <strong>Objectif:</strong> Permettre aux intervenants de consulter les préférences des résidents et d'ajuster les travaux en conséquence.
                         </p>
                         
                         <hr>
-                
+                        
                         <div class="cu-part">
                             <h5 class="cu-part-title">Acteurs</h5>
                             <ul class="bare-list cu-actors">
@@ -1512,36 +1514,47 @@
                         <div class="cu-part">
                             <h5 class="cu-part-title">Préconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Doit être connecté avec un compte intervenant valide.</li>
+                                <li class="dash">L'intervenant doit être connecté avec un compte intervenant valide.</li>
+                                <li class="dash">Les résidents ont déjà soumis leurs préférences pour les travaux à venir.</li>
                             </ul>
                         </div>
                         
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Le système garde en mémoire les préférences épinglées pour permettre à l'intervenant de revenir les consulter.</li>
+                                <li class="dash">Le système sauvegarde les préférences épinglées, permettant à l'intervenant de les consulter ultérieurement.</li>
+                                <li class="dash">Les ajustements éventuels des travaux peuvent être effectués en fonction des préférences des résidents.</li>
                             </ul>
                         </div>
                     </div>
+                    
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
                         <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">L’intervenant se connecte à l’application.</li>
-                            <li class="scenario-main-step">Il sélectionne “Consulter les préférences”.</li>
-                            <li class="scenario-main-step">Il peut lire les préférences des résidents.</li>
-                            <li class="scenario-main-step">Si une préférence l'interpelle, il peut l'épingler.</li>
+                            <li class="scenario-main-step">L’intervenant se connecte à l’application MaVille avec ses identifiants.</li>
+                            <li class="scenario-main-step">Il accède à la section "Consulter les préférences des résidents".</li>
+                            <li class="scenario-main-step">Le système affiche la liste des préférences soumises par les résidents pour la planification des travaux.</li>
+                            <li class="scenario-main-step">L’intervenant lit les préférences et, si nécessaire, en sélectionne certaines pour épingler.</li>
+                            <li class="scenario-main-step">Le système enregistre les préférences épinglées pour une consultation future.</li>
                         </ol>
-                
+                        
                         <div class="scenario-alt">
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
                                 <li class="scenario-alt-step" value="1">
-                                        
-                                        Une préférence non pertinente à été épinglée par erreur.</li>
-                                        <li><strong>SOLUTION</strong>: L'intervenant à la possibilité de retirer l'épingle de la préférence.
-                                    </li>
-                                
-                                
+                                    L’intervenant épingle par erreur une préférence non pertinente :
+                                    <ol class="bare-list">
+                                        <li value="1">L’intervenant peut retirer l’épingle de la préférence concernée.</li>
+                                        <li value="1">Le système met à jour la liste des préférences épinglées.</li>
+                                    </ol>
+                                </li>
+                                <li class="scenario-alt-step" value="2">
+                                    Aucune préférence n’est disponible ou les résidents n’ont pas encore soumis leurs préférences :
+                                    <ol class="bare-list">
+                                        <li value="2">Le système informe l’intervenant qu’il n’y a pas de préférences à consulter.</li>
+                                        <li value="2">Le scénario se termine.</li>
+                                    </ol>
+                                </li>
                             </ol>
                         </div>
                     </div>
@@ -1550,14 +1563,14 @@
                 <div class="scenario" id="cu-9">
                     <div class="scenario-meta">
                         <h4 class="cu-name">
-                            <strong>CU:</strong> Consulter la liste de requêtes de travaux.
+                            <strong>CU:</strong> Consulter la liste de requêtes de travaux
                         </h4>
                         <p class="cu-goal">
-                            <strong>Objectif:</strong> Permettre à l'intervenant d'appliquer à des requêtes de travaux envoyées par les résidents en soumettant leur proposition.
+                            <strong>Objectif:</strong> Permettre à l'intervenant de consulter les requêtes de travaux soumises par les résidents et de soumettre une proposition pour y répondre.
                         </p>
                         
                         <hr>
-                
+                        
                         <div class="cu-part">
                             <h5 class="cu-part-title">Acteurs</h5>
                             <ul class="bare-list cu-actors">
@@ -1568,35 +1581,56 @@
                         <div class="cu-part">
                             <h5 class="cu-part-title">Préconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Doit être connecté avec un compte intervenant valide.</li>
+                                <li class="dash">L'intervenant doit être connecté avec un compte intervenant valide.</li>
+                                <li class="dash">Des requêtes de travaux doivent avoir été soumises par les résidents.</li>
                             </ul>
                         </div>
                         
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Le système enregistre la proposition et envoie une notification au résident.</li>
+                                <li class="dash">Le système enregistre la proposition de l'intervenant.</li>
+                                <li class="dash">Une notification est envoyée au résident pour l'informer de la soumission d'une proposition.</li>
+                                <li class="dash">Le résident peut consulter la proposition et l'accepter ou la rejeter.</li>
                             </ul>
                         </div>
                     </div>
+                    
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
                         <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">L’intervenant se connecte à l’application.</li>
-                            <li class="scenario-main-step">Il sélectionne “Voir les requêtes de travaux”.</li>
-                            <li class="scenario-main-step">Il sélectionne une requête qui n'a aucune proposition.</li>
-                            <li class="scenario-main-step">Il applique à la requête et soumet une proposition.</li>
+                            <li class="scenario-main-step">L’intervenant se connecte à l’application MaVille avec ses identifiants.</li>
+                            <li class="scenario-main-step">Il accède à la section "Voir les requêtes de travaux".</li>
+                            <li class="scenario-main-step">Le système affiche la liste des requêtes de travaux soumises par les résidents.</li>
+                            <li class="scenario-main-step">L’intervenant sélectionne une requête en fonction de ses compétences ou de son intérêt.</li>
+                            <li class="scenario-main-step">Il soumet une proposition en fournissant les détails nécessaires (coût, délai, etc.).</li>
+                            <li class="scenario-main-step">Le système enregistre la proposition et envoie une notification au résident concerné.</li>
                         </ol>
-                
+                        
                         <div class="scenario-alt">
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
                                 <li class="scenario-alt-step" value="1">
-                                        Le résident a soumit une requête farfelue ou ridicule.</li>
-                                        <li><strong>SOLUTION</strong>: L'intervenant peut signaler l'annonce, et un administrateur la supprimera en cas d'abus.
-                                    </li>
-                                
-                                
+                                    L'intervenant tente de soumettre une proposition pour une requête qui a déjà reçu plusieurs offres :
+                                    <ol class="bare-list">
+                                        <li value="1">Le système informe l'intervenant que la requête a déjà reçu le nombre maximum de propositions.</li>
+                                        <li value="1">L'intervenant peut choisir une autre requête ou attendre la réponse des résidents.</li>
+                                    </ol>
+                                </li>
+                                <li class="scenario-alt-step" value="2">
+                                    L'intervenant trouve une requête farfelue ou non pertinente :
+                                    <ol class="bare-list">
+                                        <li value="2">Il peut signaler la requête comme inappropriée.</li>
+                                        <li value="2">Un administrateur reçoit la notification du signalement et, après vérification, peut décider de supprimer la requête.</li>
+                                    </ol>
+                                </li>
+                                <li class="scenario-alt-step" value="3">
+                                    L'intervenant a entré des informations incorrectes dans sa proposition :
+                                    <ol class="bare-list">
+                                        <li value="3">Le système rejette la proposition et demande à l'intervenant de corriger les informations.</li>
+                                        <li value="3">Le scénario reprend à l'étape 5.</li>
+                                    </ol>
+                                </li>
                             </ol>
                         </div>
                     </div>
@@ -1608,11 +1642,11 @@
                             <strong>CU:</strong> Mise à jour des travaux en cours
                         </h4>
                         <p class="cu-goal">
-                            <strong>Objectif:</strong> Permettre aux intervenants de mettre à jour les informations des projets en cours.
+                            <strong>Objectif:</strong> Permettre aux intervenants de mettre à jour les informations des projets de travaux en cours, comme la description, la date de fin ou le statut.
                         </p>
                         
                         <hr>
-                
+                        
                         <div class="cu-part">
                             <h5 class="cu-part-title">Acteurs</h5>
                             <ul class="bare-list cu-actors">
@@ -1623,32 +1657,45 @@
                         <div class="cu-part">
                             <h5 class="cu-part-title">Préconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Doit être connecté avec un compte intervenant.</li>
+                                <li class="dash">L'intervenant doit être connecté avec un compte intervenant valide.</li>
+                                <li class="dash">L'intervenant doit avoir accès aux projets de travaux qu'il souhaite mettre à jour.</li>
                             </ul>
                         </div>
                         
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Les informations du projet sont mises à jour dans la base de données.</li>
+                                <li class="dash">Les informations mises à jour sont enregistrées dans la base de données de l'application.</li>
+                                <li class="dash">Les résidents concernés sont informés des modifications via une notification.</li>
                             </ul>
                         </div>
                     </div>
+                    
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
                         <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">L’intervenant accède aux détails du projet.</li>
-                            <li class="scenario-main-step">Il met à jour la description ou la date de fin prévue.</li>
-                            <li class="scenario-main-step">S’il le faut, il change le statut du projet (parmi les options listées dans le Glossaire).</li>
+                            <li class="scenario-main-step">L'intervenant se connecte à l'application MaVille avec ses identifiants.</li>
+                            <li class="scenario-main-step">Il accède à la section "Projets de travaux" et sélectionne un projet en cours.</li>
+                            <li class="scenario-main-step">Il met à jour les informations du projet, comme la description, la date de fin prévue ou le statut (parmi les options disponibles).</li>
+                            <li class="scenario-main-step">Il valide les mises à jour.</li>
+                            <li class="scenario-main-step">Le système enregistre les modifications et notifie les résidents concernés.</li>
                         </ol>
-                
+                        
                         <div class="scenario-alt">
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
                                 <li class="scenario-alt-step" value="2">
-                                    Tentative de mise à jour a échoué en raison d’un problème système.
+                                    Tentative de mise à jour échouée en raison d’un problème système :
                                     <ol class="bare-list">
-                                        <li value="2">Afficher un message d’erreur et tenter une nouvelle tentative plus tard.</li>
+                                        <li value="2">Le système affiche un message d’erreur.</li>
+                                        <li value="2">L'intervenant peut tenter une nouvelle mise à jour plus tard.</li>
+                                    </ol>
+                                </li>
+                                <li class="scenario-alt-step" value="3">
+                                    Les informations mises à jour ne sont pas valides :
+                                    <ol class="bare-list">
+                                        <li value="3">Le système informe l’intervenant du problème et demande de corriger les informations.</li>
+                                        <li value="3">Le scénario reprend à l'étape 3.</li>
                                     </ol>
                                 </li>
                             </ol>
@@ -1656,56 +1703,67 @@
                     </div>
                 </div>
 
-                <div class="scenario" id="cu-10">
+                <div class="scenario" id="cu-11">
                     <div class="scenario-meta">
                         <h4 class="cu-name">
-                            <strong>CU:</strong> Faire le suivi des problèmes signalés.
+                            <strong>CU:</strong> Faire le suivi des problèmes signalés
                         </h4>
                         <p class="cu-goal">
-                            <strong>Objectif:</strong> L'administrateur peut accéder aux signalements des résidents et prendre une décision en conséquence.
+                            <strong>Objectif:</strong> Permettre à l'administrateur de consulter les signalements des résidents et de prendre des mesures en conséquence.
                         </p>
                         
                         <hr>
-                
+                        
                         <div class="cu-part">
                             <h5 class="cu-part-title">Acteurs</h5>
                             <ul class="bare-list cu-actors">
-                                <li class="cu-actor">Admin</li>
+                                <li class="cu-actor">Administrateur (Admin)</li>
                             </ul>
                         </div>
                         
                         <div class="cu-part">
                             <h5 class="cu-part-title">Préconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Doit être sur l'application en mode Admin.</li>
+                                <li class="dash">L'administrateur doit être connecté à l'application avec un compte en mode Admin.</li>
+                                <li class="dash">Des signalements doivent avoir été soumis par les résidents.</li>
                             </ul>
                         </div>
                         
                         <div class="cu-part">
                             <h5 class="cu-part-title">Postconditions</h5>
                             <ul class="bare-list cu-conditions">
-                                <li class="dash">Le signalement est marqué comme "lu".</li>
+                                <li class="dash">Le signalement est marqué comme "lu" dans la base de données.</li>
+                                <li class="dash">Si nécessaire, une action est prise pour résoudre le problème.</li>
                             </ul>
                         </div>
                     </div>
+                    
                     <div class="scenario-main">
                         <h5 class="scenario-main-title">Scénario principal</h5>
                         <ol class="scenario-main-steps">
-                            <li class="scenario-main-step">L'admin accède à l'onglet ''Signalements''.</li>
-                            <li class="scenario-main-step">L'admin lit les signalements.</li>
-                            <li class="scenario-main-step">Le signalement est marqué comme lu.</li>
+                            <li class="scenario-main-step">L'admin se connecte à l'application MaVille avec ses identifiants en mode Admin.</li>
+                            <li class="scenario-main-step">Il accède à l'onglet "Signalements".</li>
+                            <li class="scenario-main-step">L'admin consulte la liste des signalements soumis par les résidents.</li>
+                            <li class="scenario-main-step">Il lit un signalement et, une fois lu, le système le marque comme "lu".</li>
+                            <li class="scenario-main-step">Si le signalement nécessite une action, l'administrateur prend les mesures appropriées (par exemple, attribuer à un intervenant ou marquer comme "Urgent").</li>
                         </ol>
-                
+                        
                         <div class="scenario-alt">
                             <h5 class="scenario-alt-title">Scénarios alternatifs</h5>
                             <ol class="bare-list scenario-alt-steps">
                                 <li class="scenario-alt-step" value="1">
-                                        
-                                        Le signalement d'un résident révèle un problème grave.</li>
-                                        <li><strong>SOLUTION</strong>: L'admin peut marquer le signalement comme ''Urgent'' et ses collègues seront 
-                                            averti pour ensuite régler la situation.
-    
-                                    </li>
+                                    Le signalement d'un résident révèle un problème grave :
+                                    <ol class="bare-list">
+                                        <li value="1">L'admin peut marquer le signalement comme "Urgent".</li>
+                                        <li value="1">Les collègues administrateurs sont notifiés pour une action immédiate.</li>
+                                    </ol>
+                                </li>
+                                <li class="scenario-alt-step" value="2">
+                                    Aucune action n'est nécessaire :
+                                    <ol class="bare-list">
+                                        <li value="2">L'admin peut simplement marquer le signalement comme "Résolu".</li>
+                                    </ol>
+                                </li>
                             </ol>
                         </div>
                     </div>
@@ -1817,8 +1875,22 @@
             </section>
 
             <section class="main-section">
-                <h2 id="prototype" class="section-title">Prototype</h2>
+                <h2 id="conception" class="section-title">Conception</h2>
+                <h3 class="subsection-title">Architecture</h3>
+                <h3 class="subsection-title">Diagramme de classes</h3>
+                <div class="use-case">
+                    <img class="class-diagram" src="./assets/diagrammes/diagramme_de_classes.png" alt="Diagramme de cas d'utilisation">
+                    <p class="use-case-notes">
 
+                     
+                    </p>
+                </div>
+                <h3 class="subsection-title">Diagramme de séquence</h3>
+                <h3 class="subsection-title">Choix du design</h3>
+            </section>
+
+            <section class="main-section">
+                <h2 id="prototype" class="section-title">Prototype</h2>
                 <p>
                     Pour exécuter le fichier JAR, faites en ligne de commande : <it>java -jar ./prototype/prototype.jar</it>
                 </p>
