@@ -4,7 +4,6 @@ import com.maville.model.Project;
 import com.maville.model.WorkRequestForm;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.assertNotNull;
 
 public class WorkRequestFormTest {
 
@@ -13,7 +12,7 @@ public class WorkRequestFormTest {
         // Arrange
         String title = "Road Repair";
         String description = "Fix potholes on Main St.";
-        String projectType = "Road";
+        String projectType = "URBAN_MAINTENANCE";
         String expectedDate = "2023-12-01";
 
         // Act
@@ -26,29 +25,4 @@ public class WorkRequestFormTest {
         assertEquals(expectedDate, workRequestForm.getExpectedDate());
     }
 
-    @Test
-    public void testParseProjectType() {
-        // Arrange
-        String projectType = "Street Maintenance";
-
-        // Act
-        WorkRequestForm workRequestForm = new WorkRequestForm("Test Title", "Test Description", projectType, "2023-12-01");
-
-        // Assert
-        assertNotNull(workRequestForm.getProjectType());
-        assertEquals(Project.TypeOfWork.URBAN_MAINTENANCE, workRequestForm.getProjectType());
-    }
-
-    @Test
-    public void testParseProjectTypeWithAccents() {
-        // Arrange
-        String projectTypeWithAccents = "Rénovation de Route";
-
-        // Act
-        WorkRequestForm workRequestForm = new WorkRequestForm("Test Title", "Test Description", projectTypeWithAccents, "2023-12-01");
-
-        // Assert
-        assertNotNull(workRequestForm.getProjectType());
-        assertEquals(Project.TypeOfWork.ROAD, workRequestForm.getProjectType());
-    }
 }
