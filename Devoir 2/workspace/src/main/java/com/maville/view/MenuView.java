@@ -22,6 +22,7 @@ public class MenuView {
     public static void authMessage() {
         printMessage("[1] S'enregistrer");
         printMessage("[2] Se connecter");
+        printMessage("[0] Quitter l'application");
     }
 
     public static void residentMenuMessages() {

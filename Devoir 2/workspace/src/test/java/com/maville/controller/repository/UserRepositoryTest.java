@@ -14,7 +14,8 @@ public class UserRepositoryTest {
         userInfo.add("johndoe123"); // Mot de passe
 
         UserRepository userRepo = UserRepository.getInstance();
-        String userIdFetched = userRepo.fetchUser(userInfo);
+        String[] importantInfo = userRepo.fetchUser(userInfo);
+        String userIdFetched = importantInfo[0];
 
         assertEquals("755bf798-da16-4116-95e3-9fae9a220037", userIdFetched);
     }

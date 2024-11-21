@@ -11,6 +11,7 @@ import java.util.List;
 public class Authenticate {
     private List<String> userInfo;
     private String currentLogInUserId;
+    private String userType;
 
     public Authenticate(List<String> userInfo) {
         this.userInfo = userInfo;
@@ -23,9 +24,16 @@ public class Authenticate {
      */
     public boolean logIn() {
         UserRepository instanceUserRepo = UserRepository.getInstance();
-        currentLogInUserId = instanceUserRepo.fetchUser(userInfo); // Le UUID est suffisant
+        String[] importantInfo = instanceUserRepo.fetchUser(userInfo); // Le UUID est suffisant
+
+        this.currentLogInUserId = importantInfo[0];
+        this.userType = importantInfo[1];
 
         return currentLogInUserId != null;
+    }
+
+    public String getUserType() {
+        return userType;
     }
 
     /**

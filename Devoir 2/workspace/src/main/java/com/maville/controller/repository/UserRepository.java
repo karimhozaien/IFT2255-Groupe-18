@@ -27,7 +27,7 @@ public class UserRepository {
      * @param userInfo Une liste contenant l'email et le mot de passe de l'utilisateur.
      * @return L'ID de l'utilisateur si les informations sont valides ; {@code null} sinon.
      */
-    public String fetchUser(List<String> userInfo) {
+    public String[] fetchUser(List<String> userInfo) {
         String email = userInfo.get(0);
         String password = userInfo.get(1);
         String selectSQL = "SELECT * FROM Users WHERE email = ?";
@@ -42,10 +42,11 @@ public class UserRepository {
                 if (rs.next()) {
                     String hashedPasswordFromDB = rs.getString("password");
                     String idFromDB = rs.getString("id");
+                    String userType = rs.getString("user_type");
 
                     // Vérification du hachage du mot de passe
                     if (PasswordUtil.verifyPassword(password, hashedPasswordFromDB)) {
-                        return idFromDB;
+                        return new String[] {idFromDB, userType};
                     } else {
                         // Mot de passe incorrect ?
                         System.out.println("Mot de passe invalide.");

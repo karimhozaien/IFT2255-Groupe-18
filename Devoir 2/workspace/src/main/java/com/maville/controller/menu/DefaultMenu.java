@@ -2,6 +2,7 @@ package com.maville.controller.menu;
 
 import com.maville.controller.activity.IntervenantActivityController;
 import com.maville.controller.activity.ResidentActivityController;
+import com.maville.MaVille;
 
 public class DefaultMenu extends Menu {
     private final AuthenticationMenu AUTHMENU = new AuthenticationMenu();
@@ -15,6 +16,9 @@ public class DefaultMenu extends Menu {
             case 2:
                 AUTHMENU.logInManager();   // Navigue vers le sous-menu de connexion
                 break;
+            case 0:
+                MaVille.exitApplication();
+                return;
             default:
                 System.out.println("Option invalide, veuillez réessayer.");
                 break;

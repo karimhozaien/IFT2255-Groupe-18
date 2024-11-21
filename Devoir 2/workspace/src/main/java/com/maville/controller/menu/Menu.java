@@ -7,11 +7,13 @@ public abstract class Menu {
     protected static final Scanner SCANNER = new Scanner(System.in);
 
     public void welcome() {
-        MenuView.welcomeMessage();
-        MenuView.authMessage();
+        while (true) {
+            MenuView.welcomeMessage();
+            MenuView.authMessage();
 
-        int option = SCANNER.nextInt();
-        selection(option, "");
+            int option = SCANNER.nextInt();
+            selection(option, "");
+        }
     }
 
     public static void showUserMenu(String userType) {

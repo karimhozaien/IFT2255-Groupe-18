@@ -68,21 +68,33 @@ public class AuthenticationMenu extends Menu {
         switch (option) {
             case 1:
                 userType = "resident";
+                continueProcess(userType);
                 break;
             case 2:
                 userType = "intervenant";
+                continueProcess(userType);
                 break;
+            case 0:
+                System.out.println("am i here");
+                return;
             default:
                 System.out.println("XXXXXX");
-                return;
         }
+    }
+
+    private void continueProcess(String userType) {
         AuthenticationView.showLogInMessage(userType);
         SCANNER.nextLine();
 
         authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
 
         if (authenticate.logIn()) { // Construction du User
-            DefaultMenu.showUserMenu(userType);
+            String userTypeFromDB = authenticate.getUserType();
+            if (!userType.equals(userTypeFromDB)) {
+                System.out.println("Vous n'êtes pas un " + userType);
+                return;
+            }
+            DefaultMenu.showUserMenu(userTypeFromDB);
         }
     }
 
@@ -99,6 +111,8 @@ public class AuthenticationMenu extends Menu {
                 userType = "intervenant";
                 infoMessages = SIGNUP_INTERVENANT_INFO_MESSAGES;
                 break;
+            case 0:
+                System.out.println("am i here");
             default:
                 System.out.println("Option invalide pour l'inscription.");
                 return;

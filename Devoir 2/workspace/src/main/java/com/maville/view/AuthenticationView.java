@@ -8,7 +8,7 @@ public class AuthenticationView extends MenuView {
     }
 
     public static void showLogInMessage(String userType) {
-        printMessage("Inscription en tant que " + userType);
+        printMessage("Connexion en tant que " + userType);
     }
 
     public static void showSignUpMessage(String userType) {
@@ -18,6 +18,7 @@ public class AuthenticationView extends MenuView {
     public static void showAuthType() {
         printMessage("[1] Résident");
         printMessage("[2] Intervenant");
+        printMessage("[0] Revenir en arrière");
     }
 
     public static void showCompanyTypeMessage() {

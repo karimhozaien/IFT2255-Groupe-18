@@ -14,7 +14,7 @@ public class MaVille {
         exitApplication();
     }
 
-    private static void exitApplication() {
+    public static void exitApplication() {
         DatabaseConnectionManager.close();
         System.exit(0);
     }
