@@ -80,7 +80,7 @@ public class MenuView {
 
     public static <T> void showResults(List<T> items) {
         for (T item : items) {
-            printMessage(item.toString());
+            printMessage(item.toString() + "\n");
         }
     }
 
