@@ -64,7 +64,7 @@ public class MenuView {
         printMessageInline("Type de travaux : ");
         infos.add(getStringInput());
 
-        printMessageInline("Date de fin espéré : ");
+        printMessageInline("Date de fin espérée (AAAA-MM-JJ) : ");
         infos.add(getStringInput());
 
         return infos;
