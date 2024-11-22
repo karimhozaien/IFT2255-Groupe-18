@@ -5,7 +5,7 @@ import com.maville.model.Resident;
 import com.maville.model.User;
 import java.util.List;
 
-public class IntervenantAccountController implements AccountController {
+public class IntervenantAccountController extends AccountController {
     @Override
     public boolean updateAccount(User user) {
         // TODO

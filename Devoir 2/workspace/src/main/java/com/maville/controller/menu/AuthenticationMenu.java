@@ -3,6 +3,8 @@ package com.maville.controller.menu;
 import com.maville.controller.services.Authenticate;
 import com.maville.model.Intervenant;
 import com.maville.view.AuthenticationView;
+import com.maville.view.MenuView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,20 +33,36 @@ public class AuthenticationMenu extends Menu {
 
     // Logique de connexion
     public void logInManager() {
-        AuthenticationView.showAuthMessage();
-        AuthenticationView.showAuthType();
+        while (true) {
+            AuthenticationView.showAuthMessage();
+            AuthenticationView.showAuthType();
 
-        int option = SCANNER.nextInt();
-        selection(option, "login"); // Passe "login" en tant qu'argument pour indiquer la connexion
+            if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier
+                int option = SCANNER.nextInt();
+                selection(option, "login"); // Passe "login" en tant qu'argument pour indiquer la connexion
+                break;
+            } else {
+                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
+            }
+        }
     }
 
     // Logique d'inscription
     public void signUpManager() {
-        AuthenticationView.showAuthMessage();
-        AuthenticationView.showAuthType();
+        while (true) {
+            AuthenticationView.showAuthMessage();
+            AuthenticationView.showAuthType();
 
-        int option = SCANNER.nextInt();
-        selection(option, "signup"); // Passe "signup" en tant qu'argument pour indiquer l'inscription
+            if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier
+                int option = SCANNER.nextInt();
+                selection(option, "signup"); // Passe "signup" en tant qu'argument pour indiquer la connexion
+                break;
+            } else {
+                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
+            }
+        }
     }
 
     // Implémentation de la logique de sélection selon l'action (connexion ou inscription) et le type d'utilisateur
@@ -75,7 +93,7 @@ public class AuthenticationMenu extends Menu {
                 continueProcess(userType);
                 break;
             case 0:
-                System.out.println("am i here");
+                MenuView.backMessage();
                 return;
             default:
                 System.out.println("XXXXXX");
@@ -86,15 +104,19 @@ public class AuthenticationMenu extends Menu {
         AuthenticationView.showLogInMessage(userType);
         SCANNER.nextLine();
 
-        authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
+        while (true) {
+            authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
 
-        if (authenticate.logIn()) { // Construction du User
-            String userTypeFromDB = authenticate.getUserType();
-            if (!userType.equals(userTypeFromDB)) {
-                System.out.println("Vous n'êtes pas un " + userType);
+            if (authenticate.logIn()) { // Construction du User
+                String userTypeFromDB = authenticate.getUserType();
+                if (!userType.equals(userTypeFromDB)) {
+                    System.out.println("Vous n'êtes pas un " + userType);
+                    return;
+                }
+                DefaultMenu.showUserMenu(userTypeFromDB);
+            } else {
                 return;
             }
-            DefaultMenu.showUserMenu(userTypeFromDB);
         }
     }
 
@@ -112,7 +134,8 @@ public class AuthenticationMenu extends Menu {
                 infoMessages = SIGNUP_INTERVENANT_INFO_MESSAGES;
                 break;
             case 0:
-                System.out.println("am i here");
+                MenuView.backMessage();
+                return;
             default:
                 System.out.println("Option invalide pour l'inscription.");
                 return;

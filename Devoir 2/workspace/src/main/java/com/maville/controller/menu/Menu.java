@@ -11,8 +11,13 @@ public abstract class Menu {
             MenuView.welcomeMessage();
             MenuView.authMessage();
 
-            int option = SCANNER.nextInt();
-            selection(option, "");
+            if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier
+                int option = SCANNER.nextInt();
+                selection(option, "");
+            } else {
+                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
+            }
         }
     }
 
@@ -27,9 +32,14 @@ public abstract class Menu {
                     break;
             }
 
-            int option = SCANNER.nextInt();
-            if (DefaultMenu.handleMainMenuOption(option, userType)) {
-                break;
+            if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier
+                int option = SCANNER.nextInt();
+                if (DefaultMenu.handleMainMenuOption(option, userType)) {
+                    break;
+                }
+            } else {
+                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
             }
         }
     }

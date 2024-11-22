@@ -26,8 +26,10 @@ public class Authenticate {
         UserRepository instanceUserRepo = UserRepository.getInstance();
         String[] importantInfo = instanceUserRepo.fetchUser(userInfo); // Le UUID est suffisant
 
-        this.currentLogInUserId = importantInfo[0];
-        this.userType = importantInfo[1];
+        if (importantInfo != null) {
+            this.currentLogInUserId = importantInfo[0];
+            this.userType = importantInfo[1];
+        }
 
         return currentLogInUserId != null;
     }

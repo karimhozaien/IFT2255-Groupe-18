@@ -24,10 +24,14 @@ public class WorkRequestForm {
     private Project.TypeOfWork parseProjectType(String projectType) {
         // TODO
         for (Project.TypeOfWork typeOfWork : Project.TypeOfWork.values()) {
-            System.out.println(typeOfWork.toString());
-            projectType = TextUtil.removeAccents(projectType);
-            if (typeOfWork.toString().toLowerCase().contains(projectType.toLowerCase())) {
-                return typeOfWork;
+            String normalizedProjectType = TextUtil.removeAccents(projectType.toLowerCase());
+            String[] words = normalizedProjectType.split("\\s+"); // Split on spaces or tabs
+
+            for (String word : words) {
+                // Check if the current word matches or is contained in the enum value
+                if (typeOfWork.toString().toLowerCase().contains(word)) {
+                    return typeOfWork;
+                }
             }
         }
         return null;

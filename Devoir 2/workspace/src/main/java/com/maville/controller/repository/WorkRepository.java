@@ -120,7 +120,6 @@ public class WorkRepository {
                         for (String s : filteredRoadObstruction) {
                             filteredItems.add(type.cast(s.split("\\. ")[1]));
                         }
-
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -140,7 +139,7 @@ public class WorkRepository {
              PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) { // Use a while loop to process all rows
                     String idFromDB = rs.getString("id");
                     String titleFromDB = rs.getString("title");
                     String typeOfWorkRawFromDB = rs.getString("type_of_work");
@@ -165,14 +164,15 @@ public class WorkRepository {
                             Project.WorkStatus.valueOf(workStatusFromDB)
                     );
                     plannedProjects.add(project);
-                } else {
+                }
+
+                if (plannedProjects.isEmpty()) {
                     System.out.println("Erreur lors du fetching.");
                     return null;
                 }
 
                 return plannedProjects;
             }
-
         } catch (SQLException e) {
             System.out.println("Erreur lors de la connexion à la DB : " + e.getMessage());
             return null;
@@ -226,7 +226,7 @@ public class WorkRepository {
              PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) { // Use a while loop to iterate through all rows
                     String titleFromDB = rs.getString("title");
                     String descriptionFromDB = rs.getString("description");
                     String projectTypeFromDB = rs.getString("project_type");
@@ -239,14 +239,15 @@ public class WorkRepository {
                             expectedDateFromDB
                     );
                     workRequestForms.add(workRequestForm);
-                } else {
+                }
+
+                if (workRequestForms.isEmpty()) {
                     System.out.println("Erreur lors du fetching.");
                     return null;
                 }
 
                 return workRequestForms;
             }
-
         } catch (SQLException e) {
             System.out.println("Erreur lors de la connexion à la DB : " + e.getMessage());
             return null;

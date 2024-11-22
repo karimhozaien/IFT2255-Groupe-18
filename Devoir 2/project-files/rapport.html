@@ -1887,6 +1887,46 @@
                 </div>
                 <h3 class="subsection-title">Diagramme de séquence</h3>
                 <h3 class="subsection-title">Choix du design</h3>
+                <p>
+                    Mon équipe et moi avons choisi de structurer l’application selon l’architecture MVC, en 
+                    raison des avantages qu’elle offre en termes de modularité et de flexibilité. L’une des 
+                    principales considérations a été de réduire le couplage entre les différentes parties de 
+                    l’application tout en maintenant une forte cohésion au sein de chaque composant. En 
+                    séparant les responsabilités — le modèle gérant la logique métier et les données, la vue 
+                    s’occupant de l’affichage, et le contrôleur orchestrant les interactions — nous avons pu améliorer 
+                    l’encapsulation. Cela garantit que chaque classe a un rôle bien défini et limite son impact 
+                    sur le reste du système. À noter que ce choix a également été fait parce qu’il est souvent 
+                    utilisé dans les projets web, où la vue est représentée par l’interface utilisateur front-end. 
+                    Étant donné que nous nous orientons vers une telle interface pour le devoir 3, MVC était un 
+                    excellent point de départ.
+                </p>
+            </section>
+
+            <section class="main-section">
+                <h2 id="implementation" class="section-title">Implémentation</h2>
+                <h3 class="subsection-title">Implémentation du design</h3>
+                <p>
+                    Lorsque le résident décide de consulter ou de rechercher un travail en particulier
+                    ou une liste de travaux et qu'il décide de filtrer, vous allez vous aperçevoir 
+                    qu'il n'y a pas de menu à choix qui s'affiche mais plutôt une barre de recherche.
+                    Cette méthodologie a été choisie afin d'éviter la gestion des cas qui semblait déjà
+                    excessive dans notre application. Cependant, lorsque nous ferons une interface web
+                    au devoir 3, nous allons affichés en HTML un menu à choix pour faciliter la logique du code.
+                    Ceci dit, il faut faire attention quand on filtre car la logique derrière la compréhension
+                    du input de l'utilisateur n'est pas poussée. Exemple : disons que vous décider de filtrer
+                    par quartier/rue/type de travaux ; faites attention de ne pas faire d'erreur dans l'entrée. À noter que ce n'est pas
+                    case-sensitive ou accent-sensitive. Un exemple serait que je décide de chercher pour le 
+                    type de travail CONSTRUCTION_RENOVATION et que mon input est "rénovation". La recherche 
+                    devrait se faire cependant quelque chose du genre "rénovation construction" ou "consk ruction"
+                    ne marcherait pas. C'est le downside de l'implémentation pour le moment.
+                </p>
+                <h3 class="subsection-title">Tests unitaires</h3>
+                <p>
+                    Si vous utilisez Visual Studio Code, les tests unitaires devraient généralement être
+                    exécutable directement dans les fichiers tests. Voici un exemple : <br>
+
+                    <img class="use-case-diagram" style="margin-top: 20px;" src="./assets/exemple_tests_unitaires.png" alt="" >
+                </p>
             </section>
 
             <section class="main-section">

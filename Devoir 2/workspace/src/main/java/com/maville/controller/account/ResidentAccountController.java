@@ -4,7 +4,7 @@ import com.maville.model.Notification;
 import com.maville.model.User;
 import java.util.List;
 
-public class ResidentAccountController implements AccountController {
+public class ResidentAccountController extends AccountController {
     @Override
     public boolean updateAccount(User user) {
         // TODO
