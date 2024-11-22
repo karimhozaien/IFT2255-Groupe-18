@@ -2,10 +2,13 @@ package com.maville.controller.repository;
 
 import com.maville.model.Project;
 import org.junit.Test;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+
 
 public class WorkRepositoryTest {
     @Test
@@ -37,4 +40,17 @@ public class WorkRepositoryTest {
 
         assertEquals(plannedProjects.getFirst().toString(), project.toString());
     }
+    // Ce test vérifie le fonctionnment de GetFilteredProjects()
+    @Test
+    public void testGetFilteredProjects() throws IOException {
+        WorkRepository workRepository = new WorkRepository();
+
+        List<Project> filteredProjects = workRepository.getFilteredProjects("construction", "titre");
+
+        assertNotNull(filteredProjects);
+        for (Project project : filteredProjects) {
+            assertTrue("Le titre devrait contenir le terme", project.getTitle().toLowerCase().contains("construction"));
+        }
+    }
+
 }
