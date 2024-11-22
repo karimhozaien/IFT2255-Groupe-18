@@ -35,7 +35,7 @@ public abstract class Menu {
             if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier
                 int option = SCANNER.nextInt();
                 if (DefaultMenu.handleMainMenuOption(option, userType)) {
-                    break;
+                    return;
                 }
             } else {
                 System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");

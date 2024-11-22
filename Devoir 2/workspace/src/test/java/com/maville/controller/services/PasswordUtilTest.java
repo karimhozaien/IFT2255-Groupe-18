@@ -7,12 +7,11 @@ import org.junit.Test;
 public class PasswordUtilTest {
 
     @Test
-    public void testHashPassword() {
+    public void hashPasswordTest() {
         String plainPassword = "iloveu10";
-
         String hashedPassword = PasswordUtil.hashPassword(plainPassword);
 
-        assertNotNull("The hashed password should not be null", hashedPassword);
-        assertNotEquals("The hashed password should not equal the plain password", plainPassword, hashedPassword);
+        assertNotNull("Le mot de passe encrypté ne devrait pas être null", hashedPassword);
+        assertNotEquals("Le mot de passe encrypté ne devrait pas être égal à sa correspondance originale", plainPassword, hashedPassword);
     }
 }

@@ -109,11 +109,12 @@ public class AuthenticationMenu extends Menu {
 
             if (authenticate.logIn()) { // Construction du User
                 String userTypeFromDB = authenticate.getUserType();
-                if (!userType.equals(userTypeFromDB)) {
+                if (!userType.equals(userTypeFromDB)) { // Si le user essaye de se connecter en tant qu'un autre type de user
                     System.out.println("Vous n'êtes pas un " + userType);
                     return;
                 }
                 DefaultMenu.showUserMenu(userTypeFromDB);
+                break;
             } else {
                 return;
             }

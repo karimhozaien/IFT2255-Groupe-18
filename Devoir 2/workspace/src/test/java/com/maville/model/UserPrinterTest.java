@@ -1,33 +1,42 @@
 package com.maville.model;
 
-import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import com.maville.view.MenuView;
 
-class UserPrinterTest {
+import com.maville.controller.repository.WorkRepository;
+import com.maville.view.MenuView;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
+public class UserPrinterTest {
+
+    private final WorkRepository workRepository = new WorkRepository();
 
     @Test
-    void testPrint() {
-        User user = new User.Builder<>() {
-            @Override
-            protected Builder self() { return this; }
+    void testGetRecordsWithValidJson() throws IOException {
+        // Arrange
+        String jsonResponse = "{ \"result\": { \"records\": [ { \"id\": \"1\", \"reason_category\": \"routier\" } ] } }";
 
-            @Override
-            public User build() { return new User(this); }
-        }.name("John Doe")
-                .email("john.doe@company.com")
-                .password("john123")
-                .id()
-                .build();
+        // Act
+        List<WorkRepository.Result.Record> records = workRepository.getRecords(jsonResponse);
 
-        try (MockedStatic<MenuView> mockedMenuView = mockStatic(MenuView.class)) {
-            user.print();
-
-
-            mockedMenuView.verify(() -> MenuView.printMessage("Name: John Doe"));
-            mockedMenuView.verify(() -> MenuView.printMessage("Email: john.doe@company.com"));
-            mockedMenuView.verify(() -> MenuView.printMessage("Password: john123"));
-        }
+        // Assert
+        assertNotNull(records);
+        assertEquals(1, records.size());
+        assertEquals("1", records.get(0).getId());
+        assertEquals("routier", records.get(0).getTypeOfWorkRaw());
     }
+
+    @Test
+    void testGetRecordsWithInvalidJson() {
+        // Arrange
+        String jsonResponse = "invalid json";
+
+        // Act & Assert
+        assertThrows(IOException.class, () -> workRepository.getRecords(jsonResponse));
+    }
+
+
 }
