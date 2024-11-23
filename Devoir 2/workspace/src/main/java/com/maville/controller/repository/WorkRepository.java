@@ -86,7 +86,7 @@ public class WorkRepository {
         return allProjects;
     }
 
-    public List<Project> getPlannedProjects() throws IOException {
+    public List<Project> getPlannedProjects() {
         return fetchPlannedProjects();
     }
 
@@ -196,7 +196,7 @@ public class WorkRepository {
             pstmt.setString(9, project.getWorkStatus().toString());
 
             pstmt.executeUpdate();
-            System.out.println("Le projet a été sauvegardée."); // Message helper
+            //System.out.println("Le projet a été sauvegardée."); // Message helper
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement du projet : " + e.getMessage());
         }
@@ -213,7 +213,7 @@ public class WorkRepository {
             pstmt.setString(4, workRequestForm.getExpectedDate());
 
             pstmt.executeUpdate();
-            System.out.println("La requête a été sauvegardée."); // Message helper
+            //System.out.println("La requête a été sauvegardée."); // Message helper
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement de la requête : " + e.getMessage());
         }

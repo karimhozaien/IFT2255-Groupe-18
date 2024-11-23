@@ -9,7 +9,7 @@ import static org.junit.Assert.assertNotNull;
 public class WorkRequestFormTest {
 
     @Test
-    public void testWorkRequestFormConstructor() {
+    public void WorkRequestFormConstructorTest() {
         // Arrange
         String title = "Road Repair";
         String description = "Fix potholes on Main St.";
@@ -27,7 +27,7 @@ public class WorkRequestFormTest {
     }
 
     @Test
-    public void testParseProjectType() {
+    public void parseProjectTypeTest() {
         // Arrange
         String projectType = "Street Maintenance";
 
@@ -40,7 +40,7 @@ public class WorkRequestFormTest {
     }
 
     @Test
-    public void testParseProjectTypeWithAccents() {
+    public void parseProjectTypeWithAccentsTest() {
         // Arrange
         String projectTypeWithAccents = "Rénovation de Route";
 

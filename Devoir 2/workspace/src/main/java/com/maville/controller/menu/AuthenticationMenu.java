@@ -96,14 +96,12 @@ public class AuthenticationMenu extends Menu {
                 MenuView.backMessage();
                 return;
             default:
-                System.out.println("XXXXXX");
         }
     }
 
     private void continueProcess(String userType) {
         AuthenticationView.showLogInMessage(userType);
         SCANNER.nextLine();
-
         while (true) {
             authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
 
@@ -157,7 +155,6 @@ public class AuthenticationMenu extends Menu {
             AuthenticationView.printMessage(message);
             String input = SCANNER.nextLine();
             userInfo.add(input);
-            System.out.println("Vous avez entré : " + input); // Pour vérification
         }
 
         return userInfo;

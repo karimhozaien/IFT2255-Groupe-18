@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class PasswordUtilTest {
-
+    // Dans ce test, nous vérifions que le mot de passe est bel et bien hashed
     @Test
     public void hashPasswordTest() {
         String plainPassword = "iloveu10";

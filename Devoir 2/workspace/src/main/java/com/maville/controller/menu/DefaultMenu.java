@@ -32,38 +32,38 @@ public class DefaultMenu extends Menu {
             switch (option) {
                 case 1:
                     // Consultation des travaux
-                    System.out.println("Consultation des travaux...");
+                    //System.out.println("Consultation des travaux...");
                     residentAC.consultWorks();
                     break;
                 case 2:
                     // Consultation des entraves routières
-                    System.out.println("Consultation des entraves...");
+                    //System.out.println("Consultation des entraves...");
                     residentAC.consultRoadObstructions();
                     break;
                 case 3:
                     // Rechercher des travaux
-                    System.out.println("Recherche des travaux...");
+                    //System.out.println("Recherche des travaux...");
                     residentAC.searchWorks();
                     break;
                 case 4:
                     // Permettre une planification participative
-                    System.out.println("Participer à une planification...");
+                    //System.out.println("Participer à une planification...");
                     residentAC.participateToSchedule();
                     break;
                 case 5:
                     // Soumettre une requête de travaux
-                    System.out.println("Soumission d'une requête de travaux...");
+                    //System.out.println("Soumission d'une requête de travaux...");
                     residentAC.submitWorkRequest();
                     break;
                 case 6:
                     // Recevoir des notifications personalisées
-                    System.out.println("Réception des notifications...");
+                    //System.out.println("Réception des notifications...");
                     residentAC.receivePersonalizedNotifications();
                     break;
                 case 0: // Option pour quitter
                     return true;
                 default:
-                    System.out.println("Option invalide pour résident. Veuillez réessayer.");
+                    //System.out.println("Option invalide pour résident. Veuillez réessayer.");
                     break;
             }
         } else if (userType.equals("intervenant")) {
@@ -72,15 +72,15 @@ public class DefaultMenu extends Menu {
             switch (option) {
                 case 1:
                     // Soumettre de nouveaux travaux
-                    System.out.println("Soumission de nouveaux travaux...");
+                    //System.out.println("Soumission de nouveaux travaux...");
                     break;
                 case 2:
                     // Mettre à jour les travaux
-                    System.out.println("Mise à jour des travaux...");
+                    //System.out.println("Mise à jour des travaux...");
                     break;
                 case 3:
                     intervenantAC.consultWorkRequests();
-                    System.out.println("Consultation des requêtes...");
+                    //System.out.println("Consultation des requêtes...");
                     break;
                 case 0: // Option pour quitter
                     return true;

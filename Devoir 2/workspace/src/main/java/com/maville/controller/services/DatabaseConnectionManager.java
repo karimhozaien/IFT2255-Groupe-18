@@ -29,7 +29,7 @@ public class DatabaseConnectionManager {
         try {
             DatabaseConnectionManager dbManager = getInstance();
             Connection conn = dbManager.getConnection();
-            System.out.println("Connected to SQLite database.");
+            //System.out.println("Connected to SQLite database."); // helper
             dbManager.initializeDatabaseTables(conn); // Initialize tables if needed
         } catch (SQLException e) {
             System.out.println("Error during database initialization: " + e.getMessage());
@@ -41,7 +41,7 @@ public class DatabaseConnectionManager {
             try {
                 if (!instance.connection.isClosed()) {
                     instance.connection.close();
-                    System.out.println("Database connection closed.");
+                    //System.out.println("Database connection closed."); // helper
                 }
             } catch (SQLException e) {
                 System.out.println("Error closing the database connection: " + e.getMessage());
@@ -54,9 +54,9 @@ public class DatabaseConnectionManager {
     // Create necessary tables in the database
     public void initializeDatabaseTables(Connection conn) throws SQLException {
         if (isTableInitialized(conn, "Users")) {
-            System.out.println("La table User existe déjà.");
+             //System.out.println("La table User existe déjà."); // helper
         } else {
-            System.out.println("Création de la table Users...");
+            //System.out.println("Création de la table Users..."); // helper
             String userTableSQL =
                     "CREATE TABLE IF NOT EXISTS Users (" +
                             "id TEXT PRIMARY KEY," +
@@ -77,13 +77,13 @@ public class DatabaseConnectionManager {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);
             }
-            System.out.println("La table Users a été créée.");
+            //System.out.println("La table Users a été créée."); // helper
         }
 
         if (isTableInitialized(conn, "Projects")) {
-            System.out.println("La table Projects existe déja.");
+            //System.out.println("La table Projects existe déja."); // helper
         } else {
-            System.out.println("Création de la table Projects...");
+            //System.out.println("Création de la table Projects..."); // helper
             String userTableSQL =
                     "CREATE TABLE IF NOT EXISTS Projects (" +
                         "id TEXT PRIMARY KEY," +
@@ -110,14 +110,14 @@ public class DatabaseConnectionManager {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);
             }
-            System.out.println("La table Projects a été créée.");
+            // System.out.println("La table Projects a été créée."); // helper
         }
 
 
         if (isTableInitialized(conn, "WorkRequests")) {
-            System.out.println("La table WorkRequests existe déjà.");
+            // System.out.println("La table WorkRequests existe déjà."); // helper
         } else {
-            System.out.println("Création de la table WorkRequests...");
+            // System.out.println("Création de la table WorkRequests..."); // helper
             String userTableSQL =
                     "CREATE TABLE IF NOT EXISTS WorkRequests (" +
                         "title TEXT NOT NULL," +
@@ -128,7 +128,7 @@ public class DatabaseConnectionManager {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);
             }
-            System.out.println("La table WorkRequests a été créée.");
+            // System.out.println("La table WorkRequests a été créée."); // helper
         }
     }
 
