@@ -28,7 +28,7 @@ MaVille est une application en ligne de commande conçue pour améliorer la comm
 3. Adresse courriel : michel.durand@tech.com | Mot de passe : michel75
 
 ## Exécuter le fichier JAR
-Rendez-vous dans le fichier de remise à partir de votre terminal. Exécuter le fichier jar avec la commande :
+Rendez-vous dans le dossier `application` à partir de votre terminal. Exécuter le fichier jar avec la commande :
 ```shell
 java -jar prototype.jar
 ```
