@@ -1,6 +1,9 @@
 package com.maville.controller.activity;
 
+import com.maville.controller.repository.NotificationRepository;
 import com.maville.controller.repository.WorkRepository;
+import com.maville.controller.services.Authenticate;
+import com.maville.model.Notification;
 import com.maville.model.WorkRequestForm;
 import com.maville.view.MenuView;
 import java.io.IOException;
@@ -102,7 +105,27 @@ public class ResidentActivityController {
         workRepo.saveWorkRequest(workRequestForm);
     }
 
-    public void receivePersonalizedNotifications() {
-        // TODO
+    /**
+     * Consulte et affiche toutes les notifications associées au résident authentifié.
+     */
+    public void consultNotifications() {
+        String userId = Authenticate.getUserId();
+
+        NotificationRepository notifRepo = NotificationRepository.getInstance();
+        List<Notification> notifications = notifRepo.fetchNotificationsByResidentId(userId);
+
+        // Regarde si le current user (resident) a des notifications
+        for (Notification notification : notifications) {
+            boolean seen = notification.getSeenResidents().contains(userId);
+
+            // Afficher la description avec le flag [Vue] si vu
+            if (seen) {
+                System.out.println("[Vue] " + notification.getDescription());
+            } else {
+                System.out.println(notification.getDescription());
+                // Marquer comme vu après affichage
+                notifRepo.markNotificationAsSeen(notification.getId(), userId);
+            }
+        }
     }
 }

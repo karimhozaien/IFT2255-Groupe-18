@@ -10,8 +10,9 @@ import java.util.List;
 
 public class Authenticate {
     private List<String> userInfo;
-    private String currentLogInUserId;
-    private String userType;
+    private static String[] fetchedUserInfo;
+    private static String currentLogInUserId;
+    private static String userType;
 
     public Authenticate(List<String> userInfo) {
         this.userInfo = userInfo;
@@ -29,13 +30,10 @@ public class Authenticate {
         if (importantInfo != null) {
             this.currentLogInUserId = importantInfo[0];
             this.userType = importantInfo[1];
+            this.fetchedUserInfo = importantInfo;
         }
 
         return currentLogInUserId != null;
-    }
-
-    public String getUserType() {
-        return userType;
     }
 
     /**
@@ -103,7 +101,9 @@ public class Authenticate {
         }
     }
 
-    public void setUserInfo(List<String> userInfo) {
-        this.userInfo = userInfo;
+    public static String getUserId() { return currentLogInUserId; }
+    public static String getUserType() {
+        return userType;
     }
+    public static String[] getFetchedUserInfo() { return fetchedUserInfo; }
 }

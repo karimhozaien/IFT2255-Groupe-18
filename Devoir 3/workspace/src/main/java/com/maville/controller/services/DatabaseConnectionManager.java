@@ -113,6 +113,22 @@ public class DatabaseConnectionManager {
             // System.out.println("La table Projects a été créée."); // helper
         }
 
+        if (isTableInitialized(conn, "Notifications")) {
+            //System.out.println("La table Notifications existe déjà."); // helper
+        } else {
+            //System.out.println("Création de la table Notifications..."); // helper
+            String notificationTableSQL =
+                    "CREATE TABLE IF NOT EXISTS Notifications (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "description TEXT NOT NULL," +
+                            "residents_id TEXT NOT NULL," +
+                            "seen_residents_ids TEXT NOT NULL" +
+                    ");";
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(notificationTableSQL);
+            }
+            //System.out.println("La table Notifications a été créée."); // helper
+        }
 
         if (isTableInitialized(conn, "WorkRequests")) {
             // System.out.println("La table WorkRequests existe déjà."); // helper

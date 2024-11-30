@@ -58,7 +58,7 @@ public class DefaultMenu extends Menu {
                 case 6:
                     // Recevoir des notifications personalisées
                     //System.out.println("Réception des notifications...");
-                    residentAC.receivePersonalizedNotifications();
+                    residentAC.consultNotifications();
                     break;
                 case 0: // Option pour quitter
                     return true;

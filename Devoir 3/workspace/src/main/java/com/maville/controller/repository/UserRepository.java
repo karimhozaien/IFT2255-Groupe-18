@@ -6,6 +6,7 @@ import com.maville.model.Intervenant;
 import com.maville.model.Resident;
 import com.maville.model.User;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository {
@@ -101,5 +102,12 @@ public class UserRepository {
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement : " + e.getMessage());
         }
+    }
+
+    public List<String[]> fetchAllUsers() {
+        // TODO : Pour Karim. Quand tu veux ajouter une notification aux residents dun quartier, tu dois regarder les
+        // TODO : adresses de tous les residents, si l'un a le quartier correspondant, tu prends son ID et tu l'ajoutes
+        // TODO : à la liste pour la creation d'un nouvel objet Notification
+        return null;
     }
 }
