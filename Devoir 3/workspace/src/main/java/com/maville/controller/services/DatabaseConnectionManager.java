@@ -138,7 +138,7 @@ public class DatabaseConnectionManager {
                     "CREATE TABLE IF NOT EXISTS PreferencesHoraire (" +
                             "rue TEXT NOT NULL," +
                             "quartier TEXT NOT NULL," +
-                            "heures_en_semaine TEXT NOT NULL" +
+                            "heures_en_semaine TEXT NOT NULL," +
                             "heures_en_fin_de_semaine TEXT NOT NULL" +
                             ");";
             try (Statement stmt = conn.createStatement()) {
