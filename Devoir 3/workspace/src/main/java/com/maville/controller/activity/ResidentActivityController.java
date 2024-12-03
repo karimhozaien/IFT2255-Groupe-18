@@ -91,7 +91,7 @@ public class ResidentActivityController {
 
     public void submitWorkRequest() {
         // TODO : finir l'ajout de la requête à la DB et avant, initialiser la table
-        List<String> workRequestInfo = MenuView.askFormInfo();
+        List<String> workRequestInfo = MenuView.askFormInfoForProjectSubmission();
         WorkRequestForm workRequestForm = new WorkRequestForm(
                 workRequestInfo.get(0),
                 workRequestInfo.get(1),

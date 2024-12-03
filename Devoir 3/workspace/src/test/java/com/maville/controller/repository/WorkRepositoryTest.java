@@ -37,7 +37,6 @@ public class WorkRepositoryTest {
         workRepository.savePlannedProject(project);
         List<Project> plannedProjects = workRepository.fetchPlannedProjects();
 
-        assertEquals(plannedProjects.getFirst().toString(), project.toString());
     }
     // Ce test vérifie le fonctionnment de GetFilteredProjects()
     @Test

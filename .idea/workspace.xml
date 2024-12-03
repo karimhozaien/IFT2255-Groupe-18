@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1e2b444e-aa20-46e9-88be-c63e0ef0bc75" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Devoir 2/application/data/mydatabase.db" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 2/application/data/mydatabase.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 2/workspace/src/main/java/com/maville/controller/activity/IntervenantActivityController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 2/workspace/src/main/java/com/maville/controller/activity/IntervenantActivityController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 2/workspace/src/main/java/com/maville/controller/menu/DefaultMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 2/workspace/src/main/java/com/maville/controller/menu/DefaultMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 2/workspace/src/main/java/com/maville/controller/menu/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 2/workspace/src/main/java/com/maville/controller/menu/Menu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 2/workspace/src/main/java/com/maville/view/MenuView.java" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 2/workspace/src/main/java/com/maville/view/MenuView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 3/workspace/data/mydatabase.db" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 3/workspace/data/mydatabase.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 3/workspace/src/main/java/com/maville/controller/activity/IntervenantActivityController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 3/workspace/src/main/java/com/maville/controller/activity/IntervenantActivityController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 3/workspace/src/main/java/com/maville/controller/activity/ResidentActivityController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 3/workspace/src/main/java/com/maville/controller/activity/ResidentActivityController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 3/workspace/src/main/java/com/maville/controller/menu/DefaultMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 3/workspace/src/main/java/com/maville/controller/menu/DefaultMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 3/workspace/src/main/java/com/maville/view/MenuView.java" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 3/workspace/src/main/java/com/maville/view/MenuView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Devoir 3/workspace/src/test/java/com/maville/controller/repository/WorkRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Devoir 3/workspace/src/test/java/com/maville/controller/repository/WorkRepositoryTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2piR8WwgvfMTqEdAkH4UOFNRTW5" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/karimhozaien/Desktop/University/AUT24/IFT2255/IFT2255-Groupe-18&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1e2b444e-aa20-46e9-88be-c63e0ef0bc75" name="Changes" comment="" />
+      <created>1733246750863</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1733246750863</updated>
+    </task>
+    <servers />
+  </component>
+</project>

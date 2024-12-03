@@ -51,9 +51,38 @@ public class MenuView {
         printMessage("[3] " + type3);
     }
 
-    public static List<String> askFormInfo() {
+    public static List<String> askFormInfoForProjectSubmission() {
         List<String> infos = new ArrayList<>();
-        printMessage("Entrez les informations suivantes pour la requête :");
+        printMessage("Entrez les informations suivantes pour soumettre un projet :");
+
+        printMessageInline("Titre : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Description : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Type de travaux : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Date de fin espérée (AAAA-MM-JJ) : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Arrondissement concerné : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Rues concernées (séparées par des virgules) : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Date de début (AAAA-MM-JJ) : ");
+        infos.add(getStringInput());
+
+        return infos;
+    }
+
+
+    public static List<String> askFormInfoForProjectUpdate() {
+        List<String> infos = new ArrayList<>();
+        printMessage("Entrez les informations suivantes pour mettre à jour le projet :");
 
         printMessageInline("Titre : ");
         infos.add(getStringInput());

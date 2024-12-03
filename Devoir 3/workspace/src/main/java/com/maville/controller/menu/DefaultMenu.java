@@ -72,10 +72,12 @@ public class DefaultMenu extends Menu {
             switch (option) {
                 case 1:
                     // Soumettre de nouveaux travaux
+                    intervenantAC.submitProject();
                     //System.out.println("Soumission de nouveaux travaux...");
                     break;
                 case 2:
                     // Mettre à jour les travaux
+                    intervenantAC.updateProject();
                     //System.out.println("Mise à jour des travaux...");
                     break;
                 case 3:

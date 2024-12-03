@@ -196,7 +196,7 @@ public class WorkRepository {
             pstmt.setString(9, project.getWorkStatus().toString());
 
             pstmt.executeUpdate();
-            //System.out.println("Le projet a été sauvegardée."); // Message helper
+            System.out.println("Le projet a été sauvegardée."); // Message helper
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement du projet : " + e.getMessage());
         }
