@@ -51,6 +51,24 @@ public class MenuView {
         printMessage("[3] " + type3);
     }
 
+    public static List<String> askPreferences() {
+        List<String> infos = new ArrayList<>();
+
+        printMessageInline("Pour quelle rue voulez vous faire votre demande? : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Cette rue se trouve dans quel quartier?: ");
+        infos.add(getStringInput());
+
+        printMessageInline("Quelles plages horaires vous conviennent le mieux la semaine? (lun-ven) : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Quelles plages horaires vous conviennent le mieux la fin de semaine? (sam-dim) : ");
+        infos.add(getStringInput());
+
+        return infos;
+    }
+
     public static List<String> askFormInfo() {
         List<String> infos = new ArrayList<>();
         printMessage("Entrez les informations suivantes pour la requête :");
