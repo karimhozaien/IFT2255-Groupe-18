@@ -62,7 +62,7 @@ public class Parser<T> {
         return record.getTypeOfWork() ;
     }
 
-    private List<String> parseWorkSchedule(Record record) {
-        return record.buildScheduleList();
+    private String parseWorkSchedule(Record record) {
+        return String.join(",", record.buildScheduleList());
     }
 }

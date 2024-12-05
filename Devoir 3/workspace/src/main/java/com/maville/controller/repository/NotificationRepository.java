@@ -30,15 +30,21 @@ public class NotificationRepository {
      * @param notification La notification à enregistrer.
      */
     public void saveNotification(Notification notification) {
-        String insertSQL = "INSERT INTO Notifications (id, description, residents_ids, seen_residents_ids) VALUES (?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO Notifications(id, description, residents_id, seen_residents_ids) VALUES (?, ?, ?, ?)";
+
+        System.out.println(notification.getId() + ", " + notification.getDescription() + ", " + String.join(",", notification.getResidents())
+        + ", " + String.join(",", notification.getSeenResidents()));
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
 
+
             pstmt.setString(1, notification.getId());
             pstmt.setString(2, notification.getDescription());
             pstmt.setString(3, String.join(",", notification.getResidents()));
-            pstmt.setString(4, String.join(",", notification.getSeenResidents()));
+            System.out.println("is it here");
+            pstmt.setString(4, "");
+            System.out.println("or here");
             pstmt.executeUpdate();
 
             System.out.println("La notification a été sauvegardée avec succès.");
@@ -55,7 +61,7 @@ public class NotificationRepository {
      */
     public List<Notification> fetchNotificationsByResidentId(String residentId) {
         List<Notification> notifications = new ArrayList<>();
-        String selectSQL = "SELECT * FROM Notifications WHERE residents_ids LIKE ?";
+        String selectSQL = "SELECT * FROM Notifications WHERE residents_id LIKE ?";
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {
@@ -66,7 +72,7 @@ public class NotificationRepository {
                 while (rs.next()) {
                     String id = rs.getString("id");
                     String description = rs.getString("description");
-                    String residentsIds = rs.getString("residents_ids");
+                    String residentsIds = rs.getString("residents_id");
                     String seenResidentsIds = rs.getString("seen_residents_ids");
 
                     Notification notification = new Notification();

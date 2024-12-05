@@ -150,8 +150,6 @@ public class WorkRepository {
                     String workScheduleFromDB = rs.getString("work_schedule");
                     String workStatusFromDB = rs.getString("work_status");
 
-                    List<String> workSchedule = Arrays.asList(workScheduleFromDB.split(","));
-
                     Project project = new Project(
                             idFromDB,
                             titleFromDB,
@@ -160,7 +158,7 @@ public class WorkRepository {
                             affectedStreetsFromDB,
                             startDateFromDB,
                             endDateFromDB,
-                            workSchedule,
+                            workScheduleFromDB,
                             Project.WorkStatus.valueOf(workStatusFromDB)
                     );
                     plannedProjects.add(project);
@@ -188,6 +186,7 @@ public class WorkRepository {
             pstmt.setString(1, project.getId());
             pstmt.setString(2, project.getTitle());
             pstmt.setString(3, project.getTypeOfWork().toString());
+            System.out.println(project.getTypeOfWork().toString());
             pstmt.setString(4, project.getAffectedNeighbourhood());
             pstmt.setString(5, project.getAffectedStreets());
             pstmt.setString(6, project.getStartDate());

@@ -70,6 +70,57 @@ public class MenuView {
         return infos;
     }
 
+    public static List<String> askFormInfoForProjectSubmission() {
+        List<String> infos = new ArrayList<>();
+        printMessage("Entrez les informations suivantes pour soumettre un projet :");
+
+        printMessageInline("Titre : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Type de travaux : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Date de fin espérée (AAAA-MM-JJ) : ");
+        infos.add(getStringInput());
+
+        printMessage("Arrondissements concernés.");
+        printMessageInline("Entrez les trois premiers caractères du code postal. Si plus qu'un séparer par " +
+                           "une virgule : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Rues concernées (séparées par des virgules) : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Date de début (AAAA-MM-JJ) : ");
+        infos.add(getStringInput());
+
+        printMessage("Plage horaire désirée");
+        printMessageInline("Le format d'entrée est \"XX:XX-XX:XX,...,XX:XX-XX:XX\" où la première plage " +
+                           "représente dimanche : ");
+        infos.add(getStringInput());
+
+        return infos;
+    }
+
+    public static List<String> askFormInfoForProjectUpdate() {
+        List<String> infos = new ArrayList<>();
+        printMessage("Entrez les informations suivantes pour mettre à jour le projet :");
+
+        printMessageInline("Titre : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Description : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Type de travaux : ");
+        infos.add(getStringInput());
+
+        printMessageInline("Date de fin espérée (AAAA-MM-JJ) : ");
+        infos.add(getStringInput());
+
+        return infos;
+    }
+
     private static String getStringInput() {
         return scanner.nextLine();
     }

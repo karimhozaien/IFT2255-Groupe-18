@@ -98,7 +98,8 @@ public class DatabaseConnectionManager {
                             "'UNDERGROUND', " +
                             "'RESIDENTIAL', " +
                             "'URBAN_MAINTENANCE', " +
-                            "'TELECOMMUNICATIONS_NETWORKS'" +
+                            "'TELECOMMUNICATIONS_NETWORKS', " +
+                            "'OTHER'" +
                             "))," +
                         "affected_neighbourhood TEXT NOT NULL," +
                         "affected_streets TEXT NOT NULL," +
@@ -119,10 +120,10 @@ public class DatabaseConnectionManager {
             //System.out.println("Création de la table Notifications..."); // helper
             String notificationTableSQL =
                     "CREATE TABLE IF NOT EXISTS Notifications (" +
-                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "id TEXT PRIMARY KEY," +
                             "description TEXT NOT NULL," +
-                            "residents_id TEXT NOT NULL," +
-                            "seen_residents_ids TEXT NOT NULL" +
+                            "residents_id TEXT," + // peut-etre null si aucun resident dans le quartier est auth
+                            "seen_residents_ids TEXT" + // null dès le départ
                     ");";
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(notificationTableSQL);

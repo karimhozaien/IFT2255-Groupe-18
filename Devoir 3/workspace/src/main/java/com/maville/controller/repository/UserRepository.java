@@ -104,10 +104,32 @@ public class UserRepository {
         }
     }
 
-    public List<String[]> fetchAllUsers() {
-        // TODO : Pour Karim. Quand tu veux ajouter une notification aux residents dun quartier, tu dois regarder les
-        // TODO : adresses de tous les residents, si l'un a le quartier correspondant, tu prends son ID et tu l'ajoutes
-        // TODO : à la liste pour la creation d'un nouvel objet Notification
-        return null;
+    /**
+     * Récupère tous les utilisateurs de la base de données. Uniquement leur ID et adresse
+     *
+     * @return Une liste de tableaux de chaînes contenant les informations des utilisateurs.
+     */
+    public List<String[]> fetchAllResidents() {
+        List<String[]> usersInfo = new ArrayList<>();
+        String selectSQL = "SELECT id, residential_address FROM Users WHERE user_type = ?";
+
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {
+
+            // Set the filter for user_type
+            pstmt.setString(1, "resident");
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String id = rs.getString("id");
+                    String residentialAddress = rs.getString("residential_address");
+                    usersInfo.add(new String[]{id, residentialAddress});
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des utilisateurs de type résident : " + e.getMessage());
+        }
+
+        return usersInfo;
     }
 }
