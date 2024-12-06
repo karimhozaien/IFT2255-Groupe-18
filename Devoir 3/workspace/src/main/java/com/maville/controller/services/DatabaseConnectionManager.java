@@ -88,24 +88,26 @@ public class DatabaseConnectionManager {
                     "CREATE TABLE IF NOT EXISTS Projects (" +
                         "id TEXT PRIMARY KEY," +
                         "title TEXT NOT NULL," +
+                        "description TEXT," +
                         "type_of_work TEXT NOT NULL CHECK(type_of_work IN (" +
                             "'ROAD', " +
-                            "'GAS/ELECTRICITY', " +
-                            "'CONSTRUCTION/RENOVATION', " +
+                            "'GAS_ELECTRICITY', " +
+                            "'CONSTRUCTION_RENOVATION', " +
                             "'LANDSCAPE', " +
                             "'PUBLIC_TRANSPORT', " +
-                            "'SIGNAGE/LIGHTING', " +
+                            "'SIGNAGE_LIGHTING', " +
                             "'UNDERGROUND', " +
                             "'RESIDENTIAL', " +
                             "'URBAN_MAINTENANCE', " +
-                            "'TELECOMMUNICATIONS_NETWORKS'" +
+                            "'TELECOMMUNICATIONS_NETWORKS', " +
+                            "'OTHER'" +
                             "))," +
                         "affected_neighbourhood TEXT NOT NULL," +
                         "affected_streets TEXT NOT NULL," +
                         "start_date TEXT NOT NULL," +
                         "end_date TEXT NOT NULL," +
                         "work_schedule TEXT," +
-                        "work_status TEXT CHECK(work_status IN ('ONGOING', 'PLANNED'))" +
+                        "work_status TEXT CHECK(work_status IN ('ONGOING', 'PLANNED', 'SUSPENDED'))" +
                     ");";
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);
@@ -119,10 +121,10 @@ public class DatabaseConnectionManager {
             //System.out.println("Création de la table Notifications..."); // helper
             String notificationTableSQL =
                     "CREATE TABLE IF NOT EXISTS Notifications (" +
-                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "id TEXT PRIMARY KEY," +
                             "description TEXT NOT NULL," +
-                            "residents_id TEXT NOT NULL," +
-                            "seen_residents_ids TEXT NOT NULL" +
+                            "residents_id TEXT," + // peut-etre null si aucun resident dans le quartier est auth
+                            "seen_residents_ids TEXT" + // null dès le départ
                     ");";
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(notificationTableSQL);
@@ -162,6 +164,22 @@ public class DatabaseConnectionManager {
                 stmt.execute(userTableSQL);
             }
             // System.out.println("La table WorkRequests a été créée."); // helper
+        }
+
+        if (isTableInitialized(conn, "SchedulePreferences")) {
+            //System.out.println("La table Préférences horaire existe déjà."); // helper
+        } else {
+            //System.out.println("Création de la table Préférences horaire..."); // helper
+            String preferencesTableSQL =
+                    "CREATE TABLE IF NOT EXISTS SchedulePreferences (" +
+                            "street_name TEXT NOT NULL," +
+                            "neighbourhood TEXT NOT NULL," +
+                            "week_hours TEXT NOT NULL" +
+                    ");";
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(preferencesTableSQL);
+            }
+            //System.out.println("La table Préférences horaire a été créée."); // helper
         }
     }
 

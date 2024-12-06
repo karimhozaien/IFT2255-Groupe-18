@@ -139,9 +139,10 @@ public class WorkRepository {
              PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) { // Use a while loop to process all rows
+                while (rs.next()) {
                     String idFromDB = rs.getString("id");
                     String titleFromDB = rs.getString("title");
+                    String descriptionFromDB = rs.getString("description");
                     String typeOfWorkRawFromDB = rs.getString("type_of_work");
                     String affectedNeighbourhoodFromDB = rs.getString("affected_neighbourhood");
                     String affectedStreetsFromDB = rs.getString("affected_streets");
@@ -150,17 +151,16 @@ public class WorkRepository {
                     String workScheduleFromDB = rs.getString("work_schedule");
                     String workStatusFromDB = rs.getString("work_status");
 
-                    List<String> workSchedule = Arrays.asList(workScheduleFromDB.split(","));
-
                     Project project = new Project(
                             idFromDB,
                             titleFromDB,
+                            descriptionFromDB,
                             Project.TypeOfWork.valueOf(typeOfWorkRawFromDB),
                             affectedNeighbourhoodFromDB,
                             affectedStreetsFromDB,
                             startDateFromDB,
                             endDateFromDB,
-                            workSchedule,
+                            workScheduleFromDB,
                             Project.WorkStatus.valueOf(workStatusFromDB)
                     );
                     plannedProjects.add(project);
@@ -180,25 +180,57 @@ public class WorkRepository {
     }
 
     public void savePlannedProject(Project project) {
-        String insertSQL = "INSERT INTO Projects(id, title, type_of_work, affected_neighbourhood, affected_streets, " +
-                "start_date, end_date, work_schedule, work_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO Projects(id, title, description, type_of_work, affected_neighbourhood, " +
+                "affected_streets, start_date, end_date, work_schedule, work_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+
             pstmt.setString(1, project.getId());
             pstmt.setString(2, project.getTitle());
-            pstmt.setString(3, project.getTypeOfWork().toString());
-            pstmt.setString(4, project.getAffectedNeighbourhood());
-            pstmt.setString(5, project.getAffectedStreets());
-            pstmt.setString(6, project.getStartDate());
-            pstmt.setString(7, project.getEndDate());
-            pstmt.setString(8, project.getWorkSchedule().toString());
-            pstmt.setString(9, project.getWorkStatus().toString());
+            pstmt.setString(3, project.getDescription());
+            pstmt.setString(4, project.getTypeOfWork().toString());
+            pstmt.setString(5, project.getAffectedNeighbourhood());
+            pstmt.setString(6, project.getAffectedStreets());
+            pstmt.setString(7, project.getStartDate());
+            pstmt.setString(8, project.getEndDate());
+            pstmt.setString(9, project.getWorkSchedule());
+            pstmt.setString(10, project.getWorkStatus().toString());
 
             pstmt.executeUpdate();
             //System.out.println("Le projet a été sauvegardée."); // Message helper
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement du projet : " + e.getMessage());
+        }
+    }
+
+    public void updatePlannedProject(Project project) {
+        String updateSQL = "UPDATE Projects SET title = ?, description = ?, type_of_work = ?, " +
+                "affected_neighbourhood = ?, affected_streets = ?, start_date = ?, end_date = ?, " +
+                "work_schedule = ?, work_status = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {
+
+            pstmt.setString(1, project.getTitle());
+            pstmt.setString(2, project.getDescription());
+            pstmt.setString(3, project.getTypeOfWork().toString());
+            pstmt.setString(4, project.getAffectedNeighbourhood());
+            pstmt.setString(5, project.getAffectedStreets());
+            pstmt.setString(6, project.getStartDate());
+            pstmt.setString(7, project.getEndDate());
+            pstmt.setString(8, project.getWorkSchedule());
+            pstmt.setString(9, project.getWorkStatus().toString());
+            pstmt.setString(10, project.getId()); // Ensure the correct project is updated
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                System.out.println("Aucun projet mis à jour. ID invalide ou inexistant.");
+            } else {
+                System.out.println("Projet mis à jour avec succès.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la mise à jour du projet : " + e.getMessage());
         }
     }
 

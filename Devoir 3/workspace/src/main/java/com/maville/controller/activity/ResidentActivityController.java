@@ -1,11 +1,11 @@
 package com.maville.controller.activity;
 
 import com.maville.controller.repository.NotificationRepository;
-import com.maville.controller.repository.PreferencesRepository;
+import com.maville.controller.repository.SchedulePreferencesRepository;
 import com.maville.controller.repository.WorkRepository;
 import com.maville.controller.services.Authenticate;
 import com.maville.model.Notification;
-import com.maville.model.PreferencesHoraire;
+import com.maville.model.SchedulePreferences;
 import com.maville.model.WorkRequestForm;
 import com.maville.view.MenuView;
 import java.io.IOException;
@@ -93,15 +93,14 @@ public class ResidentActivityController {
     public void participateToSchedule() {
         MenuView.printMessage("Bienvenue dans les préférences horaires. Ici, vous pouvez partager une intervalle de " +
                 "temps pendant laquelle vous préférez que les travaux se fassent");
-        List<String> preferencesInfo = MenuView.askPreferences();
-        PreferencesHoraire preferencesHoraire = new PreferencesHoraire(
-                preferencesInfo.get(0),
-                preferencesInfo.get(1),
-                preferencesInfo.get(2),
-                preferencesInfo.get(3)
+        List<String> scheduleInfo = MenuView.askSchedulePreferences();
+        SchedulePreferences schedulePreferences = new SchedulePreferences(
+                scheduleInfo.get(0),
+                scheduleInfo.get(1),
+                scheduleInfo.get(2)
         );
-        PreferencesRepository preferencesRepository = new PreferencesRepository();
-        preferencesRepository.savePreferences(preferencesHoraire);
+        SchedulePreferencesRepository preferencesRepository = new SchedulePreferencesRepository();
+        preferencesRepository.savePreferences(schedulePreferences);
     }
 
     public void submitWorkRequest() {

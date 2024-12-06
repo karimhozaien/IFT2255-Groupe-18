@@ -15,14 +15,7 @@ public class WorkRepositoryTest {
         WorkRepository workRepository = new WorkRepository();
 
         // Fausse donnée
-        List<String> workSchedule = new ArrayList<>();
-        workSchedule.add("[8:00-16:00");
-        workSchedule.add(" N/A-N/A");
-        workSchedule.add(" N/A-N/A");
-        workSchedule.add(" N/A-N/A");
-        workSchedule.add(" N/A-N/A");
-        workSchedule.add(" N/A-N/A");
-        workSchedule.add(" N/A-N/A]");
+        String workSchedule = "[8:00-16:00,N/A-N/A,N/A-N/A,N/A-N/A,N/A-N/A,N/A-N/A,N/A-N/A]";
         Project project = new Project(
                 "1",
                 "Changement égout sur Édouard-Montpetit",

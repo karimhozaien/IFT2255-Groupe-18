@@ -16,9 +16,9 @@ public class AuthenticationView extends MenuView {
     }
 
     public static void showAuthType() {
+        printMessage("[0] Revenir en arrière");
         printMessage("[1] Résident");
         printMessage("[2] Intervenant");
-        printMessage("[0] Revenir en arrière");
     }
 
     public static void showCompanyTypeMessage() {
