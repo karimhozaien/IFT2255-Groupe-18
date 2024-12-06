@@ -75,18 +75,4 @@ public class PostalCodeFinder {
         }
         return false; // Retourner false si aucun code postal n'a été trouvé ou en cas d'erreur
     }
-
-    public static void main(String[] args) {
-        PostalCodeFinder finder = new PostalCodeFinder();
-        try {
-            String postalCode = finder.getPostalCode("450 Rue de la Montagne, Montréal, QC");
-            if (postalCode != null) {
-                System.out.println("Postal Code: " + postalCode);
-            } else {
-                System.out.println("No postal code found for the given address.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

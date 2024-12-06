@@ -1,88 +1,59 @@
 package com.maville.controller.activity;
 
 import com.maville.controller.repository.NotificationRepository;
+import com.maville.controller.repository.SchedulePreferencesRepository;
 import com.maville.controller.repository.UserRepository;
 import com.maville.controller.repository.WorkRepository;
 import com.maville.controller.services.PostalCodeFinder;
 import com.maville.model.Notification;
 import com.maville.model.Project;
-import com.maville.model.WorkRequestForm;
 import com.maville.view.MenuView;
 
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class IntervenantActivityController {
     private final WorkRepository workRepository = new WorkRepository();
+    private final SchedulePreferencesRepository schedulePreferencesRepository = new SchedulePreferencesRepository();
 
+    /**
+     * Permet à un intervenant de soumettre un nouveau projet.
+     * Cette méthode recueille les informations du projet, vérifie leur validité,
+     * et enregistre le projet dans le dépôt de projets planifiés.
+     */
     public void submitProject() {
         try {
             List<String> projectInfo = MenuView.askFormInfoForProjectSubmission();
-
-            // Valider les informations récupérées
-            /*if (projectInfo == null || projectInfo.size() < 7) {
-                throw new IllegalArgumentException("Les informations du projet sont incomplètes.");
-            }*/
-
-            // Extraire les détails du formulaire
-            String title = projectInfo.get(0);
-            String typeOfWork = projectInfo.get(1);
-            String endDate = projectInfo.get(2);
-            String affectedNeighbourhood = projectInfo.get(3);
-            String affectedStreets = projectInfo.get(4);
-            String startDate = projectInfo.get(5);
-            String workSchedule = projectInfo.get(6);
-
-            // Valider les champs (des validations supplémentaires peuvent être ajoutées ici)
-            /*if (title.isEmpty() || description.isEmpty() || typeOfWork.isEmpty() || endDate.isEmpty()
-                    || affectedNeighbourhood.isEmpty() || affectedStreets.isEmpty() || startDate.isEmpty()) {
-                throw new IllegalArgumentException("Tous les champs sont obligatoires.");
-            }*/
+            String projectSchedule = collectValidSchedule(projectInfo.get(3)); // affectedNeighbourhoods
 
             Project project = new Project(
                     UUID.randomUUID().toString(),
-                    title,
-                    Project.getTypeOfWork(typeOfWork),
-                    affectedNeighbourhood,
-                    affectedStreets,
-                    startDate,
-                    endDate,
-                    workSchedule, // Horaires de travail par défaut (peut être personnalisé)
-                    Project.WorkStatus.PLANNED
+                    projectInfo.get(0), // titre
+                    projectInfo.get(1), // type de travaux
+                    projectInfo.get(3), // quartiers concernés
+                    projectInfo.get(4), // rues concernées
+                    projectInfo.get(5), // date de début
+                    projectInfo.get(2), // date de fin
+                    projectSchedule
             );
 
             workRepository.savePlannedProject(project);
 
-            createNotificationForProject(affectedNeighbourhood, "Un nouveau projet intitulé " + title + " a soumis dans votre quartier");
-
+            String description = "Un nouveau projet intitulé " + projectInfo.get(0) + " a été soumis dans votre quartier";
+            createNotificationForProject(projectInfo.get(3), description);
             MenuView.printMessage("Le projet a été soumis avec succès !");
-        } catch (IllegalArgumentException e) {
-            MenuView.printMessage("Erreur de validation : " + e.getMessage());
         } catch (Exception e) {
-            // Gérer les erreurs générales (comme les exceptions inattendues)
             MenuView.printMessage("Une erreur est survenue : " + e.getMessage());
         }
     }
 
-    private void createNotificationForProject(String affectedNeighbourhood, String description) {
-        Notification notification = new Notification(description);
-        PostalCodeFinder postalCodeFinder = new PostalCodeFinder();
-
-        for (String[] usersInfo : UserRepository.getInstance().fetchAllResidents()) {
-            String currentUserResidentialAddress = usersInfo[1];
-            System.out.println("Adresse résidentielle : " + currentUserResidentialAddress); // helper
-            for (String neighbourhood : affectedNeighbourhood.split(",")) {
-                boolean isEqual = postalCodeFinder.isValidCorrespondance(neighbourhood, currentUserResidentialAddress);
-                if (isEqual) {
-                    notification.addResident(usersInfo[0]); // on ajoute le resident a la liste
-                }
-            }
-        }
-
-        NotificationRepository.getInstance().saveNotification(notification); // ajouter la notification a la DB
-    }
-
+    /**
+     * Permet à un intervenant de mettre à jour les informations d'un projet existant.
+     * Affiche les projets planifiés, demande à l'utilisateur de sélectionner un projet,
+     * et met à jour ses détails en fonction des informations fournies.
+     */
     public void updateProject() {
         try {
             List<Project> plannedProjects = workRepository.getPlannedProjects();
@@ -91,43 +62,69 @@ public class IntervenantActivityController {
                 return;
             }
 
-            // Afficher les projets existants et demander à l'utilisateur de choisir celui qu'il souhaite mettre à jour
             MenuView.showResults(plannedProjects);
             MenuView.printMessage("Sélectionnez un projet à mettre à jour.");
             int projectIndex = Integer.parseInt(new Scanner(System.in).nextLine()) - 1;
 
-            if (projectIndex < 0 || projectIndex >= plannedProjects.size()) {    // Vérifier si l'index du projet est valide
+            if (projectIndex < 0 || projectIndex >= plannedProjects.size()) {
                 MenuView.printMessage("Numéro de projet invalide.");
                 return;
             }
 
-            Project projectToUpdate = plannedProjects.get(projectIndex);             // Récupérer le projet à mettre à jour
-
-            // Demander les informations mises à jour pour le projet en utilisant le formulaire
-            List<String> updatedInfo = MenuView.askFormInfoForProjectSubmission();
-
-            // Mettre à jour les informations du projet
-            projectToUpdate.setTitle(updatedInfo.get(0));
-            projectToUpdate.setTypeOfWork(Project.TypeOfWork.valueOf(updatedInfo.get(2).toUpperCase()));
-            projectToUpdate.setEndDate(updatedInfo.get(3));
-
-            workRepository.savePlannedProject(projectToUpdate);
-            MenuView.printMessage("Le projet a été mis à jour avec succès !");
-        } catch (NumberFormatException e) {
-            // Afficher un message d'erreur si l'utilisateur entre une valeur invalide pour l'index
-            MenuView.printMessage("Veuillez entrer un numéro de projet valide.");
-        } catch (IllegalArgumentException e) {
-            // Afficher un message d'erreur si une valeur invalide a été saisie
-            MenuView.printMessage("Valeur invalide saisie : " + e.getMessage());
-        } catch (IndexOutOfBoundsException e) {
-            // Afficher un message d'erreur si l'index du projet est hors limites
-            MenuView.printMessage("Index du projet en dehors des limites.");
+            Project projectToUpdate = plannedProjects.get(projectIndex);
+            updateProjectDetails(projectToUpdate);
+        } catch (Exception e) {
+            MenuView.printMessage("Erreur : " + e.getMessage());
         }
     }
 
+    /**
+     * Permet à un intervenant de consulter toutes les demandes de travaux.
+     * Les demandes sont affichées à l'écran en utilisant l'interface utilisateur.
+     */
     public void consultWorkRequests() {
-        WorkRepository workRepository = new WorkRepository();
-        List<WorkRequestForm> workRequests= workRepository.fetchWorkRequests();
-        MenuView.showResults(workRequests);
+        MenuView.showResults(workRepository.fetchWorkRequests());
+    }
+
+    // Méthodes privées
+
+    private String collectValidSchedule(String affectedNeighbourhoods) {
+        while (true) {
+            String projectSchedule = MenuView.collectWeeklySchedules();
+            if (schedulePreferencesRepository.checkPreferences(projectSchedule, affectedNeighbourhoods)) {
+                return projectSchedule;
+            }
+            MenuView.printMessage("Horaire incompatible avec les préférences des résidents du quartier.");
+            MenuView.printMessage("Jours en conflit :");
+            schedulePreferencesRepository.getScheduleConflicts().forEach(MenuView::printMessage);
+            MenuView.printMessage("Veuillez réentrer les informations.");
+        }
+    }
+
+    private void createNotificationForProject(String affectedNeighbourhood, String description) {
+        Notification notification = new Notification(description);
+        PostalCodeFinder postalCodeFinder = new PostalCodeFinder();
+
+        UserRepository.getInstance()
+                .fetchAllResidents()
+                .stream()
+                .filter(user -> isNeighbourhoodAffected(affectedNeighbourhood, user[1], postalCodeFinder))
+                .forEach(user -> notification.addResident(user[0]));
+
+        NotificationRepository.getInstance().saveNotification(notification);
+    }
+
+    private boolean isNeighbourhoodAffected(String affectedNeighbourhoods, String address, PostalCodeFinder postalCodeFinder) {
+        return Stream.of(affectedNeighbourhoods.split(","))
+                .anyMatch(neighbourhood -> postalCodeFinder.isValidCorrespondance(neighbourhood, address));
+    }
+
+    private void updateProjectDetails(Project project) {
+        List<String> updatedInfo = MenuView.askFormInfoForProjectSubmission();
+        project.setTitle(updatedInfo.get(0));
+        project.setTypeOfWork(Project.TypeOfWork.valueOf(updatedInfo.get(1).toUpperCase()));
+        project.setEndDate(updatedInfo.get(2));
+        workRepository.savePlannedProject(project);
+        MenuView.printMessage("Le projet a été mis à jour avec succès !");
     }
 }

@@ -90,11 +90,11 @@ public class DatabaseConnectionManager {
                         "title TEXT NOT NULL," +
                         "type_of_work TEXT NOT NULL CHECK(type_of_work IN (" +
                             "'ROAD', " +
-                            "'GAS/ELECTRICITY', " +
-                            "'CONSTRUCTION/RENOVATION', " +
+                            "'GAS_ELECTRICITY', " +
+                            "'CONSTRUCTION_RENOVATION', " +
                             "'LANDSCAPE', " +
                             "'PUBLIC_TRANSPORT', " +
-                            "'SIGNAGE/LIGHTING', " +
+                            "'SIGNAGE_LIGHTING', " +
                             "'UNDERGROUND', " +
                             "'RESIDENTIAL', " +
                             "'URBAN_MAINTENANCE', " +
@@ -146,6 +146,22 @@ public class DatabaseConnectionManager {
                 stmt.execute(userTableSQL);
             }
             // System.out.println("La table WorkRequests a été créée."); // helper
+        }
+
+        if (isTableInitialized(conn, "SchedulePreferences")) {
+            //System.out.println("La table Préférences horaire existe déjà."); // helper
+        } else {
+            //System.out.println("Création de la table Préférences horaire..."); // helper
+            String preferencesTableSQL =
+                    "CREATE TABLE IF NOT EXISTS SchedulePreferences (" +
+                            "street_name TEXT NOT NULL," +
+                            "neighbourhood TEXT NOT NULL," +
+                            "week_hours TEXT NOT NULL" +
+                    ");";
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(preferencesTableSQL);
+            }
+            //System.out.println("La table Préférences horaire a été créée."); // helper
         }
     }
 

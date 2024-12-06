@@ -48,9 +48,9 @@ public class Project {
     }
 
     // Overloaded constructor (default WorkStatus = PLANNED)
-    public Project(String id, String title, TypeOfWork typeOfWork, String affectedNeighbourhood, String affectedStreets,
+    public Project(String id, String title, String typeOfWork, String affectedNeighbourhood, String affectedStreets,
                    String startDate, String endDate, String workSchedule) {
-        this(id, title, typeOfWork, affectedNeighbourhood, affectedStreets, startDate, endDate, workSchedule, WorkStatus.PLANNED);
+        this(id, title, TypeOfWork.valueOf(typeOfWork), affectedNeighbourhood, affectedStreets, startDate, endDate, workSchedule, WorkStatus.PLANNED);
     }
 
     // Enum for WorkStatus

@@ -32,22 +32,14 @@ public class NotificationRepository {
     public void saveNotification(Notification notification) {
         String insertSQL = "INSERT INTO Notifications(id, description, residents_id, seen_residents_ids) VALUES (?, ?, ?, ?)";
 
-        System.out.println(notification.getId() + ", " + notification.getDescription() + ", " + String.join(",", notification.getResidents())
-        + ", " + String.join(",", notification.getSeenResidents()));
-
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
-
 
             pstmt.setString(1, notification.getId());
             pstmt.setString(2, notification.getDescription());
             pstmt.setString(3, String.join(",", notification.getResidents()));
-            System.out.println("is it here");
             pstmt.setString(4, "");
-            System.out.println("or here");
             pstmt.executeUpdate();
-
-            System.out.println("La notification a été sauvegardée avec succès.");
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement de la notification : " + e.getMessage());
         }

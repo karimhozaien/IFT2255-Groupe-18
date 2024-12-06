@@ -183,10 +183,10 @@ public class WorkRepository {
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+
             pstmt.setString(1, project.getId());
             pstmt.setString(2, project.getTitle());
             pstmt.setString(3, project.getTypeOfWork().toString());
-            System.out.println(project.getTypeOfWork().toString());
             pstmt.setString(4, project.getAffectedNeighbourhood());
             pstmt.setString(5, project.getAffectedStreets());
             pstmt.setString(6, project.getStartDate());
