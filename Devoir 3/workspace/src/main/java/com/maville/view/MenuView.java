@@ -3,6 +3,7 @@ package com.maville.view;
 import com.maville.model.Project;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class MenuView {
     private static final Scanner scanner = new Scanner(System.in);
@@ -85,6 +86,7 @@ public class MenuView {
         printMessage("Entrez les informations suivantes pour soumettre un projet :");
 
         infos.add(askSingleInput("Titre : "));
+        infos.add(askSingleInput("Description : "));
         infos.add(askWorkType());
         infos.add(askSingleInput("Date de fin espérée (AAAA-MM-JJ) : "));
         infos.add(askSingleInput("Entrez les trois premiers caractères du code postal (séparés par des virgules) : "));
@@ -111,14 +113,44 @@ public class MenuView {
     }
 
     public static List<String> askFormInfoForProjectUpdate() {
-        return askInputs(
-                "Entrez les informations suivantes pour mettre à jour le projet :",
-                "Titre : ", "Description : ", "Type de travaux : ", "Date de fin espérée (AAAA-MM-JJ) : "
-        );
+        List<String> inputs = new ArrayList<>();
+        printMessage("Entrez les informations suivantes pour mettre à jour le projet :");
+
+        inputs.add(askSingleInput("Description : "));
+        inputs.add(askSingleInput("Date de fin espérée (AAAA-MM-JJ) : "));
+
+        // Display options for project statuses
+        printMessage("Statut du projet :");
+        Project.WorkStatus[] workStatuses = Project.WorkStatus.values();
+        for (int i = 0; i < workStatuses.length; i++) {
+            printMessage("[" + (i + 1) + "] " + workStatuses[i]);
+        }
+
+        // Collect and validate the user's choice
+        int option;
+        while (true) {
+            try {
+                String input = askSingleInput("Sélectionnez le statut du projet : ");
+                option = Integer.parseInt(input) - 1; // Adjust for 0-based index
+                if (option >= 0 && option < workStatuses.length) {
+                    inputs.add(workStatuses[option].toString());
+                    break;
+                } else {
+                    printMessage("Option invalide. Veuillez entrer un numéro valide.");
+                }
+            } catch (NumberFormatException e) {
+                printMessage("Entrée invalide. Veuillez entrer un numéro.");
+            }
+        }
+
+        return inputs;
     }
 
     public static <T> void showResults(List<T> items) {
-        items.forEach(item -> printMessage(item.toString() + "\n"));
+        IntStream.range(0, items.size())
+                .mapToObj(i -> "[" + (i + 1) + "] " + items.get(i))
+                .toList()
+                .forEach(item -> printMessage(item + "\n"));
     }
 
     // Helper Methods
@@ -127,7 +159,7 @@ public class MenuView {
         options.forEach((key, value) -> printMessage("[" + key + "] " + value));
     }
 
-    private static String askSingleInput(String prompt) {
+    public static String askSingleInput(String prompt) {
         printMessageInline(prompt);
         return scanner.nextLine();
     }

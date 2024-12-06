@@ -24,6 +24,7 @@ public class Parser<T> {
             for (Record record : records) {
                 Project project = new Project(record.getId(),
                         createTitle(record),
+                        null,
                         parseTypeOfWork(record),
                         record.getAffectedNeighbourhood(),
                         record.getAffectedStreets(),

@@ -12,6 +12,7 @@ import com.maville.view.MenuView;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class IntervenantActivityController {
@@ -26,23 +27,24 @@ public class IntervenantActivityController {
     public void submitProject() {
         try {
             List<String> projectInfo = MenuView.askFormInfoForProjectSubmission();
-            String projectSchedule = collectValidSchedule(projectInfo.get(3)); // affectedNeighbourhoods
+            String projectSchedule = collectValidSchedule(projectInfo.get(4)); // affectedNeighbourhoods
 
             Project project = new Project(
                     UUID.randomUUID().toString(),
                     projectInfo.get(0), // titre
-                    projectInfo.get(1), // type de travaux
-                    projectInfo.get(3), // quartiers concernés
-                    projectInfo.get(4), // rues concernées
-                    projectInfo.get(5), // date de début
-                    projectInfo.get(2), // date de fin
+                    projectInfo.get(1), // description
+                    projectInfo.get(2), // type de travaux
+                    projectInfo.get(4), // quartiers concernés
+                    projectInfo.get(5), // rues concernées
+                    projectInfo.get(6), // date de début
+                    projectInfo.get(3), // date de fin
                     projectSchedule
             );
 
             workRepository.savePlannedProject(project);
 
-            String description = "Un nouveau projet intitulé " + projectInfo.get(0) + " a été soumis dans votre quartier";
-            createNotificationForProject(projectInfo.get(3), description);
+            String notiDescription = "Un nouveau projet intitulé " + projectInfo.get(0) + " a été soumis dans votre quartier";
+            createNotificationForProject(projectInfo.get(3), notiDescription);
             MenuView.printMessage("Le projet a été soumis avec succès !");
         } catch (Exception e) {
             MenuView.printMessage("Une erreur est survenue : " + e.getMessage());
@@ -61,17 +63,24 @@ public class IntervenantActivityController {
                 MenuView.printMessage("Aucun projet trouvé à mettre à jour.");
                 return;
             }
-
             MenuView.showResults(plannedProjects);
-            MenuView.printMessage("Sélectionnez un projet à mettre à jour.");
-            int projectIndex = Integer.parseInt(new Scanner(System.in).nextLine()) - 1;
 
-            if (projectIndex < 0 || projectIndex >= plannedProjects.size()) {
-                MenuView.printMessage("Numéro de projet invalide.");
-                return;
+            int option;
+            while (true) {
+                try {
+                    String input = MenuView.askSingleInput("Sélectionnez un projet à mettre à jour : ");
+                    option = Integer.parseInt(input);
+                    if (option > 0 && option <= plannedProjects.size()) { // Parmi les choix possibles ?
+                        break;
+                    } else {
+                        MenuView.printMessage("Numéro de projet invalide. Veuillez entrer un numéro dans la liste.");
+                    }
+                } catch (NumberFormatException e) {
+                    MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
+                }
             }
 
-            Project projectToUpdate = plannedProjects.get(projectIndex);
+            Project projectToUpdate = plannedProjects.get(option - 1);
             updateProjectDetails(projectToUpdate);
         } catch (Exception e) {
             MenuView.printMessage("Erreur : " + e.getMessage());
@@ -120,11 +129,16 @@ public class IntervenantActivityController {
     }
 
     private void updateProjectDetails(Project project) {
-        List<String> updatedInfo = MenuView.askFormInfoForProjectSubmission();
-        project.setTitle(updatedInfo.get(0));
-        project.setTypeOfWork(Project.TypeOfWork.valueOf(updatedInfo.get(1).toUpperCase()));
-        project.setEndDate(updatedInfo.get(2));
-        workRepository.savePlannedProject(project);
-        MenuView.printMessage("Le projet a été mis à jour avec succès !");
+        List<String> updatedInfo = MenuView.askFormInfoForProjectUpdate();
+        project.setDescription(updatedInfo.get(0));
+        project.setEndDate(updatedInfo.get(1));
+        project.setWorkStatus(Project.WorkStatus.valueOf(updatedInfo.get(2)));
+
+        try {
+            workRepository.updatePlannedProject(project);
+            MenuView.printMessage("Le projet a été mis à jour avec succès !");
+        } catch (Exception e) {
+            MenuView.printMessage("Une erreur est survenue : " + e.getMessage());
+        }
     }
 }

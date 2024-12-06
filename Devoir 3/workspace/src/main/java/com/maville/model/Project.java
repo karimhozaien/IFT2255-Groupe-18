@@ -5,6 +5,7 @@ import java.util.List;
 public class Project {
     private String id;
     private String title;
+    private String description;
     private TypeOfWork typeOfWork;
     private String affectedNeighbourhood;
     private String affectedStreets;
@@ -34,10 +35,12 @@ public class Project {
     };
 
     // Full constructor
-    public Project(String id, String title, TypeOfWork typeOfWork, String affectedNeighbourhood, String affectedStreets,
+    public Project(String id, String title, String description,
+                   TypeOfWork typeOfWork, String affectedNeighbourhood, String affectedStreets,
                    String startDate, String endDate, String workSchedule, WorkStatus workStatus) {
         this.id = id;
         this.title = title;
+        this.description = description;
         this.typeOfWork = typeOfWork;
         this.affectedNeighbourhood = affectedNeighbourhood;
         this.affectedStreets = affectedStreets;
@@ -48,15 +51,17 @@ public class Project {
     }
 
     // Overloaded constructor (default WorkStatus = PLANNED)
-    public Project(String id, String title, String typeOfWork, String affectedNeighbourhood, String affectedStreets,
-                   String startDate, String endDate, String workSchedule) {
-        this(id, title, TypeOfWork.valueOf(typeOfWork), affectedNeighbourhood, affectedStreets, startDate, endDate, workSchedule, WorkStatus.PLANNED);
+    public Project(String id, String title, String description, String typeOfWork, String affectedNeighbourhood,
+                   String affectedStreets, String startDate, String endDate, String workSchedule) {
+        this(id, title, description, TypeOfWork.valueOf(typeOfWork), affectedNeighbourhood, affectedStreets, startDate,
+                endDate, workSchedule, WorkStatus.PLANNED);
     }
 
     // Enum for WorkStatus
     public enum WorkStatus {
         ONGOING,
-        PLANNED;
+        PLANNED,
+        SUSPENDED
     }
 
     // Enum for TypeOfWork
@@ -77,6 +82,7 @@ public class Project {
     // Getters
     public String getId() { return id; }
     public String getTitle() { return title; }
+    public String getDescription() { return description; }
     public TypeOfWork getTypeOfWork() { return typeOfWork; }
     public String getAffectedNeighbourhood() { return affectedNeighbourhood; }
     public String getAffectedStreets() { return affectedStreets; }
@@ -88,6 +94,7 @@ public class Project {
     // Setters
     public void setId(String id) { this.id = id; }
     public void setTitle(String title) { this.title = title; }
+    public void setDescription(String description) { this.description = description; }
     public void setTypeOfWork(TypeOfWork typeOfWork) { this.typeOfWork = typeOfWork; }
     public void setAffectedNeighbourhood(String affectedNeighbourhood) { this.affectedNeighbourhood = affectedNeighbourhood; }
     public void setAffectedStreets(String affectedStreets) { this.affectedStreets = affectedStreets; }
@@ -99,6 +106,7 @@ public class Project {
     @Override
     public String toString() {
         return title + ", " +
+                description + ", " +
                 typeOfWork + ", " +
                 affectedNeighbourhood + ", " +
                 affectedStreets + ", " +

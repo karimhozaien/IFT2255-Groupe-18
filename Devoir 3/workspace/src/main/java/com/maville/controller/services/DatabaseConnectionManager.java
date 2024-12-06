@@ -88,6 +88,7 @@ public class DatabaseConnectionManager {
                     "CREATE TABLE IF NOT EXISTS Projects (" +
                         "id TEXT PRIMARY KEY," +
                         "title TEXT NOT NULL," +
+                        "description TEXT," +
                         "type_of_work TEXT NOT NULL CHECK(type_of_work IN (" +
                             "'ROAD', " +
                             "'GAS_ELECTRICITY', " +
@@ -106,7 +107,7 @@ public class DatabaseConnectionManager {
                         "start_date TEXT NOT NULL," +
                         "end_date TEXT NOT NULL," +
                         "work_schedule TEXT," +
-                        "work_status TEXT CHECK(work_status IN ('ONGOING', 'PLANNED'))" +
+                        "work_status TEXT CHECK(work_status IN ('ONGOING', 'PLANNED', 'SUSPENDED'))" +
                     ");";
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);
