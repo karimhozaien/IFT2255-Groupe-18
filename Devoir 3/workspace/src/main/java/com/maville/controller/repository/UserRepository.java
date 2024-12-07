@@ -9,6 +9,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dépôt responsable de la gestion des utilisateurs dans la base de données.
+ * Fournit des méthodes pour l'authentification, l'enregistrement et la récupération des utilisateurs.
+ */
 public class UserRepository {
     private static UserRepository instance;
 

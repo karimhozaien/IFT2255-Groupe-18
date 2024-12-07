@@ -10,10 +10,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * Service pour récupérer les codes postaux à partir d'adresses en utilisant l'API Nominatim d'OpenStreetMap.
+ * Fournit également une méthode pour valider la correspondance entre un quartier et une adresse donnée.
+ */
 public class PostalCodeFinder {
 
     private static final String NOMINATIM_API_URL = "https://nominatim.openstreetmap.org/search";
 
+    /**
+     * Récupère le code postal associé à une adresse en utilisant l'API Nominatim.
+     *
+     * @param address L'adresse pour laquelle récupérer le code postal.
+     * @return Le code postal correspondant à l'adresse, ou {@code null} si aucun résultat n'est trouvé ou en cas d'erreur.
+     */
     public String getPostalCode(String address) {
         try {
             String encodedAddress = URLEncoder.encode(address, "UTF-8");
@@ -46,7 +56,7 @@ public class PostalCodeFinder {
 
             // Parser la réponse JSON
             JsonArray jsonArray = JsonParser.parseString(response.toString()).getAsJsonArray();
-            if (jsonArray.size() == 0) {
+            if (jsonArray.isEmpty()) {
                 return null; // Aucun résultat trouvé
             }
 
@@ -64,6 +74,13 @@ public class PostalCodeFinder {
         }
     }
 
+    /**
+     * Vérifie si un quartier correspond à une adresse en comparant leurs codes postaux.
+     *
+     * @param currentNeighbourhood Le quartier à vérifier (basé sur la partie principale du code postal).
+     * @param address L'adresse à valider.
+     * @return {@code true} si le code postal de l'adresse correspond au quartier, sinon {@code false}.
+     */
     public boolean isValidCorrespondance(String currentNeighbourhood, String address) {
         try {
             String postalCode = getPostalCode(address);

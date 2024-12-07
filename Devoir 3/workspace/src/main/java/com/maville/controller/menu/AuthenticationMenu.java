@@ -8,30 +8,19 @@ import com.maville.view.MenuView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Menu d'authentification permettant de gérer les connexions et inscriptions
+ * des résidents et des intervenants. Fournit des options interactives pour
+ * faciliter l'authentification des utilisateurs dans l'application.
+ */
 public class AuthenticationMenu extends Menu {
     private Authenticate authenticate;
 
-    // TODO : METTRE TOUT CA DANS AUTHENTICATIONVIEW
-    private static final String[] LOGIN_INFO_MESSAGES = {
-            "Adresse courriel",
-            "Mot de passe"
-    };
-    private static final String[] SIGNUP_RESIDENT_INFO_MESSAGES = {
-            "Nom complet",
-            "Date de naissance (DD/MM/YYYY)",
-            "Adresse courriel",
-            "Mot de passe",
-            "Numéro de téléphone (optionnel)",
-            "Adresse résidentielle"
-    };
-    private static final String[] SIGNUP_INTERVENANT_INFO_MESSAGES = {
-            "Nom complet",
-            "Adresse courriel",
-            "Mot de passe",
-            "Identifiant de la ville"
-    };
-
-    // Logique de connexion
+    /**
+     * Gère le processus de connexion pour les utilisateurs.
+     * Permet à l'utilisateur de choisir son type (résident ou intervenant),
+     * de saisir ses informations de connexion, et de continuer vers le menu principal.
+     */
     public void logInManager() {
         while (true) {
             AuthenticationView.showAuthMessage();
@@ -48,7 +37,11 @@ public class AuthenticationMenu extends Menu {
         }
     }
 
-    // Logique d'inscription
+    /**
+     * Gère le processus d'inscription pour les utilisateurs.
+     * Permet à l'utilisateur de choisir son type (résident ou intervenant),
+     * de saisir ses informations de profil, et de compléter l'inscription.
+     */
     public void signUpManager() {
         while (true) {
             AuthenticationView.showAuthMessage();
@@ -103,7 +96,7 @@ public class AuthenticationMenu extends Menu {
         AuthenticationView.showLogInMessage(userType);
         SCANNER.nextLine();
         while (true) {
-            authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
+            authenticate = new Authenticate(collectUserInfo(AuthenticationView.LOGIN_INFO_MESSAGES));
 
             if (authenticate.logIn()) { // Construction du User
                 String userTypeFromDB = authenticate.getUserType();
@@ -126,11 +119,11 @@ public class AuthenticationMenu extends Menu {
         switch (option) {
             case 1:
                 userType = "resident";
-                infoMessages = SIGNUP_RESIDENT_INFO_MESSAGES;
+                infoMessages = AuthenticationView.SIGNUP_RESIDENT_INFO_MESSAGES;
                 break;
             case 2:
                 userType = "intervenant";
-                infoMessages = SIGNUP_INTERVENANT_INFO_MESSAGES;
+                infoMessages = AuthenticationView.SIGNUP_INTERVENANT_INFO_MESSAGES;
                 break;
             case 0:
                 MenuView.backMessage();
@@ -170,6 +163,12 @@ public class AuthenticationMenu extends Menu {
         }
     }
 
+    /**
+     * Demande à l'utilisateur de sélectionner le type d'intervenant
+     * parmi les types d'entreprises disponibles.
+     *
+     * @return le numéro correspondant au type d'entreprise choisi.
+     */
     public static int askForCompanyType() {
         Intervenant.CompanyType[] companyTypes = Intervenant.CompanyType.values();
 

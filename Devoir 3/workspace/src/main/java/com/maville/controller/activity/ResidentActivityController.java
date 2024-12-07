@@ -12,19 +12,26 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Contrôleur principal pour les activités des résidents.
+ * Permet de gérer et d'afficher des informations liées aux travaux, entraves,
+ * préférences de planning, notifications, et requêtes.
+ */
 public class ResidentActivityController {
-    final Scanner scanner;
-    final WorkRepository workRepo;
+    private final Scanner scanner;
+    private final WorkRepository workRepo;
 
     public ResidentActivityController() {
         scanner = new Scanner(System.in);
         workRepo = new WorkRepository();
     }
 
+    /**
+     * Affiche les travaux en cours et planifiés, avec la possibilité de filtrer
+     * par quartier ou type de travaux.
+     * Demande à l'utilisateur de sélectionner un filtre et affiche les résultats correspondants.
+     */
     public void consultWorks() {
-        // TODO
-        // Demander à l'utilisateur s'il veut filter par 1. Quartier, 2. Type de travaux
-        // Afficher tous les travaux en cours et planné
         try {
             MenuView.askFilter("Quartier", "Type de travaux", "Autre");
 
@@ -49,10 +56,12 @@ public class ResidentActivityController {
         }
     }
 
+    /**
+     * Affiche les entraves routières en cours et planifiées, avec la possibilité de filtrer
+     * par rue ou type de travaux.
+     * Demande à l'utilisateur de sélectionner un filtre et affiche les résultats correspondants.
+     */
     public void consultRoadObstructions() {
-        // TODO
-        // Demander à l'utilisateur il veut chercher par 1. Rue, 2. Type de travaux
-        // Afficher toutes les entraves en cours et plannées
         MenuView.askFilter("Rue", "Type de travaux", "Autre");
         try {
             int option = scanner.nextInt();
@@ -78,9 +87,12 @@ public class ResidentActivityController {
         }
     }
 
+    /**
+     * Recherche des travaux en fonction d'un terme donné par l'utilisateur,
+     * qui peut être un titre, un quartier ou un type de travaux.
+     * Affiche les résultats correspondant au terme de recherche.
+     */
     public void searchWorks() {
-        // TODO
-        // Demander à l'utilisateur s'il veut chercher par 1. Titre, 2. Quartier, 3. Type de travaux
         MenuView.printMessage("Entrez un terme de recherche (titre, quartier ou type de travaux) :");
         try {
             String searchTerm = scanner.nextLine();  // Get the search term
@@ -90,6 +102,10 @@ public class ResidentActivityController {
         }
     }
 
+    /**
+     * Permet au résident de partager ses préférences horaires pour les travaux.
+     * Les préférences sont sauvegardées dans la base de données.
+     */
     public void participateToSchedule() {
         MenuView.printMessage("Bienvenue dans les préférences horaires. Ici, vous pouvez partager une intervalle de " +
                 "temps pendant laquelle vous préférez que les travaux se fassent");
@@ -103,8 +119,11 @@ public class ResidentActivityController {
         preferencesRepository.savePreferences(schedulePreferences);
     }
 
+    /**
+     * Soumet une requête de travaux à partir d'informations fournies par l'utilisateur.
+     * Les détails sont sauvegardés dans la base de données.
+     */
     public void submitWorkRequest() {
-        // TODO : finir l'ajout de la requête à la DB et avant, initialiser la table
         List<String> workRequestInfo = MenuView.askFormInfo();
         WorkRequestForm workRequestForm = new WorkRequestForm(
                 workRequestInfo.get(0),
@@ -117,7 +136,8 @@ public class ResidentActivityController {
     }
 
     /**
-     * Consulte et affiche toutes les notifications associées au résident authentifié.
+     * Consulte et affiche toutes les notifications associées au résident actuellement authentifié.
+     * Marque automatiquement les notifications comme "vues" après affichage.
      */
     public void consultNotifications() {
         String userId = Authenticate.getUserId();

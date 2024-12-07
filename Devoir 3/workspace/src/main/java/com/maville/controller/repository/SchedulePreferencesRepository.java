@@ -11,9 +11,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dépôt pour gérer les préférences horaires des résidents.
+ * Permet de sauvegarder, récupérer et vérifier les préférences horaires en fonction des soumissions de projets.
+ */
 public class SchedulePreferencesRepository {
     List<String> scheduleConflicts = new ArrayList<>();
 
+    /**
+     * Sauvegarde les préférences horaires dans la base de données.
+     *
+     * @param schedulePreferences Les préférences horaires à sauvegarder, incluant la rue, le quartier et les heures de la semaine.
+     */
     public void savePreferences(SchedulePreferences schedulePreferences) {
         String insertSQL = "INSERT INTO SchedulePreferences(street_name, neighbourhood, week_hours) VALUES (?, ?, ?)";
 
@@ -24,7 +33,6 @@ public class SchedulePreferencesRepository {
             pstmt.setString(3, schedulePreferences.getWeekHours());
 
             pstmt.executeUpdate();
-            //System.out.println("La requête a été sauvegardée."); // Message helper
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement de la requête : " + e.getMessage());
         }
@@ -52,6 +60,13 @@ public class SchedulePreferencesRepository {
         }
     }
 
+    /**
+     * Vérifie si l'horaire soumis pour un projet est compatible avec les préférences des quartiers concernés.
+     *
+     * @param projectSubmissionDesiredSchedule L'horaire souhaité pour le projet, sous forme de chaîne.
+     * @param neighbourhoods Une liste de quartiers séparés par des virgules.
+     * @return {@code true} si l'horaire soumis est compatible avec toutes les préférences, sinon {@code false}.
+     */
     public boolean checkPreferences(String projectSubmissionDesiredSchedule, String neighbourhoods) {
         scheduleConflicts.clear(); // Réinitialiser les conflits avant chaque vérification
         boolean hasConflicts = false;
@@ -112,6 +127,11 @@ public class SchedulePreferencesRepository {
         return days[dayIndex];
     }
 
+    /**
+     * Récupère la liste des conflits horaires identifiés après une vérification.
+     *
+     * @return Une liste de chaînes décrivant les conflits d'horaires.
+     */
     public List<String> getScheduleConflicts() {
         return scheduleConflicts;
     }

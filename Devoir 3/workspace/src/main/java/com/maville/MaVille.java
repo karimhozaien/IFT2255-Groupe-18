@@ -2,6 +2,7 @@ package com.maville;
 
 import com.maville.controller.menu.DefaultMenu;
 import com.maville.controller.services.DatabaseConnectionManager;
+import com.maville.view.MenuView;
 
 public class MaVille {
 
@@ -15,6 +16,7 @@ public class MaVille {
     }
 
     public static void exitApplication() {
+        MenuView.exitMessage();
         DatabaseConnectionManager.close();
         System.exit(0);
     }

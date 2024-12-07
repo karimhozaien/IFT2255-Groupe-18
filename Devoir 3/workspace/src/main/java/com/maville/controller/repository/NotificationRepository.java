@@ -2,7 +2,6 @@ package com.maville.controller.repository;
 
 import com.maville.controller.services.DatabaseConnectionManager;
 import com.maville.model.Notification;
-import com.maville.model.Project;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Dépôt pour gérer les notifications associées aux résidents.
+ * Fournit des fonctionnalités pour sauvegarder, récupérer et mettre à jour les notifications dans la base de données.
+ */
 public class NotificationRepository {
     private static NotificationRepository instance;
 

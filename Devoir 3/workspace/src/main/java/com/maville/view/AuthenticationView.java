@@ -2,7 +2,29 @@ package com.maville.view;
 
 import com.maville.model.Intervenant;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 public class AuthenticationView extends MenuView {
+    public static final String[] LOGIN_INFO_MESSAGES = {
+            "Adresse courriel",
+            "Mot de passe"
+    };
+    public static final String[] SIGNUP_RESIDENT_INFO_MESSAGES = {
+            "Nom complet",
+            "Date de naissance (DD/MM/YYYY)",
+            "Adresse courriel",
+            "Mot de passe",
+            "Numéro de téléphone (optionnel)",
+            "Adresse résidentielle"
+    };
+    public static final String[] SIGNUP_INTERVENANT_INFO_MESSAGES = {
+            "Nom complet",
+            "Adresse courriel",
+            "Mot de passe",
+            "Identifiant de la ville"
+    };
+
     public static void showAuthMessage() {
         printMessage("En tant que résident ou intervenant ?");
     }
@@ -15,10 +37,22 @@ public class AuthenticationView extends MenuView {
         printMessage("Inscription en tant que " + userType);
     }
 
+    public static void displayAuthOptions(String header, TreeMap<Integer, String> options) {
+        printMessage("========================================");
+        printMessage(header);
+        printMessage("----------------------------------------");
+        options.forEach((key, value) -> printMessage("[" + key + "] " + value));
+        printMessage("========================================");
+    }
+
     public static void showAuthType() {
-        printMessage("[0] Revenir en arrière");
-        printMessage("[1] Résident");
-        printMessage("[2] Intervenant");
+        // Utilisation de la méthode `displayAuthOptions`
+        TreeMap<Integer, String> authOptions = new TreeMap<>(Map.of(
+                0, "Revenir en arrière",
+                1, "Résident",
+                2, "Intervenant"
+        ));
+        displayAuthOptions("Veuillez choisir votre type :", authOptions);
     }
 
     public static void showCompanyTypeMessage() {

@@ -11,17 +11,31 @@ import com.maville.model.Project;
 import com.maville.model.WorkRequestForm;
 import com.maville.view.MenuView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 
+/**
+ * Contrôleur d'activités pour les intervenants. Fournit des fonctionnalités permettant
+ * de gérer les projets, les demandes de travaux et les candidatures dans le cadre de l'application.
+ */
 public class IntervenantActivityController {
-    private final WorkRepository workRepository = new WorkRepository();
-    private final SchedulePreferencesRepository schedulePreferencesRepository = new SchedulePreferencesRepository();
+    private final Scanner scanner;
+    private final WorkRepository workRepository;
+    private final SchedulePreferencesRepository schedulePreferencesRepository;
+
+    public IntervenantActivityController() {
+        scanner = new Scanner(System.in);
+        workRepository = new WorkRepository();
+        schedulePreferencesRepository = new SchedulePreferencesRepository();
+    }
 
     /**
      * Permet à un intervenant de soumettre un nouveau projet.
-     * Cette méthode recueille les informations du projet, vérifie leur validité,
-     * et enregistre le projet dans le dépôt de projets planifiés.
+     * Les informations du projet sont recueillies auprès de l'utilisateur, validées,
+     * et sauvegardées dans le dépôt de projets planifiés.
+     * Une notification est également créée pour les résidents concernés.
      */
     public void submitProject() {
         try {
@@ -51,9 +65,10 @@ public class IntervenantActivityController {
     }
 
     /**
-     * Permet à un intervenant de mettre à jour les informations d'un projet existant.
-     * Affiche les projets planifiés, demande à l'utilisateur de sélectionner un projet,
-     * et met à jour ses détails en fonction des informations fournies.
+     * Permet à un intervenant de mettre à jour les détails d'un projet existant.
+     * Les projets planifiés sont affichés, l'utilisateur sélectionne un projet,
+     * et les informations mises à jour sont sauvegardées.
+     * Une notification est générée pour les résidents concernés.
      */
     public void updateProject() {
         try {
@@ -88,11 +103,13 @@ public class IntervenantActivityController {
 
     /**
      * Permet à un intervenant de consulter toutes les demandes de travaux.
-     * Les demandes sont affichées à l'écran en utilisant l'interface utilisateur.
+     * Affiche les demandes disponibles, offre la possibilité de soumettre une candidature
+     * ou de retirer une candidature existante.
      */
     public void consultWorkRequests() {
         List<WorkRequestForm> workRequestForms = workRepository.fetchWorkRequests();
-        MenuView.showResults(workRequestForms);
+
+        MenuView.showResults(filterWorkRequests(workRequestForms));
 
         boolean exitLoop = false;
         while (!exitLoop) {
@@ -141,40 +158,80 @@ public class IntervenantActivityController {
     }
 
     // Méthodes privées
+    private List<WorkRequestForm> filterWorkRequests(List<WorkRequestForm> workRequestForms) {
+        try {
+            // Afficher les options de filtrage
+            MenuView.askFilter("Type de travaux", "Quartier", "Date de début", "Aucun filtrage");
+
+            // Lire l'option choisie par l'utilisateur
+            int option = scanner.nextInt();
+            scanner.nextLine(); // Consommer la ligne restante
+
+            // Filtrer en fonction de l'option choisie
+            switch (option) {
+                case 1: // Filtrage par type de travaux
+                    MenuView.printMessage("Entrez le type de travaux : ");
+                    String type = scanner.nextLine().trim();
+                    return workRequestForms.stream()
+                            .filter(request -> request.getProjectType().toString().equalsIgnoreCase(type))
+                            .toList();
+
+                case 2: // Filtrage par quartier
+                    MenuView.printMessage("Entrez le nom du quartier : ");
+                    String neighbourhood = scanner.nextLine().trim();
+                    return workRequestForms.stream()
+                            //.filter(request -> request.getNeighbourhood().equalsIgnoreCase(neighbourhood))
+                            .toList();
+
+                case 3: // Filtrage par date de début
+                    MenuView.printMessage("Entrez la date de début (format YYYY-MM-DD) : ");
+                    String startDate = scanner.nextLine().trim();
+                    return workRequestForms.stream()
+                            //.filter(request -> request.getStartDate().equals(startDate))
+                            .toList();
+
+                case 4: // Aucun filtrage
+                default:
+                    return workRequestForms; // Retourne la liste complète
+            }
+        } catch (Exception e) {
+            MenuView.printMessage("Erreur lors du filtrage des requêtes : " + e.getMessage());
+            return workRequestForms; // Retourner la liste complète en cas d'erreur
+        }
+    }
 
     private void candidacySubmission(List<WorkRequestForm> workRequestForms) {
-        String input = MenuView.askSingleInput("Entrez le numéro de la requête dont vous voulez soumettre " +
-                "votre candidature : ");
-
         int option;
         while (true) {
             try {
+                String input = MenuView.askSingleInput("Entrez le numéro de la requête dont vous voulez soumettre " +
+                        "votre candidature : ");
+
                 option = Integer.parseInt(input);
                 if (option > 0 && option <= workRequestForms.size()) { // Parmi les choix possibles ?
                     break;
                 }
             } catch (NumberFormatException e) {
-                MenuView.printMessage("Numéro de la requête invalide. Veuillez entrer un numéro dans la liste.");
+                MenuView.printMessage("Numéro de la requête invalide.");
             }
         }
-        System.out.println(workRequestForms.get(option - 1).toString());
+
         WorkRequestForm workRequestForm = workRequestForms.get(option - 1); // requete voulant etre modifier
         submitCandidacy(workRequestForm);
     }
 
     private void candidacyRemove(List<WorkRequestForm> workRequestForms) {
-        String input = MenuView.askSingleInput("Entrez le numéro de la requête dont vous voulez retirer " +
-                "votre candidature : ");
-
         int option;
         while (true) {
             try {
+                String input = MenuView.askSingleInput("Entrez le numéro de la requête dont vous voulez retirer " +
+                        "votre candidature : ");
                 option = Integer.parseInt(input);
                 if (option > 0 && option <= workRequestForms.size()) { // Parmi les choix possibles ?
                     break;
                 }
             } catch (NumberFormatException e) {
-                MenuView.printMessage("Numéro de la requête invalide. Veuillez entrer un numéro dans la liste.");
+                MenuView.printMessage("Numéro de la requête invalide. ");
             }
         }
 
@@ -242,7 +299,7 @@ public class IntervenantActivityController {
 
     private void removeSubmission(WorkRequestForm workRequestForm) {
         try {
-            List<String> submissions = workRequestForm.getSubmissions();
+            List<String> submissions = new ArrayList<>(workRequestForm.getSubmissions()); // mutable
             String currentUserId = Authenticate.getUserId();
 
             // chercher une soumission correspondant à l'utilisateur
@@ -262,7 +319,6 @@ public class IntervenantActivityController {
 
             submissions.remove(userSubmission);
             workRequestForm.setSubmissions(submissions);
-
             workRepository.updatingCandidacySubmission(workRequestForm);
 
             MenuView.printMessage("Votre soumission a été retirée avec succès !");

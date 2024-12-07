@@ -4,12 +4,23 @@ import com.maville.model.Project;
 
 import java.util.*;
 import java.util.stream.IntStream;
+import org.fusesource.jansi.Ansi;
+import static org.fusesource.jansi.Ansi.Color.*;
 
 public class MenuView {
     private static final Scanner scanner = new Scanner(System.in);
 
     // Messages
     public static void welcomeMessage() {
+        printMessage(
+                """
+                        __  __    _    __     __ ___ _     _     _____\s
+                       |  \\/  |  / \\   \\ \\   / /|_ _| |   | |   |____|
+                       | |\\/| | / _ \\   \\ \\ / /  | || |   | |   | __| \s
+                       | |  | |/ ___ \\   \\ V /   | || |___| |___| |___\s
+                       |_|  |_/_/   \\_\\   \\_/   |___|_____|_____|_____|
+                """
+        );
         printMessage("Bienvenue dans l'application Maville!\nVoulez-vous vous inscrire ou vous connecter ?");
     }
 
@@ -55,11 +66,13 @@ public class MenuView {
         );
     }
 
-    public static void askFilter(String type1, String type2, String type3) {
-        displayOptions(
-                "Désirez-vous filtrer par quartier ou par type de travaux ?",
-                new TreeMap<>(Map.of(1, type1, 2, type2, 3, type3))
-        );
+    public static void askFilter(String... filterTypes) {
+        TreeMap<Integer, String> options = new TreeMap<>();
+        for (int i = 0; i < filterTypes.length; i++) {
+            options.put(i + 1, filterTypes[i]); // Indexer à partir de 1
+        }
+
+        displayOptions("Désirez-vous filtrer par quartier ou par type de travaux ?", options);
     }
 
     public static List<String> askFormInfo() {
@@ -158,15 +171,18 @@ public class MenuView {
 
     public static <T> void showResults(List<T> items) {
         IntStream.range(0, items.size())
-                .mapToObj(i -> "[" + (i + 1) + "] " + items.get(i))
+                .mapToObj(i -> (i + 1) + ". " + items.get(i))
                 .toList()
-                .forEach(item -> printMessage(item + "\n"));
+                .forEach(MenuView::printMessage);
     }
 
     // Helper Methods
     private static void displayOptions(String header, TreeMap<Integer, String> options) {
-        printMessage(header);
-        options.forEach((key, value) -> printMessage("[" + key + "] " + value));
+        printMessage(header); // En-tête en couleur
+        System.out.println("****************************************");
+        options.forEach((key, value) ->
+                System.out.println(Ansi.ansi().fg(CYAN).a("[" + key + "] ").reset() + value));
+        System.out.println("****************************************");
     }
 
     public static String askSingleInput(String prompt) {

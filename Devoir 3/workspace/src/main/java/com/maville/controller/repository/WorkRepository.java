@@ -16,17 +16,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * Dépôt pour gérer les données liées aux projets et aux entraves.
+ * Fournit des fonctionnalités pour récupérer, filtrer et stocker des informations provenant
+ * d'APIs externes ou de la base de données locale.
+ */
 public class WorkRepository {
     public static String worksAPI = "https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=cc41b532-f12d-40fb-9f55-eb58c9a2b12b";
     public static String roadObstructionsAPI = "https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=a2bc8014-488c-495d-941b-e7ae1999d1bd";
 
     /**
-     * Parse un objet JSON et extrait une liste de {@code Result.Record} à partir du champ `records` de la réponse.
+     * Récupère les enregistrements à partir d'une réponse JSON.
      *
      * @param jsonResponse La chaîne JSON à analyser.
-     * @return Une liste de {@code Result.Record} extraite du champ `records` de la réponse JSON.
-     * @throws IOException Si le JSON est invalide ou si les champs attendus sont manquants ou incorrects.
+     * @return Une liste de {@code Result.Record} contenant les données des enregistrements.
+     * @throws IOException Si le JSON est invalide ou incomplet.
      */
     public List<Result.Record> getRecords(String jsonResponse) throws IOException {
         Moshi moshi = new Moshi.Builder().build();
@@ -48,23 +52,57 @@ public class WorkRepository {
         return parser.initializeParsing(option, type);
     }
 
+    /**
+     * Récupère la liste des projets en cours depuis l'API des travaux.
+     *
+     * @return Une liste de {@code Project} représentant les projets en cours.
+     * @throws IOException Si une erreur se produit lors de la récupération ou du traitement des données.
+     */
     public List<Project> getOngoingProjects() throws IOException {
         return fetchAndParseRecords(worksAPI, "works", Project.class);
     }
 
+    /**
+     * Récupère la liste des entraves routières depuis l'API des entraves.
+     *
+     * @return Une liste de chaînes représentant les entraves routières.
+     * @throws IOException Si une erreur se produit lors de la récupération ou du traitement des données.
+     */
     public List<String> getRoadObstructions() throws IOException {
         return fetchAndParseRecords(roadObstructionsAPI, "road_obstructions", String.class);
     }
 
+    /**
+     * Récupère une liste filtrée d'entraves routières selon un critère donné.
+     *
+     * @param criteria Le type de critère (ex. "rue").
+     * @param criteriaField La valeur du critère (ex. nom de rue).
+     * @return Une liste de chaînes représentant les entraves filtrées.
+     * @throws IOException Si une erreur se produit lors du traitement des données.
+     */
     public List<String> getFilteredRoadObstructions(String criteria, String criteriaField) throws IOException {
         return parseItems(criteria, criteriaField, String.class);
     }
 
+    /**
+     * Récupère une liste filtrée de projets selon un critère donné.
+     *
+     * @param criteria Le type de critère (ex. "quartier", "travail").
+     * @param criteriaField La valeur du critère (ex. nom de quartier).
+     * @return Une liste de {@code Project} représentant les projets filtrés.
+     * @throws IOException Si une erreur se produit lors du traitement des données.
+     */
     public List<Project> getFilteredProjects(String criteria, String criteriaField) throws IOException {
         return parseItems(criteria, criteriaField, Project.class);
     }
 
-    // Surcharge de la méthode au-dessus (pour la recherche et non la consultation)
+    /**
+     * Récupère une liste filtrée de projets selon un terme de recherche donné.
+     *
+     * @param searchTerm Le terme de recherche (titre, quartier, type de travaux).
+     * @return Une liste de {@code Project} correspondant au terme recherché.
+     * @throws IOException Si une erreur se produit lors du traitement des données.
+     */
     public List<Project> getFilteredProjects(String searchTerm) throws IOException {
         List<Project> filteredProjects = new ArrayList<>();
         searchTerm = TextUtil.removeAccents(searchTerm).toLowerCase(); // Retirer les accents
@@ -79,6 +117,12 @@ public class WorkRepository {
         return filteredProjects;
     }
 
+    /**
+     * Récupère tous les projets, y compris ceux en cours et planifiés.
+     *
+     * @return Une liste de {@code Project} représentant tous les projets.
+     * @throws IOException Si une erreur se produit lors de la récupération ou du traitement des données.
+     */
     public List<Project> getAllProjects() throws IOException {
         List<Project> allProjects = new ArrayList<>();
         allProjects.addAll(getOngoingProjects());
@@ -86,6 +130,11 @@ public class WorkRepository {
         return allProjects;
     }
 
+    /**
+     * Récupère les projets planifiés depuis la base de données locale.
+     *
+     * @return Une liste de {@code Project} représentant les projets planifiés.
+     */
     public List<Project> getPlannedProjects() {
         return fetchPlannedProjects();
     }
@@ -130,7 +179,12 @@ public class WorkRepository {
         return filteredItems;
     }
 
-    // TODO : MODIFIER CERTAINS TRUCS, MANQUE DE LOGIQUE
+    /**
+     * Récupère tous les projets planifiés depuis la base de données locale.
+     *
+     * @return Une liste de {@code Project} représentant les projets planifiés.
+     *         Retourne {@code null} si aucune donnée n'est trouvée ou en cas d'erreur.
+     */
     public List<Project> fetchPlannedProjects() {
         List<Project> plannedProjects = new ArrayList<>();
         String selectSQL = "SELECT * FROM Projects";
@@ -179,6 +233,11 @@ public class WorkRepository {
         }
     }
 
+    /**
+     * Enregistre un projet planifié dans la base de données locale.
+     *
+     * @param project Le projet à enregistrer.
+     */
     public void savePlannedProject(Project project) {
         String insertSQL = "INSERT INTO Projects(id, title, description, type_of_work, affected_neighbourhood, " +
                 "affected_streets, start_date, end_date, work_schedule, work_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -204,6 +263,11 @@ public class WorkRepository {
         }
     }
 
+    /**
+     * Met à jour un projet planifié existant dans la base de données locale.
+     *
+     * @param project Le projet à mettre à jour.
+     */
     public void updatePlannedProject(Project project) {
         String updateSQL = "UPDATE Projects SET title = ?, description = ?, type_of_work = ?, " +
                 "affected_neighbourhood = ?, affected_streets = ?, start_date = ?, end_date = ?, " +
@@ -234,6 +298,11 @@ public class WorkRepository {
         }
     }
 
+    /**
+     * Enregistre une requête de travaux dans la base de données locale.
+     *
+     * @param workRequestForm La requête à enregistrer.
+     */
     public void saveWorkRequest(WorkRequestForm workRequestForm) {
         String insertSQL = "INSERT INTO WorkRequests(id, title, description, project_type, expected_date) VALUES (?, ?, ?, ?, ?)";
 
@@ -252,6 +321,11 @@ public class WorkRepository {
         }
     }
 
+    /**
+     * Met à jour une requête de travaux existante dans la base de données locale.
+     *
+     * @param workRequestForm La requête à mettre à jour.
+     */
     public void updatingCandidacySubmission(WorkRequestForm workRequestForm) {
         String updateSQL = "UPDATE WorkRequests SET title = ?, description = ?, project_type = ?, expected_date = ?," +
                 "submissions = ? WHERE id = ?";
@@ -277,6 +351,11 @@ public class WorkRepository {
         }
     }
 
+    /**
+     * Récupère toutes les requêtes de travaux depuis la base de données locale.
+     *
+     * @return Une liste de {@code WorkRequestForm} représentant les requêtes de travaux.
+     */
     public List<WorkRequestForm> fetchWorkRequests() {
         List<WorkRequestForm> workRequestForms = new ArrayList<>();
         String selectSQL = "SELECT * FROM WorkRequests";
@@ -298,7 +377,7 @@ public class WorkRepository {
                             descriptionFromDB,
                             projectTypeFromDB,
                             expectedDateFromDB,
-                            submissionsFromDB != null ? Arrays.asList(submissionsFromDB.split(", ")) : new ArrayList<>()
+                            submissionsFromDB != null ? Arrays.asList(submissionsFromDB.split(",(?! )")) : new ArrayList<>()
                     );
                     workRequestForms.add(workRequestForm);
                 }
@@ -317,7 +396,7 @@ public class WorkRepository {
     }
 
 
-    // ######################## Classes utilisés pour le casting avec Mochi's Adapters ########################
+    // ##################### Classes utilisées pour le casting avec Mochi's Adapters #####################
     // Classe ApiResponse pour le Json au complet
     public static class ApiResponse {
         public Result result;

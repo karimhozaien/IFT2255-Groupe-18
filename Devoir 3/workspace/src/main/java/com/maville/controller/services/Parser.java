@@ -5,6 +5,12 @@ import java.util.List;
 import com.maville.controller.repository.WorkRepository.Result.Record;
 import com.maville.model.Project;
 
+/**
+ * Classe utilitaire pour analyser et convertir des enregistrements récupérés depuis le dépôt
+ * en objets utilisables tels que {@code Project} ou d'autres formats selon les besoins.
+ *
+ * @param <T> Le type d'objet à générer à partir des enregistrements.
+ */
 public class Parser<T> {
     List<Record> records;
 
@@ -13,9 +19,12 @@ public class Parser<T> {
     }
 
     /**
-     * Analyse les {@code records} pour créer une liste de projets.
+     * Analyse les enregistrements et retourne une liste d'objets du type spécifié.
      *
-     * @return Une liste de {@code Project} construite à partir des informations contenues dans chaque {@code Record}.
+     * @param option Le type d'analyse à effectuer (par exemple, "works" pour des projets ou
+     *               "road_obstructions" pour des informations sur les obstructions).
+     * @param type La classe du type d'objet à générer.
+     * @return Une liste d'objets du type spécifié, construite à partir des enregistrements.
      */
     public List<T> initializeParsing(String option, Class<T> type) {
         List<T> items = new ArrayList<>();
@@ -37,12 +46,11 @@ public class Parser<T> {
             }
         } else if (type.equals(String.class) && option.equals("road_obstructions")) {
             for (Record record : records) {
-                String output = record.getId() + ". " + record.getStreetImpactType() + " " + record.getStreetId()
+                String output = record.getStreetImpactType() + " " + record.getStreetId()
                         + "sur " + record.getStreetImpactWidth();
                 items.add(type.cast(output));
             }
         }
-
         return items;
     }
 
