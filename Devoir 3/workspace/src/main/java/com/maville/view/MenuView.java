@@ -37,7 +37,7 @@ public class MenuView {
                         3, "Rechercher des travaux",
                         4, "Participer à une planification",
                         5, "Soumettre une requête de travaux",
-                        6, "Recevoir des notifications",
+                        6, "Consulter mes notifications",
                         0, "Quitter"
                 ))
         );
@@ -77,6 +77,16 @@ public class MenuView {
         infos.add(askSingleInput("Votre rue se trouve dans quel quartier ? (trois premiers caractères" +
                 "du code postal) : "));
         infos.add(collectWeeklySchedules());
+
+        return infos;
+    }
+
+    public static List<String> askInfoForCandidacySubmission() {
+        List<String> infos = new ArrayList<>();
+
+        printMessage("Veuillez entrer la date de début et de fin.");
+        infos.add(askSingleInput("Date de début : "));
+        infos.add(askSingleInput("Date de fin : "));
 
         return infos;
     }
@@ -171,6 +181,14 @@ public class MenuView {
             inputs.add(askSingleInput(prompt));
         }
         return inputs;
+    }
+
+    public static String askLongInput(String header, String... prompts) {
+        printMessage(header);
+        for (String prompt : prompts) {
+            printMessage(prompt);
+        }
+        return scanner.nextLine();
     }
 
     private static String askWorkType() {

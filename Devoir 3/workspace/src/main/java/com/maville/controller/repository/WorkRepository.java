@@ -235,19 +235,45 @@ public class WorkRepository {
     }
 
     public void saveWorkRequest(WorkRequestForm workRequestForm) {
-        String insertSQL = "INSERT INTO WorkRequests(title, description, project_type, expected_date) VALUES (?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO WorkRequests(id, title, description, project_type, expected_date) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
-            pstmt.setString(1, workRequestForm.getTitle());
-            pstmt.setString(2, workRequestForm.getDescription());
-            pstmt.setString(3, workRequestForm.getProjectType().toString());
-            pstmt.setString(4, workRequestForm.getExpectedDate());
+            pstmt.setString(1, workRequestForm.getId());
+            pstmt.setString(2, workRequestForm.getTitle());
+            pstmt.setString(3, workRequestForm.getDescription());
+            pstmt.setString(4, workRequestForm.getProjectType().toString());
+            pstmt.setString(5, workRequestForm.getExpectedDate());
 
             pstmt.executeUpdate();
             //System.out.println("La requête a été sauvegardée."); // Message helper
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement de la requête : " + e.getMessage());
+        }
+    }
+
+    public void updatingCandidacySubmission(WorkRequestForm workRequestForm) {
+        String updateSQL = "UPDATE WorkRequests SET title = ?, description = ?, project_type = ?, expected_date = ?," +
+                "submissions = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {
+
+            pstmt.setString(1, workRequestForm.getTitle());
+            pstmt.setString(2, workRequestForm.getDescription());
+            pstmt.setString(3, workRequestForm.getProjectType().toString());
+            pstmt.setString(4, workRequestForm.getExpectedDate());
+            pstmt.setString(5, String.join(", ", workRequestForm.getSubmissions()));
+            pstmt.setString(6, workRequestForm.getId()); // Ensure the correct project is updated
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                System.out.println("Aucune requête mise à jour. ID invalide ou inexistant.");
+            } else {
+                System.out.println("Requête mise à jour avec succès.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la mise à jour du projet : " + e.getMessage());
         }
     }
 
@@ -259,16 +285,20 @@ public class WorkRepository {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) { // Use a while loop to iterate through all rows
+                    String idFromDb = rs.getString("id");
                     String titleFromDB = rs.getString("title");
                     String descriptionFromDB = rs.getString("description");
                     String projectTypeFromDB = rs.getString("project_type");
                     String expectedDateFromDB = rs.getString("expected_date");
+                    String submissionsFromDB = rs.getString("submissions");
 
                     WorkRequestForm workRequestForm = new WorkRequestForm(
+                            idFromDb,
                             titleFromDB,
                             descriptionFromDB,
                             projectTypeFromDB,
-                            expectedDateFromDB
+                            expectedDateFromDB,
+                            submissionsFromDB != null ? Arrays.asList(submissionsFromDB.split(", ")) : new ArrayList<>()
                     );
                     workRequestForms.add(workRequestForm);
                 }

@@ -138,10 +138,12 @@ public class DatabaseConnectionManager {
             // System.out.println("Création de la table WorkRequests..."); // helper
             String userTableSQL =
                     "CREATE TABLE IF NOT EXISTS WorkRequests (" +
+                        "id TEXT PRIMARY KEY," +
                         "title TEXT NOT NULL," +
                         "description TEXT," +
                         "project_type TEXT NOT NULL," +
-                        "expected_date TEXT NOT NULL" +
+                        "expected_date TEXT NOT NULL," +
+                        "submissions TEXT" +
                     ");";
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);

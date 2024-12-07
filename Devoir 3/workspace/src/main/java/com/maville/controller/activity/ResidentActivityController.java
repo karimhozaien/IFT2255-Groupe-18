@@ -121,6 +121,7 @@ public class ResidentActivityController {
      */
     public void consultNotifications() {
         String userId = Authenticate.getUserId();
+        MenuView.printMessage("Current user id : " + userId); //helper
 
         NotificationRepository notifRepo = NotificationRepository.getInstance();
         List<Notification> notifications = notifRepo.fetchNotificationsByResidentId(userId);
