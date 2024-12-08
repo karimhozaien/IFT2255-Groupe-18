@@ -20,8 +20,8 @@ public abstract class Menu {
      * Une boucle permet de gérer les saisies invalides jusqu'à ce qu'une entrée correcte soit fournie.</p>
      */
     public void welcome() {
+        MenuView.welcomeMessage();
         while (true) {
-            MenuView.welcomeMessage();
             MenuView.authMessage();
 
             if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier
