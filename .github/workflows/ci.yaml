@@ -31,5 +31,12 @@ jobs:
 
     - name: Build and test with Maven
       run: |
-        cd "./Devoir 3/workspace"  # Naviguer vers le dossier contenant pom.xml
-        mvn clean install          # Construire et tester
+        cd "./Devoir 3/workspace"
+        mvn clean test -B -X    # Le -X active le mode debug
+        
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: "./Devoir 3/workspace/target/surefire-reports"
