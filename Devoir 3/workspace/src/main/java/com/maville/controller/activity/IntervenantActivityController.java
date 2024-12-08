@@ -43,7 +43,6 @@ public class IntervenantActivityController {
             String projectSchedule = collectValidSchedule(projectInfo.get(4)); // affectedNeighbourhoods
 
             Project project = new Project(
-                    UUID.randomUUID().toString(),
                     projectInfo.get(0), // titre
                     projectInfo.get(1), // description
                     projectInfo.get(2), // type de travaux

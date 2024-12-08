@@ -1,18 +1,37 @@
 package com.maville.controller.services;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AuthenticateTest {
+
+    // Liste utilisée pour stocker les informations utilisateur pendant les tests
     List<String> userInfo;
 
+    // Supprime un utilisateur de test de la base de données à partir de son email
+    private void deleteTestUser(String email) {
+        String deleteSQL = "DELETE FROM Users WHERE email = ?";
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {
+            pstmt.setString(1, email); // Définit l'email à supprimer
+            pstmt.executeUpdate(); // Exécute la requête de suppression
+            System.out.println("Utilisateur supprimé : " + email); // Affiche un message de confirmation
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression de l'utilisateur : " + e.getMessage()); // Gestion des erreurs SQL
+        }
+    }
+
     @Test
-    // Dans ce test, on crée des fausses données. On fait un enregistrement en tant que résident en raison de la logique
-    // non-pratique pour l'intervenant.
     public void signUpResidentTest() {
+        // Prépare les informations utilisateur pour un résident
         userInfo = new ArrayList<>();
         userInfo.add("John Doe"); // Nom complet
         userInfo.add("29/02/2000"); // Date de naissance
@@ -20,44 +39,69 @@ public class AuthenticateTest {
         userInfo.add("johndoe123"); // Mot de passe
         userInfo.add("478-817-8657"); // Numéro de téléphone
         userInfo.add("575 Claude Center, Atlanta, GA, 30303"); // Adresse résidentielle
+
+        // Inscrit le résident
         signUpResident(userInfo);
 
-        userInfo = new ArrayList<>();
-        userInfo.add("Jane Smith"); // Nom complet
-        userInfo.add("15/07/1995"); // Date de naissance
-        userInfo.add("jane.smith@outlook.com"); // Adresse courriel
-        userInfo.add("janesmith95"); // Mot de passe
-        userInfo.add("402-555-9248"); // Numéro de téléphone
-        userInfo.add("123 Maple Drive, Springfield, IL, 62701"); // Adresse résidentielle
-        signUpResident(userInfo);
-
-        userInfo = new ArrayList<>();
-        userInfo.add("Alex Dupont"); // Nom complet
-        userInfo.add("10/03/1988"); // Date de naissance
-        userInfo.add("alex.dupont@gmail.com"); // Adresse courriel
-        userInfo.add("alexdu88"); // Mot de passe
-        userInfo.add("514-555-7890"); // Numéro de téléphone
-        userInfo.add("450 Rue de la Montagne, Montréal, QC, H3C 2V8"); // Adresse résidentielle
-        signUpResident(userInfo);
+        // Nettoie la base de données après le test
+        deleteTestUser("john.doe@gmail.com");
     }
 
+    // Effectue l'inscription d'un résident et vérifie que l'inscription est réussie
     private void signUpResident(List<String> userInfo) {
-        Authenticate auth = new Authenticate(userInfo);
-        boolean isValid = auth.signUp("resident");
-        assertTrue(isValid);
+        Authenticate auth = new Authenticate(userInfo); // Initialise le processus d'authentification
+        boolean isValid = auth.signUp("resident"); // Effectue l'inscription en tant que résident
+        assertTrue(isValid); // Vérifie que l'inscription a réussi
     }
 
     @Test
-    // Dans ce test, on utilise les données créées dans le test au-dessus et on vérifie que l'utilisateur peut se
-    // connecter.
     public void logInTest() {
-        List<String> userInfo = new ArrayList<>();
+        // Prépare les informations utilisateur pour une connexion valide
+        userInfo = new ArrayList<>();
         userInfo.add("john.doe@gmail.com"); // Adresse courriel
         userInfo.add("johndoe123"); // Mot de passe
 
+        // Crée une instance d'authentification et effectue la connexion
         Authenticate auth = new Authenticate(userInfo);
-        boolean isValid = auth.logIn();
+        boolean isValid = auth.logIn(); // Vérifie que la connexion est réussie
 
-        assertTrue(isValid);
+        assertTrue(isValid); // Valide le succès de la connexion
+    }
+
+    @Test
+    public void signUpDuplicateEmailTest() {
+        try {
+            // Prépare les informations pour le premier utilisateur
+            userInfo = new ArrayList<>();
+            userInfo.add("John Doe");
+            userInfo.add("29/02/2000");
+            userInfo.add("john.doe@gmail.com");
+            userInfo.add("johndoe123");
+            userInfo.add("478-817-8657");
+            userInfo.add("575 Claude Center, Atlanta, GA, 30303");
+
+            // Inscrit le premier utilisateur
+            Authenticate auth = new Authenticate(userInfo);
+            auth.signUp("resident");
+
+            // Prépare les informations pour un utilisateur avec le même email
+            userInfo = new ArrayList<>();
+            userInfo.add("Jane Doe");
+            userInfo.add("01/01/1995");
+            userInfo.add("john.doe@gmail.com"); // Même email
+            userInfo.add("janedoe123");
+            userInfo.add("123-456-7890");
+            userInfo.add("123 Maple Drive, Springfield, IL, 62701");
+
+            // Tente d'inscrire un utilisateur avec un email déjà utilisé
+            Authenticate duplicateAuth = new Authenticate(userInfo);
+            boolean isValid = duplicateAuth.signUp("resident");
+
+            // Vérifie que l'inscription échoue à cause de l'email en double
+            assertFalse("L'inscription devrait échouer pour un courriel déjà utilisé", isValid);
+        } finally {
+            // Nettoie la base de données après le test
+            deleteTestUser("john.doe@gmail.com");
+        }
     }
 }

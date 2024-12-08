@@ -6,29 +6,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepositoryTest {
+
     @Test
-    // Dans ce test, on regarde si le ID de l'utilisateur stocké dans la base des données correspond à ce qu'on fetch.
-    public void fetchUserTest() {
+    public void testFetchUser() {
+        // Prépare une liste contenant les informations utilisateur valides
         List<String> userInfo = new ArrayList<>();
         userInfo.add("john.doe@gmail.com"); // Adresse courriel
-        userInfo.add("johndoe123"); // Mot de passe
+        userInfo.add("johndoe123"); // Mot de passe correct
 
+        // Récupère les informations utilisateur via UserRepository
         UserRepository userRepo = UserRepository.getInstance();
         String[] importantInfo = userRepo.fetchUser(userInfo);
-        String userIdFetched = importantInfo[0];
+        String userIdFetched = importantInfo[0]; // Récupère l'identifiant utilisateur
 
+        // Vérifie que l'identifiant correspond à celui attendu
         assertEquals("755bf798-da16-4116-95e3-9fae9a220037", userIdFetched);
     }
-    // Ce test vérifie le comportement de fetchUser si le mdp entré est erroné
-    @Test
-    public void fetchUserInvalidPasswordTest() {
-        List<String> userInfo = new ArrayList<>();
-        userInfo.add("john.doe@gmail.com");
-        userInfo.add("mauvaismdp");
 
+    @Test
+    public void testFetchUserInvalidPassword() {
+        // Prépare une liste contenant les informations utilisateur avec un mot de passe incorrect
+        List<String> userInfo = new ArrayList<>();
+        userInfo.add("john.doe@gmail.com"); // Adresse courriel
+        userInfo.add("mauvaismdp"); // Mot de passe incorrect
+
+        // Tente de récupérer les informations utilisateur via UserRepository
         UserRepository userRepo = UserRepository.getInstance();
         String[] importantInfo = userRepo.fetchUser(userInfo);
 
+        // Vérifie que la méthode retourne null pour un mot de passe incorrect
         assertNull("Devrais être vide", importantInfo);
     }
 }

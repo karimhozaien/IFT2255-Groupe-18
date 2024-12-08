@@ -75,7 +75,7 @@ public class UserRepository {
      *
      * @param user L'utilisateur à enregistrer, qui peut être un {@code Resident} ou un {@code Intervenant}.
      */
-    public void saveUser(User user) {
+    public void saveUser(User user) throws SQLException {
         String insertSQL = "INSERT INTO Users(id, name, password, email, user_type, identifier, company_type, birthday, phone_number, residential_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
@@ -105,6 +105,7 @@ public class UserRepository {
             //System.out.println("L'utilisateur a été sauvegardé."); // Message helper
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'enregistrement : " + e.getMessage());
+            throw e;
         }
     }
 

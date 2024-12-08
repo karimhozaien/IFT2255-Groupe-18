@@ -1,12 +1,16 @@
 package com.maville.view;
 
 import com.maville.model.Project;
-
 import java.util.*;
 import java.util.stream.IntStream;
 import org.fusesource.jansi.Ansi;
 import static org.fusesource.jansi.Ansi.Color.*;
 
+/**
+ * Classe MenuView.
+ * Cette classe fournit des méthodes utilitaires pour afficher les différents menus et messages
+ * de l'application Maville. Elle gère les interactions avec l'utilisateur via des entrées et sorties console.
+ */
 public class MenuView {
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -24,14 +28,23 @@ public class MenuView {
         printMessage("Bienvenue dans l'application Maville!\nVoulez-vous vous inscrire ou vous connecter ?");
     }
 
+    /**
+     * Affiche le message de sortie de l'application.
+     */
     public static void exitMessage() {
         printMessage("Vous avez quitté l'application, au revoir!");
     }
 
+    /**
+     * Affiche un message indiquant que l'utilisateur est revenu en arrière.
+     */
     public static void backMessage() {
         printMessage("Vous êtes revenu en arrière!");
     }
 
+    /**
+     * Affiche les options d'authentification pour l'utilisateur.
+     */
     public static void authMessage() {
         displayOptions(
                 "Choisissez une option :",
@@ -39,6 +52,9 @@ public class MenuView {
         );
     }
 
+    /**
+     * Affiche le menu pour un résident avec des options spécifiques.
+     */
     public static void residentMenuMessages() {
         displayOptions(
                 "Choisissez l'une des options :",
@@ -54,6 +70,9 @@ public class MenuView {
         );
     }
 
+    /**
+     * Affiche le menu pour un intervenant avec des options spécifiques.
+     */
     public static void intervenantMenuMessages() {
         displayOptions(
                 "Choisissez l'une des options :",
@@ -66,6 +85,11 @@ public class MenuView {
         );
     }
 
+    /**
+     * Demande à l'utilisateur de choisir un filtre.
+     *
+     * @param filterTypes Les types de filtres possibles.
+     */
     public static void askFilter(String... filterTypes) {
         TreeMap<Integer, String> options = new TreeMap<>();
         for (int i = 0; i < filterTypes.length; i++) {
@@ -75,6 +99,11 @@ public class MenuView {
         displayOptions("Désirez-vous filtrer par quartier ou par type de travaux ?", options);
     }
 
+    /**
+     * Demande des informations nécessaires pour soumettre une requête de travaux.
+     *
+     * @return Liste des informations saisies.
+     */
     public static List<String> askFormInfo() {
         return askInputs(
                 "Entrez les informations suivantes pour la requête :",
@@ -82,6 +111,14 @@ public class MenuView {
         );
     }
 
+    /**
+     * Demande à l'utilisateur de fournir des préférences d'horaires hebdomadaires pour un projet.
+     *
+     * @return Une liste contenant : <br>
+     *         - La rue pour laquelle la demande est effectuée. <br>
+     *         - Le quartier (trois premiers caractères du code postal). <br>
+     *         - Les plages horaires hebdomadaires formatées en une chaîne unique.
+     */
     public static List<String> askSchedulePreferences() {
         List<String> infos = new ArrayList<>();
 
@@ -94,6 +131,13 @@ public class MenuView {
         return infos;
     }
 
+    /**
+     * Demande à l'utilisateur de saisir les informations nécessaires pour une soumission de candidature.
+     *
+     * @return Une liste contenant : <br>
+     *         - La date de début de la candidature. <br>
+     *         - La date de fin de la candidature.
+     */
     public static List<String> askInfoForCandidacySubmission() {
         List<String> infos = new ArrayList<>();
 
@@ -104,6 +148,18 @@ public class MenuView {
         return infos;
     }
 
+    /**
+     * Demande à l'utilisateur de fournir les informations nécessaires pour soumettre un projet.
+     *
+     * @return Une liste contenant : <br>
+     *         - Le titre du projet. <br>
+     *         - La description du projet. <br>
+     *         - Le type de travaux. <br>
+     *         - La date de fin espérée. <br>
+     *         - Les quartiers affectés (trois premiers caractères des codes postaux, séparés par des virgules). <br>
+     *         - Les rues concernées (séparées par des virgules). <br>
+     *         - La date de début du projet.
+     */
     public static List<String> askFormInfoForProjectSubmission() {
         List<String> infos = new ArrayList<>();
         printMessage("Entrez les informations suivantes pour soumettre un projet :");
@@ -119,6 +175,11 @@ public class MenuView {
         return infos;
     }
 
+    /**
+     * Collecte les préférences d'horaires hebdomadaires.
+     *
+     * @return Une chaîne de caractères représentant les horaires hebdomadaires.
+     */
     public static String collectWeeklySchedules() {
         String[] days = {"lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"};
         String[] schedules = new String[7];
@@ -135,6 +196,14 @@ public class MenuView {
         return String.join(",", schedules); // Retourner les horaires sous forme de chaîne unique
     }
 
+    /**
+     * Demande à l'utilisateur de fournir les informations nécessaires pour mettre à jour un projet.
+     *
+     * @return Une liste contenant : <br>
+     *         - La nouvelle description du projet. <br>
+     *         - La nouvelle date de fin espérée. <br>
+     *         - Le statut mis à jour du projet.
+     */
     public static List<String> askFormInfoForProjectUpdate() {
         List<String> inputs = new ArrayList<>();
         printMessage("Entrez les informations suivantes pour mettre à jour le projet :");
@@ -142,14 +211,12 @@ public class MenuView {
         inputs.add(askSingleInput("Description : "));
         inputs.add(askSingleInput("Date de fin espérée (AAAA-MM-JJ) : "));
 
-        // Display options for project statuses
         printMessage("Statut du projet :");
         Project.WorkStatus[] workStatuses = Project.WorkStatus.values();
         for (int i = 0; i < workStatuses.length; i++) {
             printMessage("[" + (i + 1) + "] " + workStatuses[i]);
         }
 
-        // Collect and validate the user's choice
         int option;
         while (true) {
             try {
@@ -169,6 +236,12 @@ public class MenuView {
         return inputs;
     }
 
+    /**
+     * Affiche les résultats d'une liste sous forme numérotée.
+     *
+     * @param items Liste des éléments à afficher.
+     * @param <T>   Type des éléments de la liste.
+     */
     public static <T> void showResults(List<T> items) {
         IntStream.range(0, items.size())
                 .mapToObj(i -> (i + 1) + ". " + items.get(i))
@@ -176,7 +249,12 @@ public class MenuView {
                 .forEach(MenuView::printMessage);
     }
 
-    // Helper Methods
+    /**
+     * Affiche une liste d'options avec un en-tête.
+     *
+     * @param header  Le titre à afficher.
+     * @param options Les options sous forme de TreeMap.
+     */
     private static void displayOptions(String header, TreeMap<Integer, String> options) {
         printMessage(header); // En-tête en couleur
         System.out.println("****************************************");
@@ -185,6 +263,12 @@ public class MenuView {
         System.out.println("****************************************");
     }
 
+    /**
+     * Affiche un message et retourne l'entrée utilisateur.
+     *
+     * @param prompt Le message à afficher.
+     * @return L'entrée utilisateur.
+     */
     public static String askSingleInput(String prompt) {
         printMessageInline(prompt);
         return scanner.nextLine();
@@ -199,6 +283,13 @@ public class MenuView {
         return inputs;
     }
 
+    /**
+     * Demande à l'utilisateur une saisie textuelle longue après l'affichage d'un en-tête et de plusieurs invites.
+     *
+     * @param header  L'en-tête à afficher avant les invites.
+     * @param prompts Les différentes invites à afficher avant de demander l'entrée utilisateur.
+     * @return Une chaîne de caractères contenant la saisie utilisateur.
+     */
     public static String askLongInput(String header, String... prompts) {
         printMessage(header);
         for (String prompt : prompts) {
@@ -245,6 +336,11 @@ public class MenuView {
         System.out.print(message);
     }
 
+    /**
+     * Affiche un message avec un retour à la ligne.
+     *
+     * @param message Le message à afficher.
+     */
     public static void printMessage(String message) {
         System.out.println(message);
     }

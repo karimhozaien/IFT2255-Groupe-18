@@ -174,6 +174,7 @@ public class DatabaseConnectionManager {
             //System.out.println("Création de la table Préférences horaire..."); // helper
             String preferencesTableSQL =
                     "CREATE TABLE IF NOT EXISTS SchedulePreferences (" +
+                            "id TEXT PRIMARY KEY," +
                             "street_name TEXT NOT NULL," +
                             "neighbourhood TEXT NOT NULL," +
                             "week_hours TEXT NOT NULL" +

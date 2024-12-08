@@ -6,6 +6,7 @@ import com.maville.model.Resident;
 import com.maville.model.Intervenant;
 import com.maville.model.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -57,8 +58,13 @@ public class Authenticate {
 
         if (currentSignUpUser != null) {
             currentSignUpUser.print();
-            instanceUserRepo.saveUser(currentSignUpUser);
-            currentLogInUserId = currentSignUpUser.getID();
+            try {
+                instanceUserRepo.saveUser(currentSignUpUser);
+                currentLogInUserId = currentSignUpUser.getID();
+            } catch (SQLException e) {
+                System.out.println("Erreur : Cette adresse courriel est déjà utilisée.");
+                return false;
+            }
         }
         return currentLogInUserId != null;
     }

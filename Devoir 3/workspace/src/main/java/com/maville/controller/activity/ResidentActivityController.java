@@ -152,9 +152,9 @@ public class ResidentActivityController {
 
             // Afficher la description avec le flag [Vue] si vu
             if (seen) {
-                System.out.println("[Vue] " + notification.getDescription());
+                MenuView.printMessage("[Vue] " + notification.getDescription());
             } else {
-                System.out.println(notification.getDescription());
+                MenuView.printMessage(notification.getDescription());
                 // Marquer comme vu après affichage
                 notifRepo.markNotificationAsSeen(notification.getId(), userId);
             }

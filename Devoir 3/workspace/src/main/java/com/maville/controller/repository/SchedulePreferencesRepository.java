@@ -24,13 +24,14 @@ public class SchedulePreferencesRepository {
      * @param schedulePreferences Les préférences horaires à sauvegarder, incluant la rue, le quartier et les heures de la semaine.
      */
     public void savePreferences(SchedulePreferences schedulePreferences) {
-        String insertSQL = "INSERT INTO SchedulePreferences(street_name, neighbourhood, week_hours) VALUES (?, ?, ?)";
+        String insertSQL = "INSERT INTO SchedulePreferences(id, street_name, neighbourhood, week_hours) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
-            pstmt.setString(1, schedulePreferences.getStreet());
-            pstmt.setString(2, schedulePreferences.getNeighbourhood());
-            pstmt.setString(3, schedulePreferences.getWeekHours());
+            pstmt.setString(1, schedulePreferences.getId());
+            pstmt.setString(2, schedulePreferences.getStreet());
+            pstmt.setString(3, schedulePreferences.getNeighbourhood());
+            pstmt.setString(4, schedulePreferences.getWeekHours());
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -58,6 +59,36 @@ public class SchedulePreferencesRepository {
             System.out.println("Erreur lors de la connexion : " + e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Récupère les préférences horaires pour un quartier spécifique.
+     *
+     * @param neighbourhood Le code du quartier (ex. "H1X").
+     * @return Une liste de préférences horaires associées au quartier, ou une liste vide si aucune préférence n'existe.
+     */
+    public List<SchedulePreferences> getPreferencesByNeighbourhood(String neighbourhood) {
+        String querySQL = "SELECT * FROM SchedulePreferences WHERE neighbourhood = ?";
+        List<SchedulePreferences> preferences = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(querySQL)) {
+            pstmt.setString(1, neighbourhood);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    preferences.add(new SchedulePreferences(
+                            rs.getString("street_name"),
+                            rs.getString("neighbourhood"),
+                            rs.getString("week_hours")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des préférences : " + e.getMessage());
+        }
+
+        return preferences;
     }
 
     /**
