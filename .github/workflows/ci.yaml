@@ -19,12 +19,10 @@ jobs:
     - name: Setup JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '23' 
+        java-version: '17'
         distribution: 'temurin'
-   
-    # naviguer dans dossier contenant le pom.xml
-    - name: Navigate to project folder
-      run: cd ./Devoir\ 3/workspace
 
     - name: Build and test with Maven
-      run: mvn clean install
+      run: |
+        cd "./Devoir 3/workspace"  # Naviguer vers le dossier contenant pom.xml
+        mvn clean install          # Construire et tester
