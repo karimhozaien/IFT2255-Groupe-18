@@ -21,6 +21,10 @@ jobs:
       with:
         java-version: '23' 
         distribution: 'temurin'
+   
+    # naviguer dans dossier contenant le pom.xml
+    - name: Navigate to project folder
+      run: cd "IFT2255-Groupe-18/devoir 3/workspace"
 
     - name: Build and test with Maven
       run: mvn clean install
