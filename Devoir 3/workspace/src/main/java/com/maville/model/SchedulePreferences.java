@@ -11,6 +11,13 @@ public class SchedulePreferences {
     private String neighbourhood;
     private String weekHours;
 
+    public SchedulePreferences(String id, String street, String neighbourhood, String weekHours) {
+        this.id = id;
+        this.street = street;
+        this.neighbourhood = neighbourhood;
+        this.weekHours = weekHours;
+    }
+
     /**
      * Constructeur pour initialiser une instance de préférences d'horaire.
      *
@@ -59,5 +66,9 @@ public class SchedulePreferences {
      */
     public String getWeekHours() {
         return weekHours;
+    }
+
+    public void setWeekHours(String weekHours) {
+        this.weekHours = weekHours;
     }
 }

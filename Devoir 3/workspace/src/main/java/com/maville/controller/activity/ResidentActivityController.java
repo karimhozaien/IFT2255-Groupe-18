@@ -4,6 +4,7 @@ import com.maville.controller.repository.NotificationRepository;
 import com.maville.controller.repository.SchedulePreferencesRepository;
 import com.maville.controller.repository.WorkRepository;
 import com.maville.controller.services.Authenticate;
+import com.maville.controller.services.PostalCodeFinder;
 import com.maville.model.Notification;
 import com.maville.model.SchedulePreferences;
 import com.maville.model.WorkRequestForm;
@@ -107,16 +108,92 @@ public class ResidentActivityController {
      * Les préférences sont sauvegardées dans la base de données.
      */
     public void participateToSchedule() {
-        MenuView.printMessage("Bienvenue dans les préférences horaires. Ici, vous pouvez partager une intervalle de " +
-                "temps pendant laquelle vous préférez que les travaux se fassent");
-        List<String> scheduleInfo = MenuView.askSchedulePreferences();
-        SchedulePreferences schedulePreferences = new SchedulePreferences(
-                scheduleInfo.get(0),
-                scheduleInfo.get(1),
-                scheduleInfo.get(2)
-        );
         SchedulePreferencesRepository preferencesRepository = new SchedulePreferencesRepository();
-        preferencesRepository.savePreferences(schedulePreferences);
+
+        // Obtenir le quartier de l'utilisateur à partir de son code postal
+        PostalCodeFinder postalCodeFinder = new PostalCodeFinder();
+        String neighbourhood = postalCodeFinder.getPostalCode(Authenticate.getFetchedUserInfo()[2]);
+
+        if (neighbourhood == null) {
+            MenuView.printMessage("Votre quartier n'existe pas."); // si l'utilisateur n'a pas une adresse au quebec
+            return;
+        }
+
+        String parseNeighbourhood = neighbourhood.split(" ")[0];
+
+        MenuView.printMessage("Bienvenue dans les préférences horaires.");
+        MenuView.printMessage("Ici, vous pouvez partager une intervalle de " +
+                "vous préférez que les travaux se fassent dans votre quartier.");
+        // Demande à l'utilisateur s'il veut ajouter ou modifier une plage horaire
+
+        boolean exitLoop = false;
+        while (!exitLoop) {
+            MenuView.askSimpleOptions("Souhaitez-vous ajouter une nouvelle plage horaire ou modifier une plage existante ?",
+                    "Quitter", "Ajouter", "Modifier");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Nettoie le tampon
+            switch (choice) {
+                case 0:
+                    exitLoop = true;
+                    break;
+
+                case 1: // Ajouter une nouvelle plage horaire
+                    List<String> scheduleInfoAdd = MenuView.askSchedulePreferences();
+                    SchedulePreferences newPreferences = new SchedulePreferences(
+                            scheduleInfoAdd.get(0),
+                            parseNeighbourhood,
+                            scheduleInfoAdd.get(1)
+                    );
+                    preferencesRepository.savePreferences(newPreferences);
+                    MenuView.printMessage("Vos préférences ont été ajoutées avec succès !");
+                    break;
+
+                case 2: // Modifier une plage horaire existante
+                    // Récupérer les préférences existantes pour ce quartier
+                    List<SchedulePreferences> existingPreferences = preferencesRepository.getPreferencesByNeighbourhood(parseNeighbourhood);
+
+                    if (existingPreferences.isEmpty()) {
+                        MenuView.printMessage("Aucune préférence trouvée pour votre quartier.");
+                    } else {
+                        // Afficher les rues disponibles dans les préférences
+                        MenuView.printMessage("Les rues disponibles dans ce quartier sont :");
+                        existingPreferences.forEach(pref -> MenuView.printMessage("- " + pref.getStreet()));
+
+                        // Demander le nom de la rue pour laquelle modifier les préférences
+                        MenuView.printMessage("Entrez le nom de la rue pour laquelle vous souhaitez modifier les préférences :");
+                        String streetName = MenuView.askSingleInput("");
+
+                        // Vérifier si des préférences existent pour cette rue
+                        SchedulePreferences preferencesToUpdate = existingPreferences.stream()
+                                .filter(p -> p.getStreet().equalsIgnoreCase(streetName))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (preferencesToUpdate == null) {
+                            MenuView.printMessage("Aucune préférence trouvée pour cette rue et votre quartier. Vous pouvez " +
+                                    "l'ajouter en tant que nouvelle préférence.");
+                        } else {
+                            // Modifier les préférences
+                            MenuView.printMessage("Entrez les nouvelles plages horaires :");
+                            String newSchedule = MenuView.collectWeeklySchedules();
+                            preferencesToUpdate.setWeekHours(newSchedule);
+
+                            // Mettre à jour les préférences dans la base de données
+                            boolean updateSuccessful = preferencesRepository.updatePreferences(preferencesToUpdate);
+                            if (updateSuccessful) {
+                                MenuView.printMessage("Vos préférences ont été mises à jour avec succès !");
+                            } else {
+                                MenuView.printMessage("La mise à jour des préférences a échoué. Veuillez réessayer.");
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+                    MenuView.printMessage("Choix invalide. Veuillez réessayer.");
+            }
+        }
     }
 
     /**

@@ -25,7 +25,7 @@ public class MenuView {
                        |_|  |_/_/   \\_\\   \\_/   |___|_____|_____|_____|
                 """
         );
-        printMessage("Bienvenue dans l'application Maville!\nVoulez-vous vous inscrire ou vous connecter ?");
+        printMessage("Bienvenue dans l'application MaVille!\nVoulez-vous vous inscrire ou vous connecter ?");
     }
 
     /**
@@ -50,6 +50,18 @@ public class MenuView {
                 "Choisissez une option :",
                 new TreeMap<>(Map.of(1, "S'enregistrer", 2, "Se connecter", 0, "Quitter l'application"))
         );
+    }
+
+    /**
+     * Affiche des options simples.
+     */
+    public static void askSimpleOptions(String header, String... options) {
+        TreeMap<Integer, String> optionMap = new TreeMap<>();
+        for (int i = 0; i < options.length; i++) {
+            optionMap.put(i, options[i]);
+        }
+
+        displayOptions(header, optionMap);
     }
 
     /**
@@ -124,8 +136,6 @@ public class MenuView {
 
         printMessage("Veuillez entrer vos préférences :");
         infos.add(askSingleInput("Pour quelle rue voulez-vous faire votre demande ? : "));
-        infos.add(askSingleInput("Votre rue se trouve dans quel quartier ? (trois premiers caractères" +
-                "du code postal) : "));
         infos.add(collectWeeklySchedules());
 
         return infos;

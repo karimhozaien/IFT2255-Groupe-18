@@ -31,7 +31,7 @@ public class AuthenticationMenu extends Menu {
                 selection(option, "login"); // Passe "login" en tant qu'argument pour indiquer la connexion
                 break;
             } else {
-                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
                 SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
             }
         }
@@ -52,7 +52,7 @@ public class AuthenticationMenu extends Menu {
                 selection(option, "signup"); // Passe "signup" en tant qu'argument pour indiquer l'inscription
                 break;
             } else {
-                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
                 SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
             }
         }
@@ -75,7 +75,7 @@ public class AuthenticationMenu extends Menu {
                 handleSignUp(option);
                 break;
             default:
-                System.out.println("Action inconnue.");
+                MenuView.printMessage("Action inconnue.");
                 break;
         }
     }
@@ -100,7 +100,7 @@ public class AuthenticationMenu extends Menu {
                 MenuView.backMessage();
                 return;
             default:
-                System.out.println("Option invalide pour la connexion.");
+                MenuView.printMessage("Option invalide pour la connexion.");
         }
     }
 
@@ -117,15 +117,15 @@ public class AuthenticationMenu extends Menu {
             authenticate = new Authenticate(collectUserInfo(AuthenticationView.LOGIN_INFO_MESSAGES));
 
             if (authenticate.logIn()) { // Authentification réussie
-                String userTypeFromDB = authenticate.getUserType();
+                String userTypeFromDB = Authenticate.getUserType();
                 if (!userType.equals(userTypeFromDB)) {
-                    System.out.println("Vous n'êtes pas un " + userType + ".");
+                    MenuView.printMessage("Vous n'êtes pas un " + userType + ".");
                     return;
                 }
                 DefaultMenu.showUserMenu(userTypeFromDB); // Affiche le menu utilisateur
                 break;
             } else {
-                System.out.println("Connexion échouée. Veuillez réessayer.");
+                MenuView.printMessage("Connexion échouée. Veuillez réessayer.");
                 return;
             }
         }
@@ -153,7 +153,7 @@ public class AuthenticationMenu extends Menu {
                 MenuView.backMessage();
                 return;
             default:
-                System.out.println("Option invalide pour l'inscription.");
+                MenuView.printMessage("Option invalide pour l'inscription.");
                 return;
         }
 
@@ -162,9 +162,9 @@ public class AuthenticationMenu extends Menu {
 
         authenticate = new Authenticate(collectUserInfo(infoMessages));
         if (authenticate.signUp(userType)) { // Inscription réussie
-            DefaultMenu.showUserMenu(userType);
+            MenuView.printMessage("Inscription réussie. Veuillez-vous connecter.");
         } else {
-            System.out.println("Inscription échouée. Veuillez réessayer.");
+            MenuView.printMessage("Inscription échouée. Veuillez réessayer.");
         }
     }
 

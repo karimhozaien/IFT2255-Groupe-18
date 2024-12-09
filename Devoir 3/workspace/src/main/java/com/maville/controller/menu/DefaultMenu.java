@@ -3,6 +3,7 @@ package com.maville.controller.menu;
 import com.maville.controller.activity.IntervenantActivityController;
 import com.maville.controller.activity.ResidentActivityController;
 import com.maville.MaVille;
+import com.maville.view.MenuView;
 
 /**
  * Menu par défaut gérant les interactions principales avec les utilisateurs.
@@ -31,7 +32,7 @@ public class DefaultMenu extends Menu {
                 MaVille.exitApplication(); // Quitte l'application
                 return;
             default:
-                System.out.println("Option invalide, veuillez réessayer.");
+                MenuView.printMessage("Option invalide, veuillez réessayer.");
                 break;
         }
     }
@@ -69,7 +70,7 @@ public class DefaultMenu extends Menu {
                 case 0:
                     return true; // Quitte le menu
                 default:
-                    System.out.println("Option invalide pour résident. Veuillez réessayer.");
+                    MenuView.printMessage("Option invalide pour résident. Veuillez réessayer.");
                     break;
             }
         } else if (userType.equals("intervenant")) {
@@ -88,7 +89,7 @@ public class DefaultMenu extends Menu {
                 case 0:
                     return true; // Quitte le menu
                 default:
-                    System.out.println("Option invalide pour intervenant. Veuillez réessayer.");
+                    MenuView.printMessage("Option invalide pour intervenant. Veuillez réessayer.");
                     break;
             }
         }

@@ -48,10 +48,11 @@ public class UserRepository {
                     String hashedPasswordFromDB = rs.getString("password");
                     String idFromDB = rs.getString("id");
                     String userType = rs.getString("user_type");
+                    String residentialAddress = rs.getString("residential_address");
 
                     // Vérification du hachage du mot de passe
                     if (PasswordUtil.verifyPassword(password, hashedPasswordFromDB)) {
-                        return new String[] {idFromDB, userType};
+                        return new String[] {idFromDB, userType, residentialAddress};
                     } else {
                         // Mot de passe incorrect ?
                         System.out.println("Mot de passe invalide.");

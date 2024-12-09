@@ -35,7 +35,7 @@ public class SchedulePreferencesRepository {
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'enregistrement de la requête : " + e.getMessage());
+            MenuView.printMessage("Erreur lors de l'enregistrement de la requête : " + e.getMessage());
         }
     }
 
@@ -51,12 +51,12 @@ public class SchedulePreferencesRepository {
                     return rs.getString("week_hours");
                 } else {
                     // Il n'y a pas de préférences dans ce quartier
-                    System.out.println("Aucune préférence trouvée dans ce quartier : " + neighbourhood);
+                    MenuView.printMessage("Aucune préférence trouvée dans ce quartier : " + neighbourhood);
                     return null;
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la connexion : " + e.getMessage());
+            MenuView.printMessage("Erreur lors de la connexion : " + e.getMessage());
             return null;
         }
     }
@@ -78,6 +78,7 @@ public class SchedulePreferencesRepository {
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     preferences.add(new SchedulePreferences(
+                            rs.getString("id"),
                             rs.getString("street_name"),
                             rs.getString("neighbourhood"),
                             rs.getString("week_hours")
@@ -85,7 +86,7 @@ public class SchedulePreferencesRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération des préférences : " + e.getMessage());
+            MenuView.printMessage("Erreur lors de la récupération des préférences : " + e.getMessage());
         }
 
         return preferences;
@@ -121,6 +122,49 @@ public class SchedulePreferencesRepository {
         }
 
         return !hasConflicts; // Retourner true si aucun conflit, false sinon
+    }
+
+    /**
+     * Met à jour une préférence horaire existante dans la base de données.
+     *
+     * @param modifiedSchedule Un objet SchedulePreferences contenant les informations mises à jour. <br>
+     *                         - `id` : Identifiant unique de la préférence (obligatoire). <br>
+     *                         - `street` : Nom de la rue. <br>
+     *                         - `neighbourhood` : Code du quartier (ex. : "H1X"). <br>
+     *                         - `weekHours` : Plages horaires (ex. : "08:00-12:00,N/A,N/A,...").
+     * @return true si la mise à jour a réussi, false sinon.
+     * @throws IllegalArgumentException si l'objet SchedulePreferences ou son ID est nul ou vide.
+     */
+    public boolean updatePreferences(SchedulePreferences modifiedSchedule) {
+        String updateSQL = "UPDATE SchedulePreferences SET street_name = ?, neighbourhood = ?, week_hours = ? WHERE id = ?";
+
+
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {
+
+            // Validate inputs
+            if (modifiedSchedule == null || modifiedSchedule.getId() == null || modifiedSchedule.getId().isEmpty()) {
+                throw new IllegalArgumentException("SchedulePreferences ou l'ID est vide.");
+            }
+
+            pstmt.setString(1, modifiedSchedule.getStreet());
+            pstmt.setString(2, modifiedSchedule.getNeighbourhood());
+            pstmt.setString(3, modifiedSchedule.getWeekHours());
+            pstmt.setString(4, modifiedSchedule.getId());
+
+            // Execute update
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                MenuView.printMessage("Préférence mise à jour avec succès.");
+                return true;
+            } else {
+                MenuView.printMessage("Aucune préférence mise à jour. ID invalide ou inexistant.");
+                return false;
+            }
+        } catch (SQLException e) {
+            MenuView.printMessage("Erreur lors de la mise à jour du projet : " + e.getMessage());
+            return false;
+        }
     }
 
     private boolean isScheduleCompatible(String preference, String submission) {

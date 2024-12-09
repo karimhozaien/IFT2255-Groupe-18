@@ -28,7 +28,7 @@ public abstract class Menu {
                 int option = SCANNER.nextInt();
                 selection(option, ""); // Appelle la méthode abstraite pour gérer l'option
             } else {
-                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
                 SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
             }
         }
@@ -56,7 +56,7 @@ public abstract class Menu {
                     return; // Quitte le menu si l'utilisateur choisit de sortir
                 }
             } else {
-                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
                 SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
             }
         }

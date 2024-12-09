@@ -2,7 +2,7 @@
 
 # Vérifier si Docker est en cours d'exécution
 if ! docker info > /dev/null 2>&1; then
-    echo "❌ Docker n'est pas en cours d'exécution. Veuillez démarrer Docker Desktop."
+    echo "❌ Docker n'est pas en cours d'exécution. Veuillez démarrer l'application de bureau."
     exit 1
 fi
 
@@ -14,10 +14,11 @@ if [[ "$1" == "--build" ]]; then
     echo "🏗️  Construction de l'image Docker..."
     docker build -t maville .
     if [ $? -ne 0 ]; then
-        echo "❌ Échec de la construction de l'image"
+        echo "❌ Échec de la construction de l'image."
+        echo "Veuillez réessayer"
         exit 1
     fi
 fi
 
-echo "🚀 Lancement de MaVille..."
+echo "Lancement de MaVille ! 🌆"
 docker run -it -p 8080:8080 -v "$(pwd)/data:/app/data" maville
