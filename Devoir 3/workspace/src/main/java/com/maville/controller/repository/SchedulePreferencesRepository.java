@@ -11,22 +11,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dépôt pour gérer les préférences horaires des résidents.
+ * Permet de sauvegarder, récupérer et vérifier les préférences horaires en fonction des soumissions de projets.
+ */
 public class SchedulePreferencesRepository {
     List<String> scheduleConflicts = new ArrayList<>();
 
+    /**
+     * Sauvegarde les préférences horaires dans la base de données.
+     *
+     * @param schedulePreferences Les préférences horaires à sauvegarder, incluant la rue, le quartier et les heures de la semaine.
+     */
     public void savePreferences(SchedulePreferences schedulePreferences) {
-        String insertSQL = "INSERT INTO SchedulePreferences(street_name, neighbourhood, week_hours) VALUES (?, ?, ?)";
+        String insertSQL = "INSERT INTO SchedulePreferences(id, street_name, neighbourhood, week_hours) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
-            pstmt.setString(1, schedulePreferences.getStreet());
-            pstmt.setString(2, schedulePreferences.getNeighbourhood());
-            pstmt.setString(3, schedulePreferences.getWeekHours());
+            pstmt.setString(1, schedulePreferences.getId());
+            pstmt.setString(2, schedulePreferences.getStreet());
+            pstmt.setString(3, schedulePreferences.getNeighbourhood());
+            pstmt.setString(4, schedulePreferences.getWeekHours());
 
             pstmt.executeUpdate();
-            //System.out.println("La requête a été sauvegardée."); // Message helper
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'enregistrement de la requête : " + e.getMessage());
+            MenuView.printMessage("Erreur lors de l'enregistrement de la requête : " + e.getMessage());
         }
     }
 
@@ -42,16 +51,54 @@ public class SchedulePreferencesRepository {
                     return rs.getString("week_hours");
                 } else {
                     // Il n'y a pas de préférences dans ce quartier
-                    System.out.println("Aucune préférence trouvée dans ce quartier : " + neighbourhood);
+                    MenuView.printMessage("Aucune préférence trouvée dans ce quartier : " + neighbourhood);
                     return null;
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la connexion : " + e.getMessage());
+            MenuView.printMessage("Erreur lors de la connexion : " + e.getMessage());
             return null;
         }
     }
 
+    /**
+     * Récupère les préférences horaires pour un quartier spécifique.
+     *
+     * @param neighbourhood Le code du quartier (ex. "H1X").
+     * @return Une liste de préférences horaires associées au quartier, ou une liste vide si aucune préférence n'existe.
+     */
+    public List<SchedulePreferences> getPreferencesByNeighbourhood(String neighbourhood) {
+        String querySQL = "SELECT * FROM SchedulePreferences WHERE neighbourhood = ?";
+        List<SchedulePreferences> preferences = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(querySQL)) {
+            pstmt.setString(1, neighbourhood);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    preferences.add(new SchedulePreferences(
+                            rs.getString("id"),
+                            rs.getString("street_name"),
+                            rs.getString("neighbourhood"),
+                            rs.getString("week_hours")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            MenuView.printMessage("Erreur lors de la récupération des préférences : " + e.getMessage());
+        }
+
+        return preferences;
+    }
+
+    /**
+     * Vérifie si l'horaire soumis pour un projet est compatible avec les préférences des quartiers concernés.
+     *
+     * @param projectSubmissionDesiredSchedule L'horaire souhaité pour le projet, sous forme de chaîne.
+     * @param neighbourhoods Une liste de quartiers séparés par des virgules.
+     * @return {@code true} si l'horaire soumis est compatible avec toutes les préférences, sinon {@code false}.
+     */
     public boolean checkPreferences(String projectSubmissionDesiredSchedule, String neighbourhoods) {
         scheduleConflicts.clear(); // Réinitialiser les conflits avant chaque vérification
         boolean hasConflicts = false;
@@ -75,6 +122,49 @@ public class SchedulePreferencesRepository {
         }
 
         return !hasConflicts; // Retourner true si aucun conflit, false sinon
+    }
+
+    /**
+     * Met à jour une préférence horaire existante dans la base de données.
+     *
+     * @param modifiedSchedule Un objet SchedulePreferences contenant les informations mises à jour. <br>
+     *                         - `id` : Identifiant unique de la préférence (obligatoire). <br>
+     *                         - `street` : Nom de la rue. <br>
+     *                         - `neighbourhood` : Code du quartier (ex. : "H1X"). <br>
+     *                         - `weekHours` : Plages horaires (ex. : "08:00-12:00,N/A,N/A,...").
+     * @return true si la mise à jour a réussi, false sinon.
+     * @throws IllegalArgumentException si l'objet SchedulePreferences ou son ID est nul ou vide.
+     */
+    public boolean updatePreferences(SchedulePreferences modifiedSchedule) {
+        String updateSQL = "UPDATE SchedulePreferences SET street_name = ?, neighbourhood = ?, week_hours = ? WHERE id = ?";
+
+
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {
+
+            // Validate inputs
+            if (modifiedSchedule == null || modifiedSchedule.getId() == null || modifiedSchedule.getId().isEmpty()) {
+                throw new IllegalArgumentException("SchedulePreferences ou l'ID est vide.");
+            }
+
+            pstmt.setString(1, modifiedSchedule.getStreet());
+            pstmt.setString(2, modifiedSchedule.getNeighbourhood());
+            pstmt.setString(3, modifiedSchedule.getWeekHours());
+            pstmt.setString(4, modifiedSchedule.getId());
+
+            // Execute update
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                MenuView.printMessage("Préférence mise à jour avec succès.");
+                return true;
+            } else {
+                MenuView.printMessage("Aucune préférence mise à jour. ID invalide ou inexistant.");
+                return false;
+            }
+        } catch (SQLException e) {
+            MenuView.printMessage("Erreur lors de la mise à jour du projet : " + e.getMessage());
+            return false;
+        }
     }
 
     private boolean isScheduleCompatible(String preference, String submission) {
@@ -112,6 +202,11 @@ public class SchedulePreferencesRepository {
         return days[dayIndex];
     }
 
+    /**
+     * Récupère la liste des conflits horaires identifiés après une vérification.
+     *
+     * @return Une liste de chaînes décrivant les conflits d'horaires.
+     */
     public List<String> getScheduleConflicts() {
         return scheduleConflicts;
     }

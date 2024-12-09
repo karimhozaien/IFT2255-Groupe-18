@@ -1,7 +1,12 @@
 package com.maville.model;
 
-import java.util.List;
+import java.util.UUID;
 
+/**
+ * Classe représentant un projet dans le système Maville.
+ * Un projet est associé à un type de travaux, un quartier affecté, des rues spécifiques,
+ * une période de réalisation, et un statut de travaux.
+ */
 public class Project {
     private String id;
     private String title;
@@ -14,27 +19,7 @@ public class Project {
     private String workSchedule;
     private WorkStatus workStatus;
 
-    String[] postalCodes = {
-            "H1A", "H2A", "H3A", "H4A", "H5A",
-            "H2B", "H3B", "H4B", "H5B", "H1C",
-            "H2C", "H3C", "H4C", "H9C", "H1E",
-            "H2E", "H3E", "H4E", "H9E", "H1G",
-            "H2G", "H3G", "H4G", "H1H", "H2H",
-            "H3H", "H4H", "H9H", "H1J", "H2J",
-            "H3J", "H4J", "H1K", "H2K", "H3K",
-            "H4K", "H9K", "H1L", "H2L", "H3L",
-            "H4L", "H1M", "H2M", "H3M", "H4M",
-            "H1N", "H2N", "H3N", "H4N", "H8N",
-            "H1P", "H2P", "H8P", "H1R", "H2R",
-            "H4R", "H8R", "H1S", "H2S", "H3S",
-            "H4S", "H8S", "H1T", "H2T", "H3T",
-            "H4T", "H8T", "H1V", "H2V", "H3V",
-            "H1W", "H2W", "H3W", "H1X", "H2X",
-            "H1Y", "H2Y", "H8Y", "H1Z", "H2Z",
-            "H4Z", "H8Z"
-    };
-
-    // Full constructor
+    // Full constructeur (les noms sont self-explanatory)
     public Project(String id, String title, String description,
                    TypeOfWork typeOfWork, String affectedNeighbourhood, String affectedStreets,
                    String startDate, String endDate, String workSchedule, WorkStatus workStatus) {
@@ -50,10 +35,10 @@ public class Project {
         this.workStatus = workStatus;
     }
 
-    // Overloaded constructor (default WorkStatus = PLANNED)
-    public Project(String id, String title, String description, String typeOfWork, String affectedNeighbourhood,
+    // Constructeur overloader (WorkStatus = PLANNED)
+    public Project(String title, String description, String typeOfWork, String affectedNeighbourhood,
                    String affectedStreets, String startDate, String endDate, String workSchedule) {
-        this(id, title, description, TypeOfWork.valueOf(typeOfWork), affectedNeighbourhood, affectedStreets, startDate,
+        this(UUID.randomUUID().toString(), title, description, TypeOfWork.valueOf(typeOfWork), affectedNeighbourhood, affectedStreets, startDate,
                 endDate, workSchedule, WorkStatus.PLANNED);
     }
 
@@ -79,30 +64,110 @@ public class Project {
         OTHER;
     }
 
-    // Getters
+    // Getters et setters
+    /**
+     * Retourne l'identifiant unique du projet.
+     *
+     * @return L'identifiant unique du projet.
+     */
     public String getId() { return id; }
+
+    /**
+     * Retourne le titre du projet.
+     *
+     * @return Le titre du projet.
+     */
     public String getTitle() { return title; }
+
+    /**
+     * Retourne la description du projet.
+     *
+     * @return La description du projet.
+     */
     public String getDescription() { return description; }
+
+    /**
+     * Retourne le type de travaux du projet.
+     *
+     * @return Le type de travaux.
+     */
     public TypeOfWork getTypeOfWork() { return typeOfWork; }
+
+    /**
+     * Retourne le quartier affecté par le projet.
+     *
+     * @return Le quartier affecté.
+     */
     public String getAffectedNeighbourhood() { return affectedNeighbourhood; }
+
+    /**
+     * Retourne les rues affectées par le projet.
+     *
+     * @return Les rues affectées.
+     */
     public String getAffectedStreets() { return affectedStreets; }
+
+    /**
+     * Retourne la date de début du projet.
+     *
+     * @return La date de début.
+     */
     public String getStartDate() { return startDate; }
+
+    /**
+     * Retourne la date de fin du projet.
+     *
+     * @return La date de fin.
+     */
     public String getEndDate() { return endDate; }
+
+    /**
+     * Retourne l'horaire des travaux du projet.
+     *
+     * @return L'horaire des travaux.
+     */
     public String getWorkSchedule() { return workSchedule; }
+
+    /**
+     * Retourne le statut actuel du projet.
+     *
+     * @return Le statut du projet.
+     */
     public WorkStatus getWorkStatus() { return workStatus; }
 
-    // Setters
+    /**
+     * Définit l'identifiant unique du projet.
+     *
+     * @param id L'identifiant unique à définir.
+     */
     public void setId(String id) { this.id = id; }
-    public void setTitle(String title) { this.title = title; }
+
+    /**
+     * Définit la description du projet.
+     *
+     * @param description La description à définir.
+     */
     public void setDescription(String description) { this.description = description; }
-    public void setTypeOfWork(TypeOfWork typeOfWork) { this.typeOfWork = typeOfWork; }
-    public void setAffectedNeighbourhood(String affectedNeighbourhood) { this.affectedNeighbourhood = affectedNeighbourhood; }
-    public void setAffectedStreets(String affectedStreets) { this.affectedStreets = affectedStreets; }
-    public void setStartDate(String startDate) { this.startDate = startDate; }
+
+    /**
+     * Définit la date de fin du projet.
+     *
+     * @param endDate La date de fin à définir.
+     */
     public void setEndDate(String endDate) { this.endDate = endDate; }
-    public void setWorkSchedule(String workSchedule) { this.workSchedule = workSchedule; }
+
+    /**
+     * Définit le statut actuel du projet.
+     *
+     * @param workStatus Le statut à définir.
+     */
     public void setWorkStatus(WorkStatus workStatus) { this.workStatus = workStatus; }
 
+    /**
+     * Retourne une chaîne de caractères représentant les informations principales du projet.
+     *
+     * @return Une représentation textuelle du projet.
+     */
     @Override
     public String toString() {
         return title + ", " +
@@ -116,10 +181,14 @@ public class Project {
                 workStatus;
     }
 
+    /**
+     * Déduit le type de travaux basé sur une chaîne de caractères.
+     *
+     * @param typeOfWork Une chaîne décrivant le type de travaux.
+     * @return Le type de travaux correspondant ou OTHER si aucun type ne correspond.
+     */
     public static TypeOfWork getTypeOfWork(String typeOfWork) {
         if (typeOfWork != null) {
-            // Matching partielle dans typeOfWork
-            System.out.println(typeOfWork); // helper
             if ("souterraine".contains(typeOfWork)) {
                 return TypeOfWork.UNDERGROUND;
             } else if ("routier".contains(typeOfWork)) {
@@ -142,7 +211,6 @@ public class Project {
                 return TypeOfWork.TELECOMMUNICATION_NETWORKS;
             }
         }
-
         return TypeOfWork.OTHER;
     }
 }

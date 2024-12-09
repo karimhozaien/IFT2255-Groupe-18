@@ -5,6 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Gère la connexion à la base de données SQLite et l'initialisation des tables nécessaires.
+ * Implémente le pattern singleton pour garantir une seule instance de connexion.
+ */
 public class DatabaseConnectionManager {
     private static final String URL = "jdbc:sqlite:data/mydatabase.db";
     private static DatabaseConnectionManager instance;
@@ -17,6 +21,13 @@ public class DatabaseConnectionManager {
         return instance;
     }
 
+    /**
+     * Retourne une connexion active à la base de données.
+     * Si la connexion n'existe pas ou est fermée, elle est réinitialisée.
+     *
+     * @return une connexion active à la base de données SQLite.
+     * @throws SQLException si une erreur se produit lors de la connexion.
+     */
     public Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             connection = DriverManager.getConnection(URL);
@@ -24,18 +35,23 @@ public class DatabaseConnectionManager {
         return connection;
     }
 
-    // Initialize the database and create tables if they don't exist
+    /**
+     * Initialise la base de données en créant les tables nécessaires si elles n'existent pas.
+     */
     public static void connect() {
         try {
             DatabaseConnectionManager dbManager = getInstance();
             Connection conn = dbManager.getConnection();
-            //System.out.println("Connected to SQLite database."); // helper
-            dbManager.initializeDatabaseTables(conn); // Initialize tables if needed
+            dbManager.initializeDatabaseTables(conn);
         } catch (SQLException e) {
             System.out.println("Error during database initialization: " + e.getMessage());
         }
     }
 
+    /**
+     * Ferme la connexion actuelle à la base de données, si elle est ouverte.
+     * Réinitialise l'instance pour permettre une nouvelle connexion dans le futur.
+     */
     public static void close() {
         if (instance != null && instance.connection != null) {
             try {
@@ -51,7 +67,12 @@ public class DatabaseConnectionManager {
         }
     }
 
-    // Create necessary tables in the database
+    /**
+     * Crée les tables nécessaires dans la base de données si elles n'existent pas.
+     *
+     * @param conn la connexion active à la base de données.
+     * @throws SQLException si une erreur se produit lors de la création des tables.
+     */
     public void initializeDatabaseTables(Connection conn) throws SQLException {
         if (isTableInitialized(conn, "Users")) {
              //System.out.println("La table User existe déjà."); // helper
@@ -77,7 +98,6 @@ public class DatabaseConnectionManager {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);
             }
-            //System.out.println("La table Users a été créée."); // helper
         }
 
         if (isTableInitialized(conn, "Projects")) {
@@ -112,7 +132,6 @@ public class DatabaseConnectionManager {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);
             }
-            // System.out.println("La table Projects a été créée."); // helper
         }
 
         if (isTableInitialized(conn, "Notifications")) {
@@ -129,7 +148,6 @@ public class DatabaseConnectionManager {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(notificationTableSQL);
             }
-            //System.out.println("La table Notifications a été créée."); // helper
         }
 
         if (isTableInitialized(conn, "PreferencesHoraire")) {
@@ -155,15 +173,16 @@ public class DatabaseConnectionManager {
             // System.out.println("Création de la table WorkRequests..."); // helper
             String userTableSQL =
                     "CREATE TABLE IF NOT EXISTS WorkRequests (" +
+                        "id TEXT PRIMARY KEY," +
                         "title TEXT NOT NULL," +
                         "description TEXT," +
                         "project_type TEXT NOT NULL," +
-                        "expected_date TEXT NOT NULL" +
+                        "expected_date TEXT NOT NULL," +
+                        "submissions TEXT" +
                     ");";
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);
             }
-            // System.out.println("La table WorkRequests a été créée."); // helper
         }
 
         if (isTableInitialized(conn, "SchedulePreferences")) {
@@ -172,6 +191,7 @@ public class DatabaseConnectionManager {
             //System.out.println("Création de la table Préférences horaire..."); // helper
             String preferencesTableSQL =
                     "CREATE TABLE IF NOT EXISTS SchedulePreferences (" +
+                            "id TEXT PRIMARY KEY," +
                             "street_name TEXT NOT NULL," +
                             "neighbourhood TEXT NOT NULL," +
                             "week_hours TEXT NOT NULL" +
@@ -179,7 +199,6 @@ public class DatabaseConnectionManager {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(preferencesTableSQL);
             }
-            //System.out.println("La table Préférences horaire a été créée."); // helper
         }
     }
 

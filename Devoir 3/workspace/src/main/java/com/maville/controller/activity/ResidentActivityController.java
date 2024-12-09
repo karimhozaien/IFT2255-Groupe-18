@@ -4,6 +4,7 @@ import com.maville.controller.repository.NotificationRepository;
 import com.maville.controller.repository.SchedulePreferencesRepository;
 import com.maville.controller.repository.WorkRepository;
 import com.maville.controller.services.Authenticate;
+import com.maville.controller.services.PostalCodeFinder;
 import com.maville.model.Notification;
 import com.maville.model.SchedulePreferences;
 import com.maville.model.WorkRequestForm;
@@ -12,19 +13,26 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Contrôleur principal pour les activités des résidents.
+ * Permet de gérer et d'afficher des informations liées aux travaux, entraves,
+ * préférences de planning, notifications, et requêtes.
+ */
 public class ResidentActivityController {
-    final Scanner scanner;
-    final WorkRepository workRepo;
+    private final Scanner scanner;
+    private final WorkRepository workRepo;
 
     public ResidentActivityController() {
         scanner = new Scanner(System.in);
         workRepo = new WorkRepository();
     }
 
+    /**
+     * Affiche les travaux en cours et planifiés, avec la possibilité de filtrer
+     * par quartier ou type de travaux.
+     * Demande à l'utilisateur de sélectionner un filtre et affiche les résultats correspondants.
+     */
     public void consultWorks() {
-        // TODO
-        // Demander à l'utilisateur s'il veut filter par 1. Quartier, 2. Type de travaux
-        // Afficher tous les travaux en cours et planné
         try {
             MenuView.askFilter("Quartier", "Type de travaux", "Autre");
 
@@ -49,10 +57,12 @@ public class ResidentActivityController {
         }
     }
 
+    /**
+     * Affiche les entraves routières en cours et planifiées, avec la possibilité de filtrer
+     * par rue ou type de travaux.
+     * Demande à l'utilisateur de sélectionner un filtre et affiche les résultats correspondants.
+     */
     public void consultRoadObstructions() {
-        // TODO
-        // Demander à l'utilisateur il veut chercher par 1. Rue, 2. Type de travaux
-        // Afficher toutes les entraves en cours et plannées
         MenuView.askFilter("Rue", "Type de travaux", "Autre");
         try {
             int option = scanner.nextInt();
@@ -78,9 +88,12 @@ public class ResidentActivityController {
         }
     }
 
+    /**
+     * Recherche des travaux en fonction d'un terme donné par l'utilisateur,
+     * qui peut être un titre, un quartier ou un type de travaux.
+     * Affiche les résultats correspondant au terme de recherche.
+     */
     public void searchWorks() {
-        // TODO
-        // Demander à l'utilisateur s'il veut chercher par 1. Titre, 2. Quartier, 3. Type de travaux
         MenuView.printMessage("Entrez un terme de recherche (titre, quartier ou type de travaux) :");
         try {
             String searchTerm = scanner.nextLine();  // Get the search term
@@ -90,21 +103,104 @@ public class ResidentActivityController {
         }
     }
 
+    /**
+     * Permet au résident de partager ses préférences horaires pour les travaux.
+     * Les préférences sont sauvegardées dans la base de données.
+     */
     public void participateToSchedule() {
-        MenuView.printMessage("Bienvenue dans les préférences horaires. Ici, vous pouvez partager une intervalle de " +
-                "temps pendant laquelle vous préférez que les travaux se fassent");
-        List<String> scheduleInfo = MenuView.askSchedulePreferences();
-        SchedulePreferences schedulePreferences = new SchedulePreferences(
-                scheduleInfo.get(0),
-                scheduleInfo.get(1),
-                scheduleInfo.get(2)
-        );
         SchedulePreferencesRepository preferencesRepository = new SchedulePreferencesRepository();
-        preferencesRepository.savePreferences(schedulePreferences);
+
+        // Obtenir le quartier de l'utilisateur à partir de son code postal
+        PostalCodeFinder postalCodeFinder = new PostalCodeFinder();
+        String neighbourhood = postalCodeFinder.getPostalCode(Authenticate.getFetchedUserInfo()[2]);
+
+        if (neighbourhood == null) {
+            MenuView.printMessage("Votre quartier n'existe pas."); // si l'utilisateur n'a pas une adresse au quebec
+            return;
+        }
+
+        String parseNeighbourhood = neighbourhood.split(" ")[0];
+
+        MenuView.printMessage("Bienvenue dans les préférences horaires.");
+        MenuView.printMessage("Ici, vous pouvez partager une intervalle de " +
+                "vous préférez que les travaux se fassent dans votre quartier.");
+        // Demande à l'utilisateur s'il veut ajouter ou modifier une plage horaire
+
+        boolean exitLoop = false;
+        while (!exitLoop) {
+            MenuView.askSimpleOptions("Souhaitez-vous ajouter une nouvelle plage horaire ou modifier une plage existante ?",
+                    "Quitter", "Ajouter", "Modifier");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Nettoie le tampon
+            switch (choice) {
+                case 0:
+                    exitLoop = true;
+                    break;
+
+                case 1: // Ajouter une nouvelle plage horaire
+                    List<String> scheduleInfoAdd = MenuView.askSchedulePreferences();
+                    SchedulePreferences newPreferences = new SchedulePreferences(
+                            scheduleInfoAdd.get(0),
+                            parseNeighbourhood,
+                            scheduleInfoAdd.get(1)
+                    );
+                    preferencesRepository.savePreferences(newPreferences);
+                    MenuView.printMessage("Vos préférences ont été ajoutées avec succès !");
+                    break;
+
+                case 2: // Modifier une plage horaire existante
+                    // Récupérer les préférences existantes pour ce quartier
+                    List<SchedulePreferences> existingPreferences = preferencesRepository.getPreferencesByNeighbourhood(parseNeighbourhood);
+
+                    if (existingPreferences.isEmpty()) {
+                        MenuView.printMessage("Aucune préférence trouvée pour votre quartier.");
+                    } else {
+                        // Afficher les rues disponibles dans les préférences
+                        MenuView.printMessage("Les rues disponibles dans ce quartier sont :");
+                        existingPreferences.forEach(pref -> MenuView.printMessage("- " + pref.getStreet()));
+
+                        // Demander le nom de la rue pour laquelle modifier les préférences
+                        MenuView.printMessage("Entrez le nom de la rue pour laquelle vous souhaitez modifier les préférences :");
+                        String streetName = MenuView.askSingleInput("");
+
+                        // Vérifier si des préférences existent pour cette rue
+                        SchedulePreferences preferencesToUpdate = existingPreferences.stream()
+                                .filter(p -> p.getStreet().equalsIgnoreCase(streetName))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (preferencesToUpdate == null) {
+                            MenuView.printMessage("Aucune préférence trouvée pour cette rue et votre quartier. Vous pouvez " +
+                                    "l'ajouter en tant que nouvelle préférence.");
+                        } else {
+                            // Modifier les préférences
+                            MenuView.printMessage("Entrez les nouvelles plages horaires :");
+                            String newSchedule = MenuView.collectWeeklySchedules();
+                            preferencesToUpdate.setWeekHours(newSchedule);
+
+                            // Mettre à jour les préférences dans la base de données
+                            boolean updateSuccessful = preferencesRepository.updatePreferences(preferencesToUpdate);
+                            if (updateSuccessful) {
+                                MenuView.printMessage("Vos préférences ont été mises à jour avec succès !");
+                            } else {
+                                MenuView.printMessage("La mise à jour des préférences a échoué. Veuillez réessayer.");
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+                    MenuView.printMessage("Choix invalide. Veuillez réessayer.");
+            }
+        }
     }
 
+    /**
+     * Soumet une requête de travaux à partir d'informations fournies par l'utilisateur.
+     * Les détails sont sauvegardés dans la base de données.
+     */
     public void submitWorkRequest() {
-        // TODO : finir l'ajout de la requête à la DB et avant, initialiser la table
         List<String> workRequestInfo = MenuView.askFormInfo();
         WorkRequestForm workRequestForm = new WorkRequestForm(
                 workRequestInfo.get(0),
@@ -117,10 +213,12 @@ public class ResidentActivityController {
     }
 
     /**
-     * Consulte et affiche toutes les notifications associées au résident authentifié.
+     * Consulte et affiche toutes les notifications associées au résident actuellement authentifié.
+     * Marque automatiquement les notifications comme "vues" après affichage.
      */
     public void consultNotifications() {
         String userId = Authenticate.getUserId();
+        MenuView.printMessage("Current user id : " + userId); //helper
 
         NotificationRepository notifRepo = NotificationRepository.getInstance();
         List<Notification> notifications = notifRepo.fetchNotificationsByResidentId(userId);
@@ -131,9 +229,9 @@ public class ResidentActivityController {
 
             // Afficher la description avec le flag [Vue] si vu
             if (seen) {
-                System.out.println("[Vue] " + notification.getDescription());
+                MenuView.printMessage("[Vue] " + notification.getDescription());
             } else {
-                System.out.println(notification.getDescription());
+                MenuView.printMessage(notification.getDescription());
                 // Marquer comme vu après affichage
                 notifRepo.markNotificationAsSeen(notification.getId(), userId);
             }

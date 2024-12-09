@@ -8,30 +8,19 @@ import com.maville.view.MenuView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Menu d'authentification permettant de gérer les connexions et inscriptions
+ * des résidents et des intervenants. Fournit des options interactives pour
+ * faciliter l'authentification des utilisateurs dans l'application.
+ */
 public class AuthenticationMenu extends Menu {
     private Authenticate authenticate;
 
-    // TODO : METTRE TOUT CA DANS AUTHENTICATIONVIEW
-    private static final String[] LOGIN_INFO_MESSAGES = {
-            "Adresse courriel",
-            "Mot de passe"
-    };
-    private static final String[] SIGNUP_RESIDENT_INFO_MESSAGES = {
-            "Nom complet",
-            "Date de naissance (DD/MM/YYYY)",
-            "Adresse courriel",
-            "Mot de passe",
-            "Numéro de téléphone (optionnel)",
-            "Adresse résidentielle"
-    };
-    private static final String[] SIGNUP_INTERVENANT_INFO_MESSAGES = {
-            "Nom complet",
-            "Adresse courriel",
-            "Mot de passe",
-            "Identifiant de la ville"
-    };
-
-    // Logique de connexion
+    /**
+     * Gère le processus de connexion pour les utilisateurs.
+     * Permet à l'utilisateur de choisir son type (résident ou intervenant),
+     * de saisir ses informations de connexion, et de continuer vers le menu principal.
+     */
     public void logInManager() {
         while (true) {
             AuthenticationView.showAuthMessage();
@@ -42,13 +31,17 @@ public class AuthenticationMenu extends Menu {
                 selection(option, "login"); // Passe "login" en tant qu'argument pour indiquer la connexion
                 break;
             } else {
-                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
                 SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
             }
         }
     }
 
-    // Logique d'inscription
+    /**
+     * Gère le processus d'inscription pour les utilisateurs.
+     * Permet à l'utilisateur de choisir son type (résident ou intervenant),
+     * de saisir ses informations de profil, et de compléter l'inscription.
+     */
     public void signUpManager() {
         while (true) {
             AuthenticationView.showAuthMessage();
@@ -56,16 +49,22 @@ public class AuthenticationMenu extends Menu {
 
             if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier
                 int option = SCANNER.nextInt();
-                selection(option, "signup"); // Passe "signup" en tant qu'argument pour indiquer la connexion
+                selection(option, "signup"); // Passe "signup" en tant qu'argument pour indiquer l'inscription
                 break;
             } else {
-                System.out.println("Entrée invalide. Veuillez entrer un numéro valide.");
+                MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
                 SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie
             }
         }
     }
 
-    // Implémentation de la logique de sélection selon l'action (connexion ou inscription) et le type d'utilisateur
+    /**
+     * Implémente la logique de sélection selon l'action (connexion ou inscription)
+     * et le type d'utilisateur choisi.
+     *
+     * @param option L'option choisie par l'utilisateur.
+     * @param action L'action à effectuer ("login" ou "signup").
+     */
     @Override
     protected void selection(int option, String action) {
         switch (action) {
@@ -76,11 +75,16 @@ public class AuthenticationMenu extends Menu {
                 handleSignUp(option);
                 break;
             default:
-                System.out.println("Action inconnue.");
+                MenuView.printMessage("Action inconnue.");
                 break;
         }
     }
 
+    /**
+     * Gère la logique de connexion en fonction du type d'utilisateur sélectionné.
+     *
+     * @param option L'option choisie par l'utilisateur (1 pour résident, 2 pour intervenant).
+     */
     private void handleLogIn(int option) {
         String userType;
         switch (option) {
@@ -96,29 +100,42 @@ public class AuthenticationMenu extends Menu {
                 MenuView.backMessage();
                 return;
             default:
+                MenuView.printMessage("Option invalide pour la connexion.");
         }
     }
 
+    /**
+     * Poursuit le processus de connexion en collectant les informations de l'utilisateur.
+     *
+     * @param userType Le type d'utilisateur (résident ou intervenant).
+     */
     private void continueProcess(String userType) {
         AuthenticationView.showLogInMessage(userType);
-        SCANNER.nextLine();
-        while (true) {
-            authenticate = new Authenticate(collectUserInfo(LOGIN_INFO_MESSAGES));
+        SCANNER.nextLine(); // Nettoie le buffer
 
-            if (authenticate.logIn()) { // Construction du User
-                String userTypeFromDB = authenticate.getUserType();
-                if (!userType.equals(userTypeFromDB)) { // Si le user essaye de se connecter en tant qu'un autre type de user
-                    System.out.println("Vous n'êtes pas un " + userType);
+        while (true) {
+            authenticate = new Authenticate(collectUserInfo(AuthenticationView.LOGIN_INFO_MESSAGES));
+
+            if (authenticate.logIn()) { // Authentification réussie
+                String userTypeFromDB = Authenticate.getUserType();
+                if (!userType.equals(userTypeFromDB)) {
+                    MenuView.printMessage("Vous n'êtes pas un " + userType + ".");
                     return;
                 }
-                DefaultMenu.showUserMenu(userTypeFromDB);
+                DefaultMenu.showUserMenu(userTypeFromDB); // Affiche le menu utilisateur
                 break;
             } else {
+                MenuView.printMessage("Connexion échouée. Veuillez réessayer.");
                 return;
             }
         }
     }
 
+    /**
+     * Gère la logique d'inscription en fonction du type d'utilisateur sélectionné.
+     *
+     * @param option L'option choisie par l'utilisateur (1 pour résident, 2 pour intervenant).
+     */
     private void handleSignUp(int option) {
         String userType;
         String[] infoMessages;
@@ -126,29 +143,37 @@ public class AuthenticationMenu extends Menu {
         switch (option) {
             case 1:
                 userType = "resident";
-                infoMessages = SIGNUP_RESIDENT_INFO_MESSAGES;
+                infoMessages = AuthenticationView.SIGNUP_RESIDENT_INFO_MESSAGES;
                 break;
             case 2:
                 userType = "intervenant";
-                infoMessages = SIGNUP_INTERVENANT_INFO_MESSAGES;
+                infoMessages = AuthenticationView.SIGNUP_INTERVENANT_INFO_MESSAGES;
                 break;
             case 0:
                 MenuView.backMessage();
                 return;
             default:
-                System.out.println("Option invalide pour l'inscription.");
+                MenuView.printMessage("Option invalide pour l'inscription.");
                 return;
         }
 
         AuthenticationView.showSignUpMessage(userType);
-        SCANNER.nextLine();
+        SCANNER.nextLine(); // Nettoie le buffer
 
         authenticate = new Authenticate(collectUserInfo(infoMessages));
-        if (authenticate.signUp(userType)) { // Construction du User
-            DefaultMenu.showUserMenu(userType);
+        if (authenticate.signUp(userType)) { // Inscription réussie
+            MenuView.printMessage("Inscription réussie. Veuillez-vous connecter.");
+        } else {
+            MenuView.printMessage("Inscription échouée. Veuillez réessayer.");
         }
     }
 
+    /**
+     * Collecte les informations nécessaires pour la connexion ou l'inscription.
+     *
+     * @param infoMessages Les messages d'invite pour chaque champ d'information.
+     * @return Une liste contenant les informations saisies par l'utilisateur.
+     */
     private List<String> collectUserInfo(String[] infoMessages) {
         List<String> userInfo = new ArrayList<>();
         for (String message : infoMessages) {
@@ -156,20 +181,15 @@ public class AuthenticationMenu extends Menu {
             String input = SCANNER.nextLine();
             userInfo.add(input);
         }
-
         return userInfo;
     }
 
-    private static int getInput() {
-        while (true) {
-            try {
-                return Integer.parseInt(SCANNER.nextLine().trim());
-            } catch (NumberFormatException e) {
-                AuthenticationView.showInvalidInputMessage();
-            }
-        }
-    }
-
+    /**
+     * Demande à l'utilisateur de sélectionner le type d'intervenant
+     * parmi les types d'entreprises disponibles.
+     *
+     * @return Le numéro correspondant au type d'entreprise choisi.
+     */
     public static int askForCompanyType() {
         Intervenant.CompanyType[] companyTypes = Intervenant.CompanyType.values();
 
@@ -182,6 +202,21 @@ public class AuthenticationMenu extends Menu {
                 return choice;
             } else {
                 AuthenticationView.showInvalidChoiceMessage(companyTypes.length);
+            }
+        }
+    }
+
+    /**
+     * Gère la saisie sécurisée d'un entier par l'utilisateur.
+     *
+     * @return L'entier saisi.
+     */
+    private static int getInput() {
+        while (true) {
+            try {
+                return Integer.parseInt(SCANNER.nextLine().trim());
+            } catch (NumberFormatException e) {
+                AuthenticationView.showInvalidInputMessage();
             }
         }
     }

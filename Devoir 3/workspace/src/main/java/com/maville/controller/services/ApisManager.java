@@ -10,6 +10,10 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Gère les interactions avec les API externes et le dépôt des travaux.
+ * Fournit des services pour effectuer des requêtes parallèles et traiter les données des obstructions routières.
+ */
 public class ApisManager {
     private final ApiClient apiClient;
     private final WorkRepository workRepository;
@@ -19,6 +23,13 @@ public class ApisManager {
         this.workRepository = new WorkRepository();
     }
 
+    /**
+     * Effectue des requêtes parallèles pour récupérer les obstructions routières correspondant à un type de travaux donné.
+     *
+     * @param criteriaField le critère de filtrage basé sur le type de travaux.
+     * @return une liste imbriquée contenant les obstructions routières filtrées selon le critère.
+     * @throws Exception si une erreur se produit pendant l'exécution.
+     */
     public List<List<String>> parallelComputingForRequests(Project.TypeOfWork criteriaField) throws Exception {
         int threadPoolSize = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
@@ -76,6 +87,12 @@ public class ApisManager {
         return recordsParsed;
     }
 
+    /**
+     * Récupère la liste des identifiants des obstructions routières à partir de l'API.
+     *
+     * @return une liste d'identifiants des obstructions routières.
+     * @throws IOException si une erreur d'entrée/sortie se produit lors de la connexion à l'API.
+     */
     public List<String> getListOfRecordsRoadObstructions() throws IOException {
         apiClient.connect(WorkRepository.roadObstructionsAPI); // Reusing the same ApiClient instance
 
@@ -85,7 +102,6 @@ public class ApisManager {
         for (WorkRepository.Result.Record record : roadObstructions) {
             ids.add(record.getIdRequest());
         }
-
         return ids;
     }
 }

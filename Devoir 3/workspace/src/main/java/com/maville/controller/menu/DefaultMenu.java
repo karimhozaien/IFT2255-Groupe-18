@@ -3,67 +3,74 @@ package com.maville.controller.menu;
 import com.maville.controller.activity.IntervenantActivityController;
 import com.maville.controller.activity.ResidentActivityController;
 import com.maville.MaVille;
+import com.maville.view.MenuView;
 
+/**
+ * Menu par défaut gérant les interactions principales avec les utilisateurs.
+ * Ce menu inclut la gestion des sous-menus pour l'inscription, la connexion,
+ * ainsi que les actions spécifiques aux résidents et aux intervenants.
+ */
 public class DefaultMenu extends Menu {
     private final AuthenticationMenu AUTHMENU = new AuthenticationMenu();
 
+    /**
+     * Implémente la logique de sélection d'une option dans le menu principal.
+     *
+     * @param option L'option sélectionnée par l'utilisateur.
+     * @param action L'action associée (non utilisée ici).
+     */
     @Override
     protected void selection(int option, String action) {
         switch (option) {
             case 1:
-                AUTHMENU.signUpManager();  // Navigue vers le sous-menu d'inscription
+                AUTHMENU.signUpManager(); // Navigue vers le sous-menu d'inscription
                 break;
             case 2:
-                AUTHMENU.logInManager();   // Navigue vers le sous-menu de connexion
+                AUTHMENU.logInManager();  // Navigue vers le sous-menu de connexion
                 break;
             case 0:
-                MaVille.exitApplication();
+                MaVille.exitApplication(); // Quitte l'application
                 return;
             default:
-                System.out.println("Option invalide, veuillez réessayer.");
+                MenuView.printMessage("Option invalide, veuillez réessayer.");
                 break;
         }
     }
 
+    /**
+     * Gère les options principales du menu utilisateur.
+     *
+     * @param option   L'option choisie par l'utilisateur.
+     * @param userType Le type d'utilisateur connecté, soit "resident" ou "intervenant".
+     * @return {@code true} si l'utilisateur souhaite quitter le menu, sinon {@code false}.
+     */
     protected static boolean handleMainMenuOption(int option, String userType) {
         if (userType.equals("resident")) {
             ResidentActivityController residentAC = new ResidentActivityController();
 
             switch (option) {
                 case 1:
-                    // Consultation des travaux
-                    //System.out.println("Consultation des travaux...");
-                    residentAC.consultWorks();
+                    residentAC.consultWorks(); // Consultation des travaux
                     break;
                 case 2:
-                    // Consultation des entraves routières
-                    //System.out.println("Consultation des entraves...");
-                    residentAC.consultRoadObstructions();
+                    residentAC.consultRoadObstructions(); // Consultation des entraves routières
                     break;
                 case 3:
-                    // Rechercher des travaux
-                    //System.out.println("Recherche des travaux...");
-                    residentAC.searchWorks();
+                    residentAC.searchWorks(); // Recherche des travaux
                     break;
                 case 4:
-                    // Permettre une planification participative
-                    //System.out.println("Participer à une planification...");
-                    residentAC.participateToSchedule();
+                    residentAC.participateToSchedule(); // Planification participative
                     break;
                 case 5:
-                    // Soumettre une requête de travaux
-                    //System.out.println("Soumission d'une requête de travaux...");
-                    residentAC.submitWorkRequest();
+                    residentAC.submitWorkRequest(); // Soumission de requête de travaux
                     break;
                 case 6:
-                    // Recevoir des notifications personalisées
-                    //System.out.println("Réception des notifications...");
-                    residentAC.consultNotifications();
+                    residentAC.consultNotifications(); // Consultation des notifications
                     break;
-                case 0: // Option pour quitter
-                    return true;
+                case 0:
+                    return true; // Quitte le menu
                 default:
-                    //System.out.println("Option invalide pour résident. Veuillez réessayer.");
+                    MenuView.printMessage("Option invalide pour résident. Veuillez réessayer.");
                     break;
             }
         } else if (userType.equals("intervenant")) {
@@ -71,25 +78,22 @@ public class DefaultMenu extends Menu {
 
             switch (option) {
                 case 1:
-                    intervenantAC.submitProject();
-                    //System.out.println("Soumission de nouveaux travaux...");
+                    intervenantAC.submitProject(); // Soumission de nouveaux travaux
                     break;
                 case 2:
-                    intervenantAC.updateProject();
-                    //System.out.println("Mise à jour des travaux...");
+                    intervenantAC.updateProject(); // Mise à jour des travaux
                     break;
                 case 3:
-                    intervenantAC.consultWorkRequests();
-                    //System.out.println("Consultation des requêtes...");
+                    intervenantAC.consultWorkRequests(); // Consultation des requêtes de travaux
                     break;
-                case 0: // Option pour quitter
-                    return true;
+                case 0:
+                    return true; // Quitte le menu
                 default:
-                    System.out.println("Option invalide pour intervenant. Veuillez réessayer.");
+                    MenuView.printMessage("Option invalide pour intervenant. Veuillez réessayer.");
                     break;
             }
         }
 
-        return false; // Indique que l'utilisateur ne souhaite pas quitter
+        return false; // Reste dans le menu
     }
 }
