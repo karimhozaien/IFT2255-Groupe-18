@@ -6,6 +6,7 @@ import com.maville.controller.repository.WorkRepository;
 import com.maville.controller.services.Authenticate;
 import com.maville.controller.services.PostalCodeFinder;
 import com.maville.model.Notification;
+import com.maville.model.Project;
 import com.maville.model.SchedulePreferences;
 import com.maville.model.WorkRequestForm;
 import com.maville.view.MenuView;
@@ -37,22 +38,47 @@ public class ResidentActivityController {
      */
     public void consultWorks() {
         try {
-            MenuView.askFilter("Quartier", "Type de travaux", "Autre");
+            // Demander à l'utilisateur de choisir le type de projet
+            MenuView.askSimpleOptions("Souhaitez-vous consulter les projets en cours ou à venir ?",
+                    "Quitter", "Projets en cours", "Projets à venir");
 
-            int option = scanner.nextInt();
-            switch (option) {
+            int projectTypeOption = scanner.nextInt();
+            scanner.nextLine();
+
+            List<Project> projects;
+            if (projectTypeOption == 1) {
+                // Récupérer les projets en cours
+                projects = workRepo.getOngoingProjects();
+            } else if (projectTypeOption == 2) {
+                // Récupérer les projets à venir (filtrés à moins de 3 mois)
+                projects = workRepo.getPlannedProjectsWithinThreeMonths();
+            } else {
+                MenuView.printMessage("Choix invalide. Retour au menu principal.");
+                return;
+            }
+
+            // Demander à l'utilisateur de filtrer par quartier ou type de travaux
+            MenuView.askFilter("Quartier", "Type de travaux", "Tous les projets");
+
+            int filterOption = scanner.nextInt();
+            scanner.nextLine(); // Nettoyer le tampon
+
+            switch (filterOption) {
                 case 1:
                     MenuView.printMessage("Entrez le nom du quartier : ");
-                    String name = scanner.next();
-                    MenuView.showResults(workRepo.getFilteredProjects("quartier", name));
+                    String neighbourhood = scanner.nextLine();
+                    MenuView.showResults(workRepo.getFilteredProjects("quartier", neighbourhood, projects));
                     break;
                 case 2:
                     MenuView.printMessage("Entrez le type de travaux : ");
-                    String type = scanner.next();
-                    MenuView.showResults(workRepo.getFilteredProjects("travail", type));
+                    String workType = scanner.nextLine();
+                    MenuView.showResults(workRepo.getFilteredProjects("travail", workType, projects));
                     break;
                 case 3:
-                    MenuView.showResults(workRepo.getOngoingProjects());
+                    MenuView.showResults(projects);
+                    break;
+                default:
+                    MenuView.printMessage("Choix invalide. Retour au menu principal.");
                     break;
             }
         } catch (IOException e) {
