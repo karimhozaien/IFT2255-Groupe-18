@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Intervenant.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.model</a> &gt; <span class="el_source">Intervenant.java</span></div><h1>Intervenant.java</h1><pre class="source lang-java linenums">package com.maville.model;
+
+import com.maville.view.MenuView;
+
+/**
+ * Classe représentant un intervenant dans le système Maville.
+ * Un intervenant est un utilisateur spécialisé associé à un type d'entreprise et disposant d'un identifiant unique.
+ */
+public class Intervenant extends User {
+    private final int identifier;
+    private final CompanyType companyType;
+
+    /**
+     * Enumération pour les types d'entreprises auxquels un intervenant peut appartenir.
+     */
+<span class="nc" id="L16">    public enum CompanyType {</span>
+<span class="nc" id="L17">        PRIVATE(1, &quot;Privée&quot;),</span>
+<span class="nc" id="L18">        PUBLIC(2, &quot;Publique&quot;),</span>
+<span class="nc" id="L19">        INDIVIDUAL(3, &quot;Individuel&quot;);</span>
+
+        private final int value;
+        private final String displayType;
+
+        /**
+         * Constructeur pour l'énumération CompanyType.
+         *
+         * @param value       La valeur numérique associée au type.
+         * @param displayType La représentation textuelle du type.
+         */
+<span class="nc" id="L30">        CompanyType(int value, String displayType) {</span>
+<span class="nc" id="L31">            this.value = value;</span>
+<span class="nc" id="L32">            this.displayType = displayType;</span>
+<span class="nc" id="L33">        }</span>
+
+        /**
+         * Obtient la représentation textuelle du type.
+         *
+         * @return Une chaîne représentant le type.
+         */
+        public String getDisplayType() {
+<span class="nc" id="L41">            return displayType;</span>
+        }
+
+        /**
+         * Obtient la valeur numérique associée au type.
+         *
+         * @return La valeur numérique.
+         */
+        public int getValue() {
+<span class="nc" id="L50">            return value;</span>
+        }
+
+        /**
+         * Convertit une valeur numérique en type d'entreprise.
+         *
+         * @param choice La valeur numérique représentant un type d'entreprise.
+         * @return Le type d'entreprise correspondant.
+         * @throws IllegalArgumentException Si la valeur ne correspond à aucun type.
+         */
+        public static CompanyType stringToType(int choice) {
+<span class="nc bnc" id="L61" title="All 2 branches missed.">            for (CompanyType companyType : CompanyType.values()) {</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">                if (companyType.getValue() == choice) {</span>
+<span class="nc" id="L63">                    return companyType;</span>
+                }
+            }
+<span class="nc" id="L66">            throw new IllegalArgumentException(&quot;Ce type d'entreprise n'existe pas.&quot;);</span>
+        }
+    }
+
+    /**
+     * Constructeur privé pour la classe Intervenant, utilisé par le Builder.
+     *
+     * @param builder L'objet Builder contenant les données nécessaires pour créer un Intervenant.
+     */
+    private Intervenant(IntervenantBuilder builder) {
+<span class="nc" id="L76">        super(builder);</span>
+<span class="nc" id="L77">        this.identifier = builder.identifier;</span>
+<span class="nc" id="L78">        this.companyType = builder.companyType;</span>
+<span class="nc" id="L79">    }</span>
+
+    /**
+     * Classe interne pour construire un objet Intervenant de manière fluide.
+     */
+<span class="nc" id="L84">    public static class IntervenantBuilder extends User.Builder&lt;IntervenantBuilder&gt; {</span>
+        private int identifier;
+        private CompanyType companyType;
+
+        /**
+         * Définit l'identifiant unique de l'intervenant.
+         *
+         * @param identifier L'identifiant sous forme de chaîne.
+         * @return L'instance courante de IntervenantBuilder.
+         */
+        public IntervenantBuilder identifier(String identifier) {
+<span class="nc" id="L95">            this.identifier = Integer.parseInt(identifier);</span>
+<span class="nc" id="L96">            return this;</span>
+        }
+
+        /**
+         * Définit le type d'entreprise de l'intervenant.
+         *
+         * @param choice La valeur numérique représentant le type d'entreprise.
+         * @return L'instance courante de IntervenantBuilder.
+         */
+        public IntervenantBuilder companyType(int choice) {
+<span class="nc" id="L106">            this.companyType = CompanyType.stringToType(choice);</span>
+<span class="nc" id="L107">            return this;</span>
+        }
+
+        /**
+         * Retourne l'instance courante du Builder.
+         *
+         * @return L'instance courante de IntervenantBuilder.
+         */
+        @Override
+        protected IntervenantBuilder self() {
+<span class="nc" id="L117">            return this;</span>
+        }
+
+        /**
+         * Construit un objet Intervenant avec les données fournies.
+         *
+         * @return Une instance de Intervenant.
+         */
+        @Override
+        public Intervenant build() {
+<span class="nc" id="L127">            return new Intervenant(this);</span>
+        }
+    }
+
+    /**
+     * Obtient l'identifiant unique de l'intervenant.
+     *
+     * @return L'identifiant unique de l'intervenant.
+     */
+    public int getIdentifier() {
+<span class="nc" id="L137">        return this.identifier;</span>
+    }
+
+    /**
+     * Obtient le type d'entreprise auquel l'intervenant est associé.
+     *
+     * @return Le type d'entreprise de l'intervenant.
+     */
+    public CompanyType getCompanyType() {
+<span class="nc" id="L146">        return this.companyType;</span>
+    }
+
+    /**
+     * Affiche les informations de l'intervenant.
+     * Utilise la classe MenuView pour afficher les données dans la console.
+     */
+    @Override
+    public void print() {
+<span class="nc" id="L155">        super.print();</span>
+<span class="nc" id="L156">        MenuView.printMessage(&quot;Identifiant : &quot; + this.identifier);</span>
+<span class="nc" id="L157">        MenuView.printMessage(&quot;Type d'entreprise : &quot; + this.companyType.getDisplayType());</span>
+<span class="nc" id="L158">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

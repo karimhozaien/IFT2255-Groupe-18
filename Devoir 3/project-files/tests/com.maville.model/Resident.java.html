@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Resident.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.model</a> &gt; <span class="el_source">Resident.java</span></div><h1>Resident.java</h1><pre class="source lang-java linenums">package com.maville.model;
+
+import com.maville.view.MenuView;
+
+/**
+ * Classe représentant un résident dans le système Maville.
+ * Un résident est un utilisateur avec des informations supplémentaires telles que sa date de naissance,
+ * son numéro de téléphone et son adresse résidentielle.
+ */
+public class Resident extends User {
+
+    private String birthday;
+    private String phoneNumber;
+    private String address;
+
+    /**
+     * Constructeur privé utilisé par le Builder pour créer une instance de Resident.
+     *
+     * @param builder Le Builder contenant les données nécessaires à la création de l'objet.
+     */
+    private Resident(ResidentBuilder builder) {
+<span class="nc" id="L22">        super(builder);</span>
+<span class="nc" id="L23">        this.birthday = builder.birthday;</span>
+<span class="nc" id="L24">        this.phoneNumber = builder.phoneNumber;</span>
+<span class="nc" id="L25">        this.address = builder.address;</span>
+<span class="nc" id="L26">    }</span>
+
+    /**
+     * Classe interne utilisée pour construire des objets Resident de manière fluide.
+     */
+<span class="nc" id="L31">    public static class ResidentBuilder extends User.Builder&lt;ResidentBuilder&gt; {</span>
+        private String birthday;
+        private String phoneNumber;
+        private String address;
+
+        /**
+         * Définit la date de naissance du résident.
+         *
+         * @param birthday La date de naissance du résident (format attendu : DD/MM/YYYY).
+         * @return L'instance courante de ResidentBuilder.
+         */
+        public ResidentBuilder birthday(String birthday) {
+<span class="nc" id="L43">            this.birthday = birthday;</span>
+<span class="nc" id="L44">            return this;</span>
+        }
+
+        /**
+         * Définit le numéro de téléphone du résident.
+         *
+         * @param phoneNumber Le numéro de téléphone du résident.
+         * @return L'instance courante de ResidentBuilder.
+         */
+        public ResidentBuilder phoneNumber(String phoneNumber) {
+<span class="nc" id="L54">            this.phoneNumber = phoneNumber;</span>
+<span class="nc" id="L55">            return this;</span>
+        }
+
+        /**
+         * Définit l'adresse résidentielle du résident.
+         *
+         * @param address L'adresse résidentielle du résident.
+         * @return L'instance courante de ResidentBuilder.
+         */
+        public ResidentBuilder address(String address) {
+<span class="nc" id="L65">            this.address = address;</span>
+<span class="nc" id="L66">            return this;</span>
+        }
+
+        /**
+         * Retourne l'instance courante du Builder.
+         *
+         * @return L'instance courante de ResidentBuilder.
+         */
+        @Override
+        protected ResidentBuilder self() {
+<span class="nc" id="L76">            return this;</span>
+        }
+
+        /**
+         * Construit et retourne un objet Resident.
+         *
+         * @return Une nouvelle instance de Resident.
+         */
+        @Override
+        public Resident build() {
+<span class="nc" id="L86">            return new Resident(this);</span>
+        }
+    }
+
+    /**
+     * Retourne la date de naissance du résident.
+     *
+     * @return La date de naissance du résident.
+     */
+    public String getBirthday() {
+<span class="nc" id="L96">        return this.birthday;</span>
+    }
+
+    /**
+     * Retourne le numéro de téléphone du résident.
+     *
+     * @return Le numéro de téléphone du résident.
+     */
+    public String getPhoneNumber() {
+<span class="nc" id="L105">        return this.phoneNumber;</span>
+    }
+
+    /**
+     * Retourne l'adresse résidentielle du résident.
+     *
+     * @return L'adresse résidentielle du résident.
+     */
+    public String getResidentialAddress() {
+<span class="nc" id="L114">        return this.address;</span>
+    }
+
+    /**
+     * Affiche les informations du résident dans la console.
+     * Utilise la classe MenuView pour formater et afficher les données.
+     */
+    @Override
+    public void print() {
+<span class="nc" id="L123">        super.print();</span>
+<span class="nc" id="L124">        MenuView.printMessage(&quot;Date de naissance : &quot; + this.birthday);</span>
+<span class="nc" id="L125">        MenuView.printMessage(&quot;Numéro de téléphone : &quot; + this.phoneNumber);</span>
+<span class="nc" id="L126">        MenuView.printMessage(&quot;Adresse : &quot; + this.address);</span>
+<span class="nc" id="L127">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

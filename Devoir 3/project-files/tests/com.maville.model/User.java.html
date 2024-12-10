@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.model</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.maville.model;
+
+import com.maville.view.MenuView;
+import java.util.UUID;
+
+/**
+ * Classe représentant un utilisateur générique dans le système MaVille.
+ */
+public class User {
+    protected final String ID;
+    protected String name;
+    protected String email;
+    protected String password;
+
+    /**
+     * Constructeur protégé pour initialiser un utilisateur via un Builder.
+     *
+     * @param builder Le Builder contenant les données nécessaires pour créer l'utilisateur.
+     */
+<span class="nc" id="L20">    protected User(Builder&lt;?&gt; builder) {</span>
+<span class="nc" id="L21">        this.ID = builder.id;</span>
+<span class="nc" id="L22">        this.name = builder.name;</span>
+<span class="nc" id="L23">        this.email = builder.email;</span>
+<span class="nc" id="L24">        this.password = builder.password;</span>
+<span class="nc" id="L25">    }</span>
+
+    /**
+     * Retourne l'identifiant unique de l'utilisateur.
+     *
+     * @return L'identifiant unique.
+     */
+    public String getID() {
+<span class="nc" id="L33">        return ID;</span>
+    }
+
+    /**
+     * Retourne le nom de l'utilisateur.
+     *
+     * @return Le nom de l'utilisateur.
+     */
+    public String getName() {
+<span class="nc" id="L42">        return name;</span>
+    }
+
+    /**
+     * Retourne l'adresse email de l'utilisateur.
+     *
+     * @return L'adresse email.
+     */
+    public String getEmail() {
+<span class="nc" id="L51">        return email;</span>
+    }
+
+    /**
+     * Retourne le mot de passe de l'utilisateur.
+     *
+     * @return Le mot de passe.
+     */
+    public String getPassword() {
+<span class="nc" id="L60">        return password;</span>
+    }
+
+    /**
+     * Affiche les informations principales de l'utilisateur dans la console.
+     */
+    public void print() {
+<span class="nc" id="L67">        MenuView.printMessage(&quot;Nom : &quot; + this.name);</span>
+<span class="nc" id="L68">        MenuView.printMessage(&quot;Email : &quot; + this.email);</span>
+<span class="nc" id="L69">        MenuView.printMessage(&quot;Mot de passe : &quot; + this.password);</span>
+<span class="nc" id="L70">    }</span>
+
+    /**
+     * Classe interne abstraite utilisée comme base pour construire des objets User.
+     *
+     * @param &lt;T&gt; Le type du Builder spécifique.
+     */
+<span class="nc" id="L77">    public static abstract class Builder&lt;T extends Builder&lt;T&gt;&gt; {</span>
+        protected String id;
+        protected String name;
+        protected String email;
+        protected String password;
+
+        /**
+         * Définit le nom de l'utilisateur.
+         *
+         * @param name Le nom de l'utilisateur.
+         * @return L'instance courante du Builder.
+         */
+        public T name(String name) {
+<span class="nc" id="L90">            this.name = name;</span>
+<span class="nc" id="L91">            return self();</span>
+        }
+
+        /**
+         * Définit l'adresse email de l'utilisateur.
+         *
+         * @param email L'adresse email.
+         * @return L'instance courante du Builder.
+         */
+        public T email(String email) {
+<span class="nc" id="L101">            this.email = email;</span>
+<span class="nc" id="L102">            return self();</span>
+        }
+
+        /**
+         * Définit le mot de passe de l'utilisateur.
+         *
+         * @param password Le mot de passe.
+         * @return L'instance courante du Builder.
+         */
+        public T password(String password) {
+<span class="nc" id="L112">            this.password = password;</span>
+<span class="nc" id="L113">            return self();</span>
+        }
+
+        /**
+         * Définit un identifiant unique aléatoire pour l'utilisateur.
+         *
+         * @return L'instance courante du Builder.
+         */
+        public T id() {
+<span class="nc" id="L122">            this.id = UUID.randomUUID().toString();</span>
+<span class="nc" id="L123">            return self();</span>
+        }
+
+        /**
+         * Méthode à implémenter pour retourner l'instance courante du Builder.
+         *
+         * @return L'instance courante du Builder.
+         */
+        protected abstract T self();
+
+        /**
+         * Construit l'objet User.
+         *
+         * @return Une instance de User.
+         */
+        public abstract User build();
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

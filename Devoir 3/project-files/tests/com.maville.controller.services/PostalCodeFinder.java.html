@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostalCodeFinder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.controller.services</a> &gt; <span class="el_source">PostalCodeFinder.java</span></div><h1>PostalCodeFinder.java</h1><pre class="source lang-java linenums">package com.maville.controller.services;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+/**
+ * Service pour récupérer les codes postaux à partir d'adresses en utilisant l'API Nominatim d'OpenStreetMap.
+ * Fournit également une méthode pour valider la correspondance entre un quartier et une adresse donnée.
+ */
+<span class="nc" id="L17">public class PostalCodeFinder {</span>
+
+    private static final String NOMINATIM_API_URL = &quot;https://nominatim.openstreetmap.org/search&quot;;
+
+    /**
+     * Récupère le code postal associé à une adresse en utilisant l'API Nominatim.
+     *
+     * @param address L'adresse pour laquelle récupérer le code postal.
+     * @return Le code postal correspondant à l'adresse, ou {@code null} si aucun résultat n'est trouvé ou en cas d'erreur.
+     */
+    public String getPostalCode(String address) {
+        try {
+<span class="nc" id="L29">            String encodedAddress = URLEncoder.encode(address, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L30">            String requestUrl = NOMINATIM_API_URL + &quot;?q=&quot; + encodedAddress + &quot;&amp;format=json&amp;addressdetails=1&amp;limit=1&quot;;</span>
+
+            // Créer l'URL et ouvrir la connexion
+<span class="nc" id="L33">            URL url = new URL(requestUrl);</span>
+<span class="nc" id="L34">            HttpURLConnection conn = (HttpURLConnection) url.openConnection();</span>
+<span class="nc" id="L35">            conn.setRequestMethod(&quot;GET&quot;);</span>
+
+            // Ajouter un User-Agent conformément aux politiques de Nominatim
+<span class="nc" id="L38">            conn.setRequestProperty(&quot;User-Agent&quot;, &quot;MaVille/1.0 (mathias.la.rochelle@umontreal.ca)&quot;);</span>
+
+            // Vérifier le code de réponse
+<span class="nc" id="L41">            int responseCode = conn.getResponseCode();</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">            if (responseCode != 200) {</span>
+<span class="nc" id="L43">                System.err.println(&quot;HTTP GET Request Failed with Error code : &quot; + responseCode);</span>
+<span class="nc" id="L44">                return null;</span>
+            }
+
+            // Lire la réponse
+<span class="nc" id="L48">            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));</span>
+            String inputLine;
+<span class="nc" id="L50">            StringBuilder response = new StringBuilder();</span>
+
+<span class="nc bnc" id="L52" title="All 2 branches missed.">            while ((inputLine = in.readLine()) != null) {</span>
+<span class="nc" id="L53">                response.append(inputLine);</span>
+            }
+<span class="nc" id="L55">            in.close();</span>
+
+            // Parser la réponse JSON
+<span class="nc" id="L58">            JsonArray jsonArray = JsonParser.parseString(response.toString()).getAsJsonArray();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            if (jsonArray.isEmpty()) {</span>
+<span class="nc" id="L60">                return null; // Aucun résultat trouvé</span>
+            }
+
+<span class="nc" id="L63">            JsonObject firstResult = jsonArray.get(0).getAsJsonObject();</span>
+<span class="nc" id="L64">            JsonObject addressDetails = firstResult.getAsJsonObject(&quot;address&quot;);</span>
+
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            if (addressDetails.has(&quot;postcode&quot;)) {</span>
+<span class="nc" id="L67">                return addressDetails.get(&quot;postcode&quot;).getAsString();</span>
+            } else {
+<span class="nc" id="L69">                return null; // Code postal non trouvé dans l'adresse</span>
+            }
+<span class="nc" id="L71">        } catch (Exception e) {</span>
+<span class="nc" id="L72">            e.printStackTrace();</span>
+<span class="nc" id="L73">            return null; // En cas d'erreur, renvoyer null</span>
+        }
+    }
+
+    /**
+     * Vérifie si un quartier correspond à une adresse en comparant leurs codes postaux.
+     *
+     * @param currentNeighbourhood Le quartier à vérifier (basé sur la partie principale du code postal).
+     * @param address L'adresse à valider.
+     * @return {@code true} si le code postal de l'adresse correspond au quartier, sinon {@code false}.
+     */
+    public boolean isValidCorrespondance(String currentNeighbourhood, String address) {
+        try {
+<span class="nc" id="L86">            String postalCode = getPostalCode(address);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">            if (postalCode != null) {</span>
+<span class="nc" id="L88">                return postalCode.split(&quot; &quot;)[0].equals(currentNeighbourhood);</span>
+            }
+<span class="nc" id="L90">        } catch (Exception e) {</span>
+<span class="nc" id="L91">            e.printStackTrace();</span>
+<span class="nc" id="L92">        }</span>
+<span class="nc" id="L93">        return false; // Retourner false si aucun code postal n'a été trouvé ou en cas d'erreur</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

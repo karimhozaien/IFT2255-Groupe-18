@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DatabaseConnectionManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.controller.services</a> &gt; <span class="el_source">DatabaseConnectionManager.java</span></div><h1>DatabaseConnectionManager.java</h1><pre class="source lang-java linenums">package com.maville.controller.services;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/**
+ * Gère la connexion à la base de données SQLite et l'initialisation des tables nécessaires.
+ * Implémente le pattern singleton pour garantir une seule instance de connexion.
+ */
+<span class="nc" id="L12">public class DatabaseConnectionManager {</span>
+    private static final String URL = &quot;jdbc:sqlite:data/mydatabase.db&quot;;
+    private static DatabaseConnectionManager instance;
+    private Connection connection;
+
+    public static DatabaseConnectionManager getInstance() {
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L19">            instance = new DatabaseConnectionManager();</span>
+        }
+<span class="nc" id="L21">        return instance;</span>
+    }
+
+    /**
+     * Retourne une connexion active à la base de données.
+     * Si la connexion n'existe pas ou est fermée, elle est réinitialisée.
+     *
+     * @return une connexion active à la base de données SQLite.
+     * @throws SQLException si une erreur se produit lors de la connexion.
+     */
+    public Connection getConnection() throws SQLException {
+<span class="nc bnc" id="L32" title="All 4 branches missed.">        if (connection == null || connection.isClosed()) {</span>
+<span class="nc" id="L33">            connection = DriverManager.getConnection(URL);</span>
+        }
+<span class="nc" id="L35">        return connection;</span>
+    }
+
+    /**
+     * Initialise la base de données en créant les tables nécessaires si elles n'existent pas.
+     */
+    public static void connect() {
+        try {
+<span class="nc" id="L43">            DatabaseConnectionManager dbManager = getInstance();</span>
+<span class="nc" id="L44">            Connection conn = dbManager.getConnection();</span>
+<span class="nc" id="L45">            dbManager.initializeDatabaseTables(conn);</span>
+<span class="nc" id="L46">        } catch (SQLException e) {</span>
+<span class="nc" id="L47">            System.out.println(&quot;Error during database initialization: &quot; + e.getMessage());</span>
+<span class="nc" id="L48">        }</span>
+<span class="nc" id="L49">    }</span>
+
+    /**
+     * Ferme la connexion actuelle à la base de données, si elle est ouverte.
+     * Réinitialise l'instance pour permettre une nouvelle connexion dans le futur.
+     */
+    public static void close() {
+<span class="nc bnc" id="L56" title="All 4 branches missed.">        if (instance != null &amp;&amp; instance.connection != null) {</span>
+            try {
+<span class="nc bnc" id="L58" title="All 2 branches missed.">                if (!instance.connection.isClosed()) {</span>
+<span class="nc" id="L59">                    instance.connection.close();</span>
+                    //System.out.println(&quot;Database connection closed.&quot;); // helper
+                }
+<span class="nc" id="L62">            } catch (SQLException e) {</span>
+<span class="nc" id="L63">                System.out.println(&quot;Error closing the database connection: &quot; + e.getMessage());</span>
+            } finally {
+<span class="nc" id="L65">                instance = null; // Reset the instance to allow a new connection in the future</span>
+            }
+        }
+<span class="nc" id="L68">    }</span>
+
+    /**
+     * Crée les tables nécessaires dans la base de données si elles n'existent pas.
+     *
+     * @param conn la connexion active à la base de données.
+     * @throws SQLException si une erreur se produit lors de la création des tables.
+     */
+    public void initializeDatabaseTables(Connection conn) throws SQLException {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (isTableInitialized(conn, &quot;Users&quot;)) {</span>
+             //System.out.println(&quot;La table User existe déjà.&quot;); // helper
+        } else {
+            //System.out.println(&quot;Création de la table Users...&quot;); // helper
+<span class="nc" id="L81">            String userTableSQL =</span>
+                    &quot;CREATE TABLE IF NOT EXISTS Users (&quot; +
+                            &quot;id TEXT PRIMARY KEY,&quot; +
+                            &quot;name TEXT NOT NULL,&quot; +
+                            &quot;password TEXT NOT NULL,&quot; +
+                            &quot;email TEXT NOT NULL UNIQUE,&quot; +
+                            &quot;user_type TEXT NOT NULL CHECK (user_type IN ('resident', 'intervenant')),&quot; +
+                            &quot;identifier INT,&quot; +
+                            &quot;company_type TEXT,&quot; +
+                            &quot;birthday TEXT,&quot; +
+                            &quot;phone_number TEXT,&quot; +
+                            &quot;residential_address TEXT,&quot; +
+                            &quot;CHECK ((user_type = 'resident' AND identifier IS NULL AND company_type IS NULL AND &quot; +
+                            &quot;birthday IS NOT NULL AND phone_number IS NOT NULL AND residential_address IS NOT NULL) OR&quot; +
+                            &quot; (user_type = 'intervenant' AND identifier IS NOT NULL AND company_type IS NOT NULL &quot; +
+                            &quot;AND birthday IS NULL AND phone_number IS NULL AND residential_address IS NULL))&quot; +
+                    &quot;);&quot;;
+<span class="nc" id="L98">            try (Statement stmt = conn.createStatement()) {</span>
+<span class="nc" id="L99">                stmt.execute(userTableSQL);</span>
+            }
+        }
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (isTableInitialized(conn, &quot;Projects&quot;)) {</span>
+            //System.out.println(&quot;La table Projects existe déja.&quot;); // helper
+        } else {
+            //System.out.println(&quot;Création de la table Projects...&quot;); // helper
+<span class="nc" id="L107">            String userTableSQL =</span>
+                    &quot;CREATE TABLE IF NOT EXISTS Projects (&quot; +
+                        &quot;id TEXT PRIMARY KEY,&quot; +
+                        &quot;title TEXT NOT NULL,&quot; +
+                        &quot;description TEXT,&quot; +
+                        &quot;type_of_work TEXT NOT NULL CHECK(type_of_work IN (&quot; +
+                            &quot;'ROAD', &quot; +
+                            &quot;'GAS_ELECTRICITY', &quot; +
+                            &quot;'CONSTRUCTION_RENOVATION', &quot; +
+                            &quot;'LANDSCAPE', &quot; +
+                            &quot;'PUBLIC_TRANSPORT', &quot; +
+                            &quot;'SIGNAGE_LIGHTING', &quot; +
+                            &quot;'UNDERGROUND', &quot; +
+                            &quot;'RESIDENTIAL', &quot; +
+                            &quot;'URBAN_MAINTENANCE', &quot; +
+                            &quot;'TELECOMMUNICATIONS_NETWORKS', &quot; +
+                            &quot;'OTHER'&quot; +
+                            &quot;)),&quot; +
+                        &quot;affected_neighbourhood TEXT NOT NULL,&quot; +
+                        &quot;affected_streets TEXT NOT NULL,&quot; +
+                        &quot;start_date TEXT NOT NULL,&quot; +
+                        &quot;end_date TEXT NOT NULL,&quot; +
+                        &quot;work_schedule TEXT,&quot; +
+                        &quot;work_status TEXT CHECK(work_status IN ('ONGOING', 'PLANNED', 'SUSPENDED'))&quot; +
+                    &quot;);&quot;;
+<span class="nc" id="L132">            try (Statement stmt = conn.createStatement()) {</span>
+<span class="nc" id="L133">                stmt.execute(userTableSQL);</span>
+            }
+        }
+
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (isTableInitialized(conn, &quot;Notifications&quot;)) {</span>
+            //System.out.println(&quot;La table Notifications existe déjà.&quot;); // helper
+        } else {
+            //System.out.println(&quot;Création de la table Notifications...&quot;); // helper
+<span class="nc" id="L141">            String notificationTableSQL =</span>
+                    &quot;CREATE TABLE IF NOT EXISTS Notifications (&quot; +
+                            &quot;id TEXT PRIMARY KEY,&quot; +
+                            &quot;description TEXT NOT NULL,&quot; +
+                            &quot;residents_id TEXT,&quot; + // peut-etre null si aucun resident dans le quartier est auth
+                            &quot;seen_residents_ids TEXT&quot; + // null dès le départ
+                    &quot;);&quot;;
+<span class="nc" id="L148">            try (Statement stmt = conn.createStatement()) {</span>
+<span class="nc" id="L149">                stmt.execute(notificationTableSQL);</span>
+            }
+        }
+
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (isTableInitialized(conn, &quot;WorkRequests&quot;)) {</span>
+            // System.out.println(&quot;La table WorkRequests existe déjà.&quot;); // helper
+        } else {
+            // System.out.println(&quot;Création de la table WorkRequests...&quot;); // helper
+<span class="nc" id="L157">            String userTableSQL =</span>
+                    &quot;CREATE TABLE IF NOT EXISTS WorkRequests (&quot; +
+                        &quot;id TEXT PRIMARY KEY,&quot; +
+                        &quot;submitter_id TEXT NOT NULL,&quot; +
+                        &quot;title TEXT NOT NULL,&quot; +
+                        &quot;description TEXT,&quot; +
+                        &quot;project_type TEXT NOT NULL,&quot; +
+                        &quot;expected_date TEXT NOT NULL,&quot; +
+                        &quot;submissions TEXT,&quot; +
+                        &quot;chosen_intervenant TEXT,&quot; +
+                        &quot;closing_message TEXT&quot; +
+                    &quot;);&quot;;
+<span class="nc" id="L169">            try (Statement stmt = conn.createStatement()) {</span>
+<span class="nc" id="L170">                stmt.execute(userTableSQL);</span>
+            }
+        }
+
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        if (isTableInitialized(conn, &quot;SchedulePreferences&quot;)) {</span>
+            //System.out.println(&quot;La table Préférences horaire existe déjà.&quot;); // helper
+        } else {
+            //System.out.println(&quot;Création de la table Préférences horaire...&quot;); // helper
+<span class="nc" id="L178">            String preferencesTableSQL =</span>
+                    &quot;CREATE TABLE IF NOT EXISTS SchedulePreferences (&quot; +
+                            &quot;id TEXT PRIMARY KEY,&quot; +
+                            &quot;street_name TEXT NOT NULL,&quot; +
+                            &quot;neighbourhood TEXT NOT NULL,&quot; +
+                            &quot;week_hours TEXT NOT NULL&quot; +
+                    &quot;);&quot;;
+<span class="nc" id="L185">            try (Statement stmt = conn.createStatement()) {</span>
+<span class="nc" id="L186">                stmt.execute(preferencesTableSQL);</span>
+            }
+        }
+<span class="nc" id="L189">    }</span>
+
+    private boolean isTableInitialized(Connection conn, String tableName) throws SQLException {
+<span class="nc" id="L192">        var metaData = conn.getMetaData();</span>
+<span class="nc" id="L193">        try (var rs = metaData.getTables(null, null, tableName, null)) {</span>
+<span class="nc" id="L194">            return rs.next();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

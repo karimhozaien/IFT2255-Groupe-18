@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Notification.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.model</a> &gt; <span class="el_source">Notification.java</span></div><h1>Notification.java</h1><pre class="source lang-java linenums">package com.maville.model;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Classe représentant une notification dans le système Maville.
+ * Une notification est associée à un ou plusieurs résidents et peut être marquée comme vue.
+ */
+public class Notification {
+    private String id;
+    private String description;
+    private List&lt;String&gt; residentsId;
+    private List&lt;String&gt; seenResidents;
+
+    // Constructeur sans description (utilisé lors du fetch DB)
+<span class="nc" id="L18">    public Notification() {</span>
+<span class="nc" id="L19">        this.residentsId = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L20">        this.seenResidents = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L21">    }</span>
+
+    /**
+     * Constructeur pour créer une notification avec une description.
+     * Génère automatiquement un identifiant unique.
+     *
+     * @param description La description de la notification.
+     */
+<span class="nc" id="L29">    public Notification(String description) {</span>
+<span class="nc" id="L30">        this.id = java.util.UUID.randomUUID().toString();</span>
+<span class="nc" id="L31">        this.description = description;</span>
+<span class="nc" id="L32">        this.residentsId = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L33">        this.seenResidents = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L34">    }</span>
+
+    // Getters et Setters
+    /**
+     * Retourne l'identifiant unique de la notification.
+     *
+     * @return L'identifiant unique de la notification.
+     */
+<span class="nc" id="L42">    public String getId() { return id; }</span>
+
+    /**
+     * Définit l'identifiant unique de la notification.
+     *
+     * @param id L'identifiant unique à définir.
+     */
+<span class="nc" id="L49">    public void setId(String id) { this.id = id; }</span>
+
+    /**
+     * Retourne la description de la notification.
+     *
+     * @return La description de la notification.
+     */
+<span class="nc" id="L56">    public String getDescription() { return description; }</span>
+
+    /**
+     * Définit la description de la notification.
+     *
+     * @param description La description à définir.
+     */
+<span class="nc" id="L63">    public void setDescription(String description) { this.description = description; }</span>
+
+    /**
+     * Retourne la liste des identifiants des résidents concernés par la notification.
+     *
+     * @return La liste des identifiants des résidents.
+     */
+<span class="nc" id="L70">    public List&lt;String&gt; getResidents() { return residentsId; }</span>
+
+    /**
+     * Définit la liste des résidents concernés par la notification.
+     *
+     * @param residentsId La liste des identifiants des résidents à définir.
+     */
+<span class="nc" id="L77">    public void setResidents(List&lt;String&gt; residentsId) { this.residentsId = residentsId; }</span>
+
+    /**
+     * Retourne la liste des résidents ayant vu la notification.
+     *
+     * @return La liste des résidents ayant vu la notification.
+     */
+<span class="nc" id="L84">    public List&lt;String&gt; getSeenResidents() { return seenResidents; }</span>
+
+    /**
+     * Définit la liste des résidents ayant vu la notification.
+     *
+     * @param seenResidents La liste des résidents à définir.
+     */
+<span class="nc" id="L91">    public void setSeenResidents(List&lt;String&gt; seenResidents) { this.seenResidents = seenResidents; }</span>
+
+    /**
+     * Ajoute un résident à la liste des résidents concernés par la notification.
+     *
+     * &lt;p&gt;Vérifie que l'identifiant n'est pas déjà présent dans la liste.&lt;/p&gt;
+     *
+     * @param residentId L'identifiant du résident à ajouter.
+     */
+    public void addResident(String residentId) {
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (!this.residentsId.contains(residentId)) {</span>
+<span class="nc" id="L102">            this.residentsId.add(residentId);</span>
+        }
+<span class="nc" id="L104">    }</span>
+
+    /**
+     * Supprime un résident de la liste des résidents concernés par la notification.
+     *
+     * @param residentId L'identifiant du résident à supprimer.
+     */
+    public void removeResident(String residentId) {
+<span class="nc" id="L112">        this.residentsId.remove(residentId);</span>
+<span class="nc" id="L113">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (!(o instanceof Notification)) return false;</span>
+<span class="nc" id="L119">        Notification that = (Notification) o;</span>
+<span class="nc" id="L120">        return Objects.equals(id, that.id);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L125">        return Objects.hash(id);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
