@@ -9,11 +9,14 @@ import java.util.List;
  */
 public class WorkRequestForm {
     private String id;
+    private String submitterId;
     private String title;
     private String description;
     private Project.TypeOfWork projectType;
     private String expectedDate;
     private List<String> submissions;
+    private String chosenIntervenant;
+    private String closingMessage;
 
     /**
      * Constructeur pour créer un formulaire de requête de travaux.
@@ -23,8 +26,9 @@ public class WorkRequestForm {
      * @param projectType  Le type de travaux (chaîne de caractères à analyser).
      * @param expectedDate La date de fin espérée pour les travaux.
      */
-    public WorkRequestForm(String title, String description, String projectType, String expectedDate) {
+    public WorkRequestForm(String submitterId, String title, String description, String projectType, String expectedDate) {
         this.id = java.util.UUID.randomUUID().toString();
+        this.submitterId = submitterId;
         this.title = title;
         this.description = description;
         this.projectType = parseProjectType(projectType);
@@ -32,13 +36,17 @@ public class WorkRequestForm {
         this.submissions = new ArrayList<>();
     }
 
-    public WorkRequestForm(String id, String title, String description, String projectType, String expectedDate, List<String> submissions) {
+    public WorkRequestForm(String id, String submitterId, String title, String description, String projectType,
+                           String expectedDate, List<String> submissions, String chosenIntervenant, String closingMessage) {
         this.id = id;
+        this.submitterId = submitterId;
         this.title = title;
         this.description = description;
         this.projectType = parseProjectType(projectType);
         this.expectedDate = expectedDate;
-        this.submissions = submissions;
+        this.submissions = new ArrayList<>(submissions);
+        this.chosenIntervenant = chosenIntervenant;
+        this.closingMessage = closingMessage;
     }
 
     /**
@@ -47,7 +55,7 @@ public class WorkRequestForm {
      * @param submission La soumission à ajouter.
      */
     public void addSubmission(String submission) {
-        submissions.add(submission);
+        this.submissions.add(submission.trim());
     }
 
     /**
@@ -78,9 +86,9 @@ public class WorkRequestForm {
      */
     @Override
     public String toString() {
-        return title + ", " + description + ", " + projectType + ", " + expectedDate;
+        return title + ", " + description + ", " + projectType + ", " + expectedDate + ", " + submissions
+                + ", " + closingMessage;
     }
-
 
     // Getters
     /**
@@ -90,6 +98,15 @@ public class WorkRequestForm {
      */
     public String getId() {
         return id;
+    }
+
+    /**
+     * Retourne l'identifiant du résident qui a soumis.
+     *
+     * @return L'identifiant du déposant.
+     */
+    public String getSubmitterId() {
+        return submitterId;
     }
 
     /**
@@ -144,5 +161,31 @@ public class WorkRequestForm {
      */
     public void setSubmissions(List<String> submissions) {
         this.submissions = submissions;
+    }
+
+    public String getChosenIntervenant() {
+        return chosenIntervenant;
+    }
+
+    public void setChosenIntervenant(String chosenIntervenant) {
+        this.chosenIntervenant = chosenIntervenant;
+    }
+
+    /**
+     * Retourne le message de fermeture (optionnel) écrit par le déposant.
+     *
+     * @return Le message de fermeture.
+     */
+    public String getClosingMessage() {
+        return closingMessage;
+    }
+
+    /**
+     * Définit le message de fermeture de la requête (qui est envoyé à l'intervenant en charge).
+     *
+     * @param closingMessage Le nouveau message de fermeture.
+     */
+    public void setClosingMessage(String closingMessage) {
+        this.closingMessage = closingMessage;
     }
 }

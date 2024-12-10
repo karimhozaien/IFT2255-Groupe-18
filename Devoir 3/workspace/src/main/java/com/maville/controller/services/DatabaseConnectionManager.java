@@ -174,11 +174,14 @@ public class DatabaseConnectionManager {
             String userTableSQL =
                     "CREATE TABLE IF NOT EXISTS WorkRequests (" +
                         "id TEXT PRIMARY KEY," +
+                        "submitter_id TEXT NOT NULL," +
                         "title TEXT NOT NULL," +
                         "description TEXT," +
                         "project_type TEXT NOT NULL," +
                         "expected_date TEXT NOT NULL," +
-                        "submissions TEXT" +
+                        "submissions TEXT," +
+                        "chosen_intervenant TEXT," +
+                        "closing_message TEXT" +
                     ");";
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(userTableSQL);

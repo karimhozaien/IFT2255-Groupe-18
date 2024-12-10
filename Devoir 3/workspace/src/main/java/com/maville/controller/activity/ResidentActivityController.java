@@ -9,9 +9,12 @@ import com.maville.model.Notification;
 import com.maville.model.SchedulePreferences;
 import com.maville.model.WorkRequestForm;
 import com.maville.view.MenuView;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Contrôleur principal pour les activités des résidents.
@@ -201,8 +204,42 @@ public class ResidentActivityController {
      * Les détails sont sauvegardés dans la base de données.
      */
     public void submitWorkRequest() {
+        boolean exitLoop = false;
+        while (!exitLoop) {
+            MenuView.askSimpleOptions("Voulez-vous soumettre une nouvelle requête ou consulter vos requêtes ?",
+                    "Quitter", "Ajouter", "Consulter");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Nettoie le tampon
+            switch (choice) {
+                case 0:
+                    exitLoop = true;
+                    break;
+                case 1:
+                    addWorkRequest();
+                    break;
+                case 2:
+                    List<WorkRequestForm> workRequests = consultUserWorkRequests();
+                    if (workRequests.isEmpty()) {
+                        MenuView.printMessage("Vous n'avez soumis aucune requête pour l'instant.");
+                    } else {
+                        MenuView.printMessage("Voici vos requêtes soumises :");
+                        MenuView.showResults(workRequests);
+
+                        askAboutWorkRequestCandidacies(workRequests);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    }
+
+    private void addWorkRequest() {
         List<String> workRequestInfo = MenuView.askFormInfo();
         WorkRequestForm workRequestForm = new WorkRequestForm(
+                Authenticate.getUserId(),
                 workRequestInfo.get(0),
                 workRequestInfo.get(1),
                 workRequestInfo.get(2),
@@ -210,6 +247,137 @@ public class ResidentActivityController {
         );
         WorkRepository workRepo = new WorkRepository();
         workRepo.saveWorkRequest(workRequestForm);
+    }
+
+    private List<WorkRequestForm> consultUserWorkRequests() {
+        String userId = Authenticate.getUserId(); // Récupérer l'ID de l'utilisateur courant
+        WorkRepository workRepo = new WorkRepository();
+
+        return workRepo.fetchWorkRequestsByUserId(userId);
+    }
+
+    private void askAboutWorkRequestCandidacies(List<WorkRequestForm> workRequests) {
+        boolean exitLoop = false;
+        while (!exitLoop) {
+            try {
+                String input = MenuView.askLongInput("Voulez-vous accepter une des candidatures ?",
+                        "[1] Oui", "[2] Non");
+                int option = Integer.parseInt(input); // Si un lettre est entrée, erreur
+                switch (option) {
+                    case 1 -> acceptCandidacy(workRequests);
+                    case 2 -> exitLoop = true;
+                    default -> MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
+                }
+            } catch (NumberFormatException e) {
+                MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide et non une lettre.");
+            }
+        }
+    }
+
+    private void acceptCandidacy(List<WorkRequestForm> workRequests) {
+        int option;
+        while (true) {
+            try {
+                String input = MenuView.askSingleInput("Entrez le numéro de la requête dont vous voulez accepter " +
+                        "la candidature : ");
+                option = Integer.parseInt(input);
+                if (option > 0 && option <= workRequests.size()) {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                MenuView.printMessage("Numéro de la requête invalide.");
+            }
+        }
+
+        WorkRequestForm workRequest = workRequests.get(option - 1);
+
+        // Demander à l'utilisateur de sélectionner un intervenant
+        List<String> submissions = workRequest.getSubmissions();
+        if (submissions.isEmpty()) {
+            MenuView.printMessage("Aucune soumission disponible pour cette requête.");
+            return;
+        }
+
+        // Afficher les soumissions formatées
+        MenuView.printMessage("Soumissions disponibles :");
+        for (int i = 0; i < submissions.size(); i++) {
+            String formattedSubmission = parseSingleSubmission(submissions.get(i));
+            if (!formattedSubmission.isEmpty()) {
+                MenuView.printMessage((i + 1) + ". " + formattedSubmission);
+            }
+        }
+
+        int submissionOption;
+        while (true) {
+            try {
+                String input = MenuView.askSingleInput("Entrez le numéro de la soumission que vous voulez accepter : ");
+                submissionOption = Integer.parseInt(input);
+                if (submissionOption > 0 && submissionOption <= submissions.size()) {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                MenuView.printMessage("Numéro de la soumission invalide.");
+            }
+        }
+
+        // Extraire uniquement l'ID de la soumission sélectionnée
+        String selectedSubmission = submissions.get(submissionOption - 1);
+        String selectedSubmissionId = extractSubmissionId(selectedSubmission);
+        System.out.println(selectedSubmissionId);
+
+        if (selectedSubmissionId != null) {
+            // Mettre à jour la liste des soumissions avec uniquement l'ID sélectionné
+            workRequest.setChosenIntervenant(selectedSubmissionId);
+            MenuView.printMessage("La soumission sélectionnée a été mise à jour avec succès !");
+
+            // Ajouter un message optionnel
+            String optionalMessage = MenuView.askSingleInput("Entrez un message pour l'intervenant (optionnel) : ");
+            workRequest.setClosingMessage(optionalMessage);
+
+            // Mettre à jour la requête dans la base de données
+            workRepo.updatingCandidacySubmission(workRequest);
+        } else {
+            MenuView.printMessage("Erreur : Impossible de trouver l'ID de la soumission sélectionnée.");
+        }
+    }
+
+    public String parseSingleSubmission(String submission) {
+        // Regex pour une soumission complète avec ID et dates
+        String regexFull = "^([^:]+):\\{start_date:\\s*([^,]+),\\s*end_date:\\s*([^}]+)}$";
+        // Regex pour une soumission contenant uniquement l'ID
+        String regexIdOnly = "^([^:]+)$";
+
+        Pattern patternFull = Pattern.compile(regexFull);
+        Pattern patternIdOnly = Pattern.compile(regexIdOnly);
+
+        Matcher matcherFull = patternFull.matcher(submission);
+        Matcher matcherIdOnly = patternIdOnly.matcher(submission);
+
+        if (matcherFull.matches()) {
+            // Cas avec ID et dates
+            String intervenantId = matcherFull.group(1).trim();
+            String startDate = matcherFull.group(2).trim();
+            String endDate = matcherFull.group(3).trim();
+            return intervenantId + ", start_date: " + startDate + ", end_date: " + endDate;
+        } else if (matcherIdOnly.matches()) {
+            // Cas avec ID uniquement
+            return matcherIdOnly.group(1).trim();
+        }
+
+        return ""; // Retourne une chaîne vide si le format est invalide
+    }
+
+    private String extractSubmissionId(String submission) {
+        // Regex to capture only the UUID before the "{"
+        String regex = "^([a-f0-9\\-]+):\\{";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(submission);
+
+        if (matcher.find()) { // Use find() for partial matches
+            return matcher.group(1).trim(); // Return the UUID (ID)
+        }
+
+        return null; // Return null if no match is found
     }
 
     /**
