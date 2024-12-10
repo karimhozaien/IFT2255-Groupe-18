@@ -151,9 +151,33 @@ public class MenuView {
     public static List<String> askInfoForCandidacySubmission() {
         List<String> infos = new ArrayList<>();
 
-        printMessage("Veuillez entrer la date de début et de fin.");
-        infos.add(askSingleInput("Date de début : "));
-        infos.add(askSingleInput("Date de fin : "));
+        while (infos.size() < 2) {
+            printMessage("Veuillez entrer la date de début et de fin.");
+
+            // Ask for "Date de début"
+            String startDate;
+            while (true) {
+                startDate = askSingleInput("Date de début : ");
+                if (!startDate.trim().isEmpty()) { // Ensure input is not empty
+                    break;
+                } else {
+                    printMessage("La date de début est obligatoire. Veuillez entrer une valeur.");
+                }
+            }
+            infos.add(startDate);
+
+            // Ask for "Date de fin"
+            String endDate;
+            while (true) {
+                endDate = askSingleInput("Date de fin : ");
+                if (!endDate.trim().isEmpty()) { // Ensure input is not empty
+                    break;
+                } else {
+                    printMessage("La date de fin est obligatoire. Veuillez entrer une valeur.");
+                }
+            }
+            infos.add(endDate);
+        }
 
         return infos;
     }
@@ -265,12 +289,12 @@ public class MenuView {
      * @param header  Le titre à afficher.
      * @param options Les options sous forme de TreeMap.
      */
-    private static void displayOptions(String header, TreeMap<Integer, String> options) {
-        printMessage(header); // En-tête en couleur
-        System.out.println("****************************************");
+    public static void displayOptions(String header, TreeMap<Integer, String> options) {
+        printMessage(header);
+        printMessage("****************************************");
         options.forEach((key, value) ->
-                System.out.println(Ansi.ansi().fg(CYAN).a("[" + key + "] ").reset() + value));
-        System.out.println("****************************************");
+                printMessage(Ansi.ansi().fg(CYAN).a("[" + key + "] ").reset() + value));
+        printMessage("****************************************");
     }
 
     /**

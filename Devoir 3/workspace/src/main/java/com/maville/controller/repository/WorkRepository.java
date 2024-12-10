@@ -304,15 +304,17 @@ public class WorkRepository {
      * @param workRequestForm La requête à enregistrer.
      */
     public void saveWorkRequest(WorkRequestForm workRequestForm) {
-        String insertSQL = "INSERT INTO WorkRequests(id, title, description, project_type, expected_date) VALUES (?, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO WorkRequests(id, submitter_id, title, description, project_type, expected_date) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
             pstmt.setString(1, workRequestForm.getId());
-            pstmt.setString(2, workRequestForm.getTitle());
-            pstmt.setString(3, workRequestForm.getDescription());
-            pstmt.setString(4, workRequestForm.getProjectType().toString());
-            pstmt.setString(5, workRequestForm.getExpectedDate());
+            pstmt.setString(2, workRequestForm.getSubmitterId());
+            pstmt.setString(3, workRequestForm.getTitle());
+            pstmt.setString(4, workRequestForm.getDescription());
+            pstmt.setString(5, workRequestForm.getProjectType().toString());
+            pstmt.setString(6, workRequestForm.getExpectedDate());
 
             pstmt.executeUpdate();
             //System.out.println("La requête a été sauvegardée."); // Message helper
@@ -327,18 +329,21 @@ public class WorkRepository {
      * @param workRequestForm La requête à mettre à jour.
      */
     public void updatingCandidacySubmission(WorkRequestForm workRequestForm) {
-        String updateSQL = "UPDATE WorkRequests SET title = ?, description = ?, project_type = ?, expected_date = ?," +
-                "submissions = ? WHERE id = ?";
+        String updateSQL = "UPDATE WorkRequests SET submitter_id = ?, title = ?, description = ?, project_type = ?, " +
+                "expected_date = ?, submissions = ?, chosen_intervenant = ?, closing_message = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {
 
-            pstmt.setString(1, workRequestForm.getTitle());
-            pstmt.setString(2, workRequestForm.getDescription());
-            pstmt.setString(3, workRequestForm.getProjectType().toString());
-            pstmt.setString(4, workRequestForm.getExpectedDate());
-            pstmt.setString(5, String.join(", ", workRequestForm.getSubmissions()));
-            pstmt.setString(6, workRequestForm.getId()); // Ensure the correct project is updated
+            pstmt.setString(1, workRequestForm.getSubmitterId());
+            pstmt.setString(2, workRequestForm.getTitle());
+            pstmt.setString(3, workRequestForm.getDescription());
+            pstmt.setString(4, workRequestForm.getProjectType().toString());
+            pstmt.setString(5, workRequestForm.getExpectedDate());
+            pstmt.setString(6, String.join(",", workRequestForm.getSubmissions()));
+            pstmt.setString(7, workRequestForm.getChosenIntervenant());
+            pstmt.setString(8, workRequestForm.getClosingMessage());
+            pstmt.setString(9, workRequestForm.getId()); // Ensure the correct project is updated
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected == 0) {
@@ -349,6 +354,52 @@ public class WorkRepository {
         } catch (SQLException e) {
             System.out.println("Erreur lors de la mise à jour du projet : " + e.getMessage());
         }
+    }
+
+    /**
+     * Récupère toutes les requêtes soumises par un utilisateur spécifique.
+     *
+     * @param userId L'identifiant de l'utilisateur.
+     * @return Une liste de {@code WorkRequestForm} représentant les requêtes de l'utilisateur.
+     */
+    public List<WorkRequestForm> fetchWorkRequestsByUserId(String userId) {
+        List<WorkRequestForm> userWorkRequests = new ArrayList<>();
+        String selectSQL = "SELECT * FROM WorkRequests WHERE submitter_id = ?";
+
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {
+            pstmt.setString(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String id = rs.getString("id");
+                    String submitterId = rs.getString("submitter_id");
+                    String title = rs.getString("title");
+                    String description = rs.getString("description");
+                    String projectType = rs.getString("project_type");
+                    String expectedDate = rs.getString("expected_date");
+                    String submissions = rs.getString("submissions");
+                    String chosenIntervenant = rs.getString("chosen_intervenant");
+                    String closingMessage = rs.getString("closing_message");
+
+                    WorkRequestForm workRequestForm = new WorkRequestForm(
+                            id,
+                            submitterId,
+                            title,
+                            description,
+                            projectType,
+                            expectedDate,
+                            submissions != null ? Arrays.asList(submissions.split(",(?! )")) : new ArrayList<>(),
+                            chosenIntervenant,
+                            closingMessage
+                    );
+                    userWorkRequests.add(workRequestForm);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des requêtes utilisateur : " + e.getMessage());
+        }
+        return userWorkRequests;
     }
 
     /**
@@ -363,21 +414,28 @@ public class WorkRepository {
              PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) { // Use a while loop to iterate through all rows
+                while (rs.next()) {
                     String idFromDb = rs.getString("id");
+                    String submitterIdFromDB = rs.getString("submitter_id");
                     String titleFromDB = rs.getString("title");
                     String descriptionFromDB = rs.getString("description");
                     String projectTypeFromDB = rs.getString("project_type");
                     String expectedDateFromDB = rs.getString("expected_date");
                     String submissionsFromDB = rs.getString("submissions");
+                    String chosenIntervenantFromDB = rs.getString("chosen_intervenant");
+                    String closingMessageFromDB = rs.getString("closing_message");
 
                     WorkRequestForm workRequestForm = new WorkRequestForm(
                             idFromDb,
+                            submitterIdFromDB,
                             titleFromDB,
                             descriptionFromDB,
                             projectTypeFromDB,
                             expectedDateFromDB,
-                            submissionsFromDB != null ? Arrays.asList(submissionsFromDB.split(",(?! )")) : new ArrayList<>()
+                            submissionsFromDB != null ? Arrays.asList(submissionsFromDB.split(",(?! )")) : new ArrayList<>(),
+                            chosenIntervenantFromDB,
+                            closingMessageFromDB
+
                     );
                     workRequestForms.add(workRequestForm);
                 }
@@ -392,6 +450,29 @@ public class WorkRepository {
         } catch (SQLException e) {
             System.out.println("Erreur lors de la connexion à la DB : " + e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Supprime une requête de travaux de la base de données locale.
+     *
+     * @param workRequestId L'identifiant unique de la requête à supprimer.
+     */
+    public void deleteWorkRequest(String workRequestId) {
+        String deleteSQL = "DELETE FROM WorkRequests WHERE id = ?";
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {
+
+            pstmt.setString(1, workRequestId); // Bind the work request ID to the query
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Requête supprimée avec succès.");
+            } else {
+                System.out.println("Aucune requête trouvée avec cet identifiant.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la suppression de la requête : " + e.getMessage());
         }
     }
 

@@ -67,6 +67,7 @@ public class ResidentActivityControllerTest {
     public void testSubmitWorkRequest() {
         // Création d'une requête de travail fictive
         WorkRequestForm workRequest = new WorkRequestForm(
+                java.util.UUID.randomUUID().toString(),
                 "Fix Pothole",
                 "Repair the pothole on Test Street",
                 Project.TypeOfWork.ROAD.toString(),

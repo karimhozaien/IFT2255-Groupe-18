@@ -14,7 +14,6 @@ import com.maville.view.MenuView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
 
 /**
  * Contrôleur d'activités pour les intervenants. Fournit des fonctionnalités permettant
@@ -108,31 +107,71 @@ public class IntervenantActivityController {
     public void consultWorkRequests() {
         List<WorkRequestForm> workRequestForms = workRepository.fetchWorkRequests();
 
+        if (workRequestForms == null || workRequestForms.isEmpty()) {
+            MenuView.printMessage("Aucune requête de travaux n'a été trouvée.");
+            return; // Fin de la méthode si aucune requête n'est disponible
+        }
+
+        // Vérifier si une candidature a été acceptée
+        MenuView.printMessage("Vérification des candidatures acceptées...");
+        boolean hasAcceptedCandidacy = false;
+
+        for (WorkRequestForm workRequest : workRequestForms) {
+            if (Authenticate.getUserId().equals(workRequest.getChosenIntervenant())) {
+                MenuView.printMessage("Votre candidature pour la requête \"" + workRequest.getTitle() +
+                        "\" a été acceptée !");
+                hasAcceptedCandidacy = true;
+
+                // Demander à l'intervenant de confirmer
+                String input = MenuView.askLongInput("Voulez-vous confirmer cette candidature ?",
+                        "[1] Oui", "[2] Non");
+                try {
+                    int option = Integer.parseInt(input);
+                    if (option == 1) {
+                        try {
+                            // Supprimer la requête de la base de données
+                            workRepository.deleteWorkRequest(workRequest.getId());
+                            MenuView.printMessage("La candidature a été confirmée et la requête a été supprimée.");
+                            return; // Fin de la méthode après confirmation
+                        } catch (Exception e) {
+                            MenuView.printMessage("Une erreur est survenue lors de la suppression : " + e.getMessage());
+                        }
+                    } else if (option == 2) {
+                        MenuView.printMessage("La candidature n'a pas été confirmée. La requête reste active.");
+                    } else {
+                        MenuView.printMessage("Option invalide. La candidature reste active.");
+                    }
+                } catch (NumberFormatException e) {
+                    MenuView.printMessage("Entrée invalide. La candidature reste active.");
+                }
+            }
+        }
+
+        if (!hasAcceptedCandidacy) {
+            MenuView.printMessage("Aucune de vos candidatures n'a été acceptée pour l'instant.");
+        }
+
+        // Afficher la liste des requêtes
         MenuView.showResults(filterWorkRequests(workRequestForms));
 
+        // Gestion des soumissions de candidatures
         boolean exitLoop = false;
         while (!exitLoop) {
             try {
                 String input = MenuView.askLongInput("Voulez-vous soumettre votre candidature pour l'une de " +
-                                "ces requêtes ?", "[1] Oui", "[2] Non");
-                int option = Integer.parseInt(input); // Si un lettre est entrée, erreur
-
+                        "ces requêtes ?", "[1] Oui", "[2] Non");
+                int option = Integer.parseInt(input);
                 switch (option) {
-                    case 1:
-                        candidacySubmission(workRequestForms);
-                        break;
-                    case 2:
-                        exitLoop = true;
-                        break;
-                    default: // dans le cas que le user entre un chiffre mais pas valude
-                        MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
-                        break;
+                    case 1 -> candidacySubmission(workRequestForms);
+                    case 2 -> exitLoop = true;
+                    default -> MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide.");
                 }
             } catch (NumberFormatException e) {
                 MenuView.printMessage("Entrée invalide. Veuillez entrer un numéro valide et non une lettre.");
             }
         }
 
+        // Gestion des retraits de candidatures
         boolean exitLoop2 = false;
         while (!exitLoop2) {
             try {
@@ -160,7 +199,7 @@ public class IntervenantActivityController {
     private List<WorkRequestForm> filterWorkRequests(List<WorkRequestForm> workRequestForms) {
         try {
             // Afficher les options de filtrage
-            MenuView.askFilter("Type de travaux", "Quartier", "Date de début", "Aucun filtrage");
+            MenuView.askFilter("Type de travaux", "Aucun filtrage");
 
             // Lire l'option choisie par l'utilisateur
             int option = scanner.nextInt();
@@ -174,22 +213,7 @@ public class IntervenantActivityController {
                     return workRequestForms.stream()
                             .filter(request -> request.getProjectType().toString().equalsIgnoreCase(type))
                             .toList();
-
-                case 2: // Filtrage par quartier
-                    MenuView.printMessage("Entrez le nom du quartier : ");
-                    String neighbourhood = scanner.nextLine().trim();
-                    return workRequestForms.stream()
-                            //.filter(request -> request.getNeighbourhood().equalsIgnoreCase(neighbourhood))
-                            .toList();
-
-                case 3: // Filtrage par date de début
-                    MenuView.printMessage("Entrez la date de début (format YYYY-MM-DD) : ");
-                    String startDate = scanner.nextLine().trim();
-                    return workRequestForms.stream()
-                            //.filter(request -> request.getStartDate().equals(startDate))
-                            .toList();
-
-                case 4: // Aucun filtrage
+                case 2: // Aucun filtrage
                 default:
                     return workRequestForms; // Retourne la liste complète
             }
@@ -284,11 +308,13 @@ public class IntervenantActivityController {
 
     private void submitCandidacy(WorkRequestForm workRequestForm) {
         List<String> candidacyInfo = MenuView.askInfoForCandidacySubmission();
-        workRequestForm.addSubmission(Authenticate.getUserId() +
-                ":{start_date: " + candidacyInfo.getFirst() +
-                ", end_date: " + candidacyInfo.get(1) + "}");
+
+        String submission = Authenticate.getUserId() +
+                ":{start_date: " + candidacyInfo.get(0) +
+                ", end_date: " + candidacyInfo.get(1) + "}";
 
         try {
+            workRequestForm.addSubmission(submission);
             workRepository.updatingCandidacySubmission(workRequestForm);
             MenuView.printMessage("La candidature a été soumise !");
         } catch (Exception e) {
