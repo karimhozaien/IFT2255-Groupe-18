@@ -1,9 +1,13 @@
 package com.maville.controller.repository;
 
+import com.maville.controller.services.DatabaseConnectionManager;
 import com.maville.model.Project;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -34,7 +38,9 @@ public class WorkRepositoryTest {
         // Vérifie que la liste des projets n'est pas nulle
         assertNotNull(plannedProjects);
         // Vérifie que le premier projet récupéré correspond à celui sauvegardé
-        assertEquals(plannedProjects.get(0).toString(), project.toString());
+        assertEquals(plannedProjects.getLast().toString(), project.toString());
+
+        deleteTestProject(project.getId());
     }
 
     @Test
@@ -42,7 +48,7 @@ public class WorkRepositoryTest {
         WorkRepository workRepository = new WorkRepository();
 
         // Filtre les projets avec le mot-clé "construction" dans le titre
-        List<Project> filteredProjects = workRepository.getFilteredProjects("construction", "titre");
+        List<Project> filteredProjects = workRepository.getFilteredProjects("construction", "titre", null);
 
         // Vérifie que la liste filtrée n'est pas nulle
         assertNotNull(filteredProjects);
@@ -85,5 +91,20 @@ public class WorkRepositoryTest {
         Project fetchedProject = plannedProjects.get(plannedProjects.size() - 1);
         assertEquals(project.getTitle(), fetchedProject.getTitle());
         assertEquals(project.getDescription(), fetchedProject.getDescription());
+
+        deleteTestProject(project.getId());
+    }
+
+    private void deleteTestProject(String projectId) {
+        // Suppression d'un projet de test par son ID
+        String deleteSQL = "DELETE FROM Projects WHERE id = ?";
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {
+            pstmt.setString(1, projectId);
+            pstmt.executeUpdate();
+            System.out.println("Deleted project: " + projectId);
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression du projet : " + e.getMessage());
+        }
     }
 }

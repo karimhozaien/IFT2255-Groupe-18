@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SchedulePreferences.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.model</a> &gt; <span class="el_source">SchedulePreferences.java</span></div><h1>SchedulePreferences.java</h1><pre class="source lang-java linenums">package com.maville.model;
+
+import java.util.UUID;
+
+/**
+ * Classe représentant les préférences d'horaire d'un utilisateur pour un projet ou une rue spécifique.
+ */
+public class SchedulePreferences {
+    private String id;
+    private String street;
+    private String neighbourhood;
+    private String weekHours;
+
+<span class="nc" id="L14">    public SchedulePreferences(String id, String street, String neighbourhood, String weekHours) {</span>
+<span class="nc" id="L15">        this.id = id;</span>
+<span class="nc" id="L16">        this.street = street;</span>
+<span class="nc" id="L17">        this.neighbourhood = neighbourhood;</span>
+<span class="nc" id="L18">        this.weekHours = weekHours;</span>
+<span class="nc" id="L19">    }</span>
+
+    /**
+     * Constructeur pour initialiser une instance de préférences d'horaire.
+     *
+     * @param street        La rue concernée par les préférences.
+     * @param neighbourhood Le quartier concerné par les préférences.
+     * @param weekHours     Les heures hebdomadaires sous forme de chaîne formatée.
+     */
+<span class="nc" id="L28">    public SchedulePreferences(String street, String neighbourhood, String weekHours) {</span>
+<span class="nc" id="L29">        this.id = UUID.randomUUID().toString();</span>
+<span class="nc" id="L30">        this.street = street;</span>
+<span class="nc" id="L31">        this.neighbourhood = neighbourhood;</span>
+<span class="nc" id="L32">        this.weekHours = weekHours;</span>
+<span class="nc" id="L33">    }</span>
+
+    /**
+     * Retourne l'identifiant unique de la préférence.
+     *
+     * @return L'identifiant unique.
+     */
+    public String getId() {
+<span class="nc" id="L41">        return id;</span>
+    }
+
+    /**
+     * Retourne la rue associée aux préférences.
+     *
+     * @return La rue concernée.
+     */
+    public String getStreet() {
+<span class="nc" id="L50">        return street;</span>
+    }
+
+    /**
+     * Retourne le quartier associé aux préférences.
+     *
+     * @return Le quartier concerné.
+     */
+    public String getNeighbourhood() {
+<span class="nc" id="L59">        return neighbourhood;</span>
+    }
+
+    /**
+     * Retourne les heures hebdomadaires formatées.
+     *
+     * @return Les heures hebdomadaires.
+     */
+    public String getWeekHours() {
+<span class="nc" id="L68">        return weekHours;</span>
+    }
+
+    public void setWeekHours(String weekHours) {
+<span class="nc" id="L72">        this.weekHours = weekHours;</span>
+<span class="nc" id="L73">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

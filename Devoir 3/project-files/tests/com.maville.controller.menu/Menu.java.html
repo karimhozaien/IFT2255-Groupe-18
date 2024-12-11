@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Menu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.controller.menu</a> &gt; <span class="el_source">Menu.java</span></div><h1>Menu.java</h1><pre class="source lang-java linenums">package com.maville.controller.menu;
+
+import com.maville.view.MenuView;
+import java.util.Scanner;
+
+/**
+ * Classe abstraite représentant le menu principal de l'application.
+ * Fournit les structures de base pour afficher les menus et gérer les interactions utilisateur.
+ */
+<span class="nc" id="L10">public abstract class Menu {</span>
+    /**
+     * Scanner partagé pour lire les entrées de l'utilisateur.
+     */
+<span class="nc" id="L14">    protected static final Scanner SCANNER = new Scanner(System.in);</span>
+
+    /**
+     * Méthode d'accueil qui affiche le menu principal et gère les options.
+     *
+     * &lt;p&gt;L'utilisateur est invité à choisir une option parmi celles affichées.
+     * Une boucle permet de gérer les saisies invalides jusqu'à ce qu'une entrée correcte soit fournie.&lt;/p&gt;
+     */
+    public void welcome() {
+<span class="nc" id="L23">        MenuView.welcomeMessage();</span>
+        while (true) {
+<span class="nc" id="L25">            MenuView.authMessage();</span>
+
+<span class="nc bnc" id="L27" title="All 2 branches missed.">            if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier</span>
+<span class="nc" id="L28">                int option = SCANNER.nextInt();</span>
+<span class="nc" id="L29">                selection(option, &quot;&quot;); // Appelle la méthode abstraite pour gérer l'option</span>
+<span class="nc" id="L30">            } else {</span>
+<span class="nc" id="L31">                MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide.&quot;);</span>
+<span class="nc" id="L32">                SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie</span>
+            }
+        }
+    }
+
+    /**
+     * Affiche le menu principal correspondant au type d'utilisateur connecté.
+     *
+     * @param userType Le type d'utilisateur, soit &quot;resident&quot; ou &quot;intervenant&quot;.
+     */
+    public static void showUserMenu(String userType) {
+        while (true) {
+<span class="nc bnc" id="L44" title="All 3 branches missed.">            switch (userType) {</span>
+                case &quot;resident&quot;:
+<span class="nc" id="L46">                    MenuView.residentMenuMessages();</span>
+<span class="nc" id="L47">                    break;</span>
+                case &quot;intervenant&quot;:
+<span class="nc" id="L49">                    MenuView.intervenantMenuMessages();</span>
+                    break;
+            }
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier</span>
+<span class="nc" id="L54">                int option = SCANNER.nextInt();</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">                if (DefaultMenu.handleMainMenuOption(option, userType)) {</span>
+<span class="nc" id="L56">                    return; // Quitte le menu si l'utilisateur choisit de sortir</span>
+                }
+<span class="nc" id="L58">            } else {</span>
+<span class="nc" id="L59">                MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide.&quot;);</span>
+<span class="nc" id="L60">                SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie</span>
+            }
+        }
+    }
+
+    /**
+     * Méthode abstraite pour gérer les options du menu.
+     *
+     * @param option L'option sélectionnée par l'utilisateur.
+     * @param action L'action associée au menu (par exemple &quot;login&quot; ou &quot;signup&quot;).
+     */
+    protected abstract void selection(int option, String action);
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IntervenantActivityController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.controller.activity</a> &gt; <span class="el_source">IntervenantActivityController.java</span></div><h1>IntervenantActivityController.java</h1><pre class="source lang-java linenums">package com.maville.controller.activity;
+
+import com.maville.controller.repository.NotificationRepository;
+import com.maville.controller.repository.SchedulePreferencesRepository;
+import com.maville.controller.repository.UserRepository;
+import com.maville.controller.repository.WorkRepository;
+import com.maville.controller.services.Authenticate;
+import com.maville.controller.services.PostalCodeFinder;
+import com.maville.model.Notification;
+import com.maville.model.Project;
+import com.maville.model.WorkRequestForm;
+import com.maville.view.MenuView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+/**
+ * Contrôleur d'activités pour les intervenants. Fournit des fonctionnalités permettant
+ * de gérer les projets, les demandes de travaux et les candidatures dans le cadre de l'application.
+ */
+public class IntervenantActivityController {
+    private final Scanner scanner;
+    private final WorkRepository workRepository;
+    private final SchedulePreferencesRepository schedulePreferencesRepository;
+
+<span class="nc" id="L27">    public IntervenantActivityController() {</span>
+<span class="nc" id="L28">        scanner = new Scanner(System.in);</span>
+<span class="nc" id="L29">        workRepository = new WorkRepository();</span>
+<span class="nc" id="L30">        schedulePreferencesRepository = new SchedulePreferencesRepository();</span>
+<span class="nc" id="L31">    }</span>
+
+    /**
+     * Permet à un intervenant de soumettre un nouveau projet.
+     * Les informations du projet sont recueillies auprès de l'utilisateur, validées,
+     * et sauvegardées dans le dépôt de projets planifiés.
+     * Une notification est également créée pour les résidents concernés.
+     */
+    public void submitProject() {
+        try {
+<span class="nc" id="L41">            List&lt;String&gt; projectInfo = MenuView.askFormInfoForProjectSubmission();</span>
+<span class="nc" id="L42">            String projectSchedule = collectValidSchedule(projectInfo.get(4)); // affectedNeighbourhoods</span>
+
+<span class="nc" id="L44">            Project project = new Project(</span>
+<span class="nc" id="L45">                    projectInfo.get(0), // titre</span>
+<span class="nc" id="L46">                    projectInfo.get(1), // description</span>
+<span class="nc" id="L47">                    projectInfo.get(2), // type de travaux</span>
+<span class="nc" id="L48">                    projectInfo.get(4), // quartiers concernés</span>
+<span class="nc" id="L49">                    projectInfo.get(5), // rues concernées</span>
+<span class="nc" id="L50">                    projectInfo.get(6), // date de début</span>
+<span class="nc" id="L51">                    projectInfo.get(3), // date de fin</span>
+                    projectSchedule
+            );
+
+<span class="nc" id="L55">            workRepository.savePlannedProject(project);</span>
+
+<span class="nc" id="L57">            String notiDescription = &quot;Un nouveau projet intitulé &quot; + projectInfo.get(0) + &quot; a été soumis dans votre quartier&quot;;</span>
+<span class="nc" id="L58">            createNotificationForProject(projectInfo.get(4), notiDescription);</span>
+<span class="nc" id="L59">            MenuView.printMessage(&quot;Le projet a été soumis avec succès !&quot;);</span>
+<span class="nc" id="L60">        } catch (Exception e) {</span>
+<span class="nc" id="L61">            MenuView.printMessage(&quot;Une erreur est survenue : &quot; + e.getMessage());</span>
+<span class="nc" id="L62">        }</span>
+<span class="nc" id="L63">    }</span>
+
+    /**
+     * Permet à un intervenant de mettre à jour les détails d'un projet existant.
+     * Les projets planifiés sont affichés, l'utilisateur sélectionne un projet,
+     * et les informations mises à jour sont sauvegardées.
+     * Une notification est générée pour les résidents concernés.
+     */
+    public void updateProject() {
+        try {
+<span class="nc" id="L73">            List&lt;Project&gt; plannedProjects = workRepository.getPlannedProjects();</span>
+<span class="nc bnc" id="L74" title="All 4 branches missed.">            if (plannedProjects == null || plannedProjects.isEmpty()) {</span>
+<span class="nc" id="L75">                MenuView.printMessage(&quot;Aucun projet trouvé à mettre à jour.&quot;);</span>
+<span class="nc" id="L76">                return;</span>
+            }
+<span class="nc" id="L78">            MenuView.showResults(plannedProjects);</span>
+
+            int option;
+            while (true) {
+                try {
+<span class="nc" id="L83">                    String input = MenuView.askSingleInput(&quot;Sélectionnez un projet à mettre à jour : &quot;);</span>
+<span class="nc" id="L84">                    option = Integer.parseInt(input);</span>
+<span class="nc bnc" id="L85" title="All 4 branches missed.">                    if (option &gt; 0 &amp;&amp; option &lt;= plannedProjects.size()) { // Parmi les choix possibles ?</span>
+<span class="nc" id="L86">                        break;</span>
+                    } else {
+<span class="nc" id="L88">                        MenuView.printMessage(&quot;Numéro de projet invalide. Veuillez entrer un numéro dans la liste.&quot;);</span>
+                    }
+<span class="nc" id="L90">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L91">                    MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide.&quot;);</span>
+<span class="nc" id="L92">                }</span>
+            }
+
+<span class="nc" id="L95">            Project projectToUpdate = plannedProjects.get(option - 1);</span>
+<span class="nc" id="L96">            updateProjectDetails(projectToUpdate);</span>
+<span class="nc" id="L97">        } catch (Exception e) {</span>
+<span class="nc" id="L98">            MenuView.printMessage(&quot;Erreur : &quot; + e.getMessage());</span>
+<span class="nc" id="L99">        }</span>
+<span class="nc" id="L100">    }</span>
+
+    /**
+     * Permet à un intervenant de consulter toutes les demandes de travaux.
+     * Affiche les demandes disponibles, offre la possibilité de soumettre une candidature
+     * ou de retirer une candidature existante.
+     */
+    public void consultWorkRequests() {
+<span class="nc" id="L108">        List&lt;WorkRequestForm&gt; workRequestForms = workRepository.fetchWorkRequests();</span>
+
+<span class="nc bnc" id="L110" title="All 4 branches missed.">        if (workRequestForms == null || workRequestForms.isEmpty()) {</span>
+<span class="nc" id="L111">            MenuView.printMessage(&quot;Aucune requête de travaux n'a été trouvée.&quot;);</span>
+<span class="nc" id="L112">            return; // Fin de la méthode si aucune requête n'est disponible</span>
+        }
+
+        // Vérifier si une candidature a été acceptée
+<span class="nc" id="L116">        MenuView.printMessage(&quot;Vérification des candidatures acceptées...&quot;);</span>
+<span class="nc" id="L117">        boolean hasAcceptedCandidacy = false;</span>
+
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        for (WorkRequestForm workRequest : workRequestForms) {</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">            if (Authenticate.getUserId().equals(workRequest.getChosenIntervenant())) {</span>
+<span class="nc" id="L121">                MenuView.printMessage(&quot;Votre candidature pour la requête \&quot;&quot; + workRequest.getTitle() +</span>
+                        &quot;\&quot; a été acceptée !&quot;);
+<span class="nc" id="L123">                hasAcceptedCandidacy = true;</span>
+
+                // Demander à l'intervenant de confirmer
+<span class="nc" id="L126">                String input = MenuView.askLongInput(&quot;Voulez-vous confirmer cette candidature ?&quot;,</span>
+                        &quot;[1] Oui&quot;, &quot;[2] Non&quot;);
+                try {
+<span class="nc" id="L129">                    int option = Integer.parseInt(input);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">                    if (option == 1) {</span>
+                        try {
+                            // Supprimer la requête de la base de données
+<span class="nc" id="L133">                            workRepository.deleteWorkRequest(workRequest.getId());</span>
+<span class="nc" id="L134">                            MenuView.printMessage(&quot;La candidature a été confirmée et la requête a été supprimée.&quot;);</span>
+<span class="nc" id="L135">                            return; // Fin de la méthode après confirmation</span>
+<span class="nc" id="L136">                        } catch (Exception e) {</span>
+<span class="nc" id="L137">                            MenuView.printMessage(&quot;Une erreur est survenue lors de la suppression : &quot; + e.getMessage());</span>
+<span class="nc" id="L138">                        }</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">                    } else if (option == 2) {</span>
+<span class="nc" id="L140">                        MenuView.printMessage(&quot;La candidature n'a pas été confirmée. La requête reste active.&quot;);</span>
+                    } else {
+<span class="nc" id="L142">                        MenuView.printMessage(&quot;Option invalide. La candidature reste active.&quot;);</span>
+                    }
+<span class="nc" id="L144">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L145">                    MenuView.printMessage(&quot;Entrée invalide. La candidature reste active.&quot;);</span>
+<span class="nc" id="L146">                }</span>
+            }
+<span class="nc" id="L148">        }</span>
+
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (!hasAcceptedCandidacy) {</span>
+<span class="nc" id="L151">            MenuView.printMessage(&quot;Aucune de vos candidatures n'a été acceptée pour l'instant.&quot;);</span>
+        }
+
+        // Afficher la liste des requêtes
+<span class="nc" id="L155">        MenuView.showResults(filterWorkRequests(workRequestForms));</span>
+
+        // Gestion des soumissions de candidatures
+<span class="nc" id="L158">        boolean exitLoop = false;</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        while (!exitLoop) {</span>
+            try {
+<span class="nc" id="L161">                String input = MenuView.askLongInput(&quot;Voulez-vous soumettre votre candidature pour l'une de &quot; +</span>
+                        &quot;ces requêtes ?&quot;, &quot;[1] Oui&quot;, &quot;[2] Non&quot;);
+<span class="nc" id="L163">                int option = Integer.parseInt(input);</span>
+<span class="nc bnc" id="L164" title="All 3 branches missed.">                switch (option) {</span>
+<span class="nc" id="L165">                    case 1 -&gt; candidacySubmission(workRequestForms);</span>
+<span class="nc" id="L166">                    case 2 -&gt; exitLoop = true;</span>
+<span class="nc" id="L167">                    default -&gt; MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide.&quot;);</span>
+                }
+<span class="nc" id="L169">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L170">                MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide et non une lettre.&quot;);</span>
+<span class="nc" id="L171">            }</span>
+        }
+
+        // Gestion des retraits de candidatures
+<span class="nc" id="L175">        boolean exitLoop2 = false;</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        while (!exitLoop2) {</span>
+            try {
+<span class="nc" id="L178">                String input = MenuView.askLongInput(&quot;Voulez-vous retirer votre candidature pour l'une de &quot; +</span>
+                        &quot;ces requêtes ?&quot;, &quot;[1] Oui&quot;, &quot;[2] Non&quot;);
+<span class="nc" id="L180">                int option = Integer.parseInt(input);</span>
+<span class="nc bnc" id="L181" title="All 3 branches missed.">                switch (option) {</span>
+                    case 1:
+<span class="nc" id="L183">                        candidacyRemove(workRequestForms);</span>
+<span class="nc" id="L184">                        break;</span>
+                    case 2:
+<span class="nc" id="L186">                        exitLoop2 = true;</span>
+<span class="nc" id="L187">                        break;</span>
+                    default:
+<span class="nc" id="L189">                        MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide.&quot;);</span>
+                        break;
+                }
+<span class="nc" id="L192">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L193">                MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide et non une lettre.&quot;);</span>
+<span class="nc" id="L194">            }</span>
+        }
+<span class="nc" id="L196">    }</span>
+
+    // Méthodes privées
+    private List&lt;WorkRequestForm&gt; filterWorkRequests(List&lt;WorkRequestForm&gt; workRequestForms) {
+        try {
+            // Afficher les options de filtrage
+<span class="nc" id="L202">            MenuView.askFilter(&quot;Type de travaux&quot;, &quot;Aucun filtrage&quot;);</span>
+
+            // Lire l'option choisie par l'utilisateur
+<span class="nc" id="L205">            int option = scanner.nextInt();</span>
+<span class="nc" id="L206">            scanner.nextLine(); // Consommer la ligne restante</span>
+
+            // Filtrer en fonction de l'option choisie
+<span class="nc bnc" id="L209" title="All 2 branches missed.">            switch (option) {</span>
+                case 1: // Filtrage par type de travaux
+<span class="nc" id="L211">                    MenuView.printMessage(&quot;Entrez le type de travaux : &quot;);</span>
+<span class="nc" id="L212">                    String type = scanner.nextLine().trim();</span>
+<span class="nc" id="L213">                    return workRequestForms.stream()</span>
+<span class="nc" id="L214">                            .filter(request -&gt; request.getProjectType().toString().equalsIgnoreCase(type))</span>
+<span class="nc" id="L215">                            .toList();</span>
+                case 2: // Aucun filtrage
+                default:
+<span class="nc" id="L218">                    return workRequestForms; // Retourne la liste complète</span>
+            }
+<span class="nc" id="L220">        } catch (Exception e) {</span>
+<span class="nc" id="L221">            MenuView.printMessage(&quot;Erreur lors du filtrage des requêtes : &quot; + e.getMessage());</span>
+<span class="nc" id="L222">            return workRequestForms; // Retourner la liste complète en cas d'erreur</span>
+        }
+    }
+
+    private void candidacySubmission(List&lt;WorkRequestForm&gt; workRequestForms) {
+        int option;
+        while (true) {
+            try {
+<span class="nc" id="L230">                String input = MenuView.askSingleInput(&quot;Entrez le numéro de la requête dont vous voulez soumettre &quot; +</span>
+                        &quot;votre candidature : &quot;);
+
+<span class="nc" id="L233">                option = Integer.parseInt(input);</span>
+<span class="nc bnc" id="L234" title="All 4 branches missed.">                if (option &gt; 0 &amp;&amp; option &lt;= workRequestForms.size()) { // Parmi les choix possibles ?</span>
+<span class="nc" id="L235">                    break;</span>
+                }
+<span class="nc" id="L237">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L238">                MenuView.printMessage(&quot;Numéro de la requête invalide.&quot;);</span>
+<span class="nc" id="L239">            }</span>
+        }
+
+<span class="nc" id="L242">        WorkRequestForm workRequestForm = workRequestForms.get(option - 1); // requete voulant etre modifier</span>
+<span class="nc" id="L243">        submitCandidacy(workRequestForm);</span>
+<span class="nc" id="L244">    }</span>
+
+    private void candidacyRemove(List&lt;WorkRequestForm&gt; workRequestForms) {
+        int option;
+        while (true) {
+            try {
+<span class="nc" id="L250">                String input = MenuView.askSingleInput(&quot;Entrez le numéro de la requête dont vous voulez retirer &quot; +</span>
+                        &quot;votre candidature : &quot;);
+<span class="nc" id="L252">                option = Integer.parseInt(input);</span>
+<span class="nc bnc" id="L253" title="All 4 branches missed.">                if (option &gt; 0 &amp;&amp; option &lt;= workRequestForms.size()) { // Parmi les choix possibles ?</span>
+<span class="nc" id="L254">                    break;</span>
+                }
+<span class="nc" id="L256">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L257">                MenuView.printMessage(&quot;Numéro de la requête invalide. &quot;);</span>
+<span class="nc" id="L258">            }</span>
+        }
+
+<span class="nc" id="L261">        WorkRequestForm workRequestForm = workRequestForms.get(option - 1); // requete voulant etre modifier</span>
+<span class="nc" id="L262">        removeSubmission(workRequestForm);</span>
+<span class="nc" id="L263">    }</span>
+
+    private String collectValidSchedule(String affectedNeighbourhoods) {
+        while (true) {
+<span class="nc" id="L267">            String projectSchedule = MenuView.collectWeeklySchedules();</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">            if (schedulePreferencesRepository.checkPreferences(projectSchedule, affectedNeighbourhoods)) {</span>
+<span class="nc" id="L269">                return projectSchedule;</span>
+            }
+<span class="nc" id="L271">            MenuView.printMessage(&quot;Horaire incompatible avec les préférences des résidents du quartier.&quot;);</span>
+<span class="nc" id="L272">            MenuView.printMessage(&quot;Jours en conflit :&quot;);</span>
+<span class="nc" id="L273">            schedulePreferencesRepository.getScheduleConflicts().forEach(MenuView::printMessage);</span>
+<span class="nc" id="L274">            MenuView.printMessage(&quot;Veuillez réentrer les informations.&quot;);</span>
+<span class="nc" id="L275">        }</span>
+    }
+
+    private void createNotificationForProject(String affectedNeighbourhood, String description) {
+<span class="nc" id="L279">        Notification notification = new Notification(description);</span>
+<span class="nc" id="L280">        PostalCodeFinder postalCodeFinder = new PostalCodeFinder();</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">        for (String[] usersInfo : UserRepository.getInstance().fetchAllResidents()) {</span>
+<span class="nc" id="L282">            String currentUserResidentialAddress = usersInfo[1];</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">            for (String neighbourhood : affectedNeighbourhood.split(&quot;,&quot;)) {</span>
+<span class="nc" id="L284">                boolean isEqual = postalCodeFinder.isValidCorrespondance(neighbourhood, currentUserResidentialAddress);</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">                if (isEqual) {</span>
+<span class="nc" id="L286">                    notification.addResident(usersInfo[0]); // on ajoute le resident a la liste</span>
+                }
+            }
+<span class="nc" id="L289">        }</span>
+<span class="nc" id="L290">        NotificationRepository.getInstance().saveNotification(notification); // ajouter la notification a la DB</span>
+<span class="nc" id="L291">    }</span>
+
+    private void updateProjectDetails(Project project) {
+<span class="nc" id="L294">        List&lt;String&gt; updatedInfo = MenuView.askFormInfoForProjectUpdate();</span>
+<span class="nc" id="L295">        project.setDescription(updatedInfo.get(0));</span>
+<span class="nc" id="L296">        project.setEndDate(updatedInfo.get(1));</span>
+<span class="nc" id="L297">        project.setWorkStatus(Project.WorkStatus.valueOf(updatedInfo.get(2)));</span>
+
+        try {
+<span class="nc" id="L300">            workRepository.updatePlannedProject(project);</span>
+<span class="nc" id="L301">            String notiDescription = &quot;La mise à jour d'un projet &quot; + project.getTitle() + &quot; a été fait dans votre quartier&quot;;</span>
+<span class="nc" id="L302">            createNotificationForProject(project.getAffectedNeighbourhood(), notiDescription);</span>
+<span class="nc" id="L303">            MenuView.printMessage(&quot;Le projet a été mis à jour avec succès !&quot;);</span>
+<span class="nc" id="L304">        } catch (Exception e) {</span>
+<span class="nc" id="L305">            MenuView.printMessage(&quot;Une erreur est survenue : &quot; + e.getMessage());</span>
+<span class="nc" id="L306">        }</span>
+<span class="nc" id="L307">    }</span>
+
+    private void submitCandidacy(WorkRequestForm workRequestForm) {
+<span class="nc" id="L310">        List&lt;String&gt; candidacyInfo = MenuView.askInfoForCandidacySubmission();</span>
+
+<span class="nc" id="L312">        String submission = Authenticate.getUserId() +</span>
+<span class="nc" id="L313">                &quot;:{start_date: &quot; + candidacyInfo.get(0) +</span>
+<span class="nc" id="L314">                &quot;, end_date: &quot; + candidacyInfo.get(1) + &quot;}&quot;;</span>
+
+        try {
+<span class="nc" id="L317">            workRequestForm.addSubmission(submission);</span>
+<span class="nc" id="L318">            workRepository.updatingCandidacySubmission(workRequestForm);</span>
+<span class="nc" id="L319">            MenuView.printMessage(&quot;La candidature a été soumise !&quot;);</span>
+<span class="nc" id="L320">        } catch (Exception e) {</span>
+<span class="nc" id="L321">            MenuView.printMessage(&quot;Une erreur est survenue : &quot; + e.getMessage());</span>
+<span class="nc" id="L322">        }</span>
+<span class="nc" id="L323">    }</span>
+
+    private void removeSubmission(WorkRequestForm workRequestForm) {
+        try {
+<span class="nc" id="L327">            List&lt;String&gt; submissions = new ArrayList&lt;&gt;(workRequestForm.getSubmissions()); // mutable</span>
+<span class="nc" id="L328">            String currentUserId = Authenticate.getUserId();</span>
+
+            // chercher une soumission correspondant à l'utilisateur
+<span class="nc" id="L331">            String userSubmission = null;</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">            for (String submission : submissions) {</span>
+<span class="nc bnc" id="L333" title="All 2 branches missed.">                if (submission.startsWith(currentUserId + &quot;:&quot;)) {</span>
+<span class="nc" id="L334">                    userSubmission = submission;</span>
+<span class="nc" id="L335">                    break;</span>
+                }
+<span class="nc" id="L337">            }</span>
+
+            // Si aucune soumission trouvée pour l'utilisateur, afficher un message et sortir
+<span class="nc bnc" id="L340" title="All 2 branches missed.">            if (userSubmission == null) {</span>
+<span class="nc" id="L341">                MenuView.printMessage(&quot;Vous ne pouvez pas retirer votre soumission car elle n'existe pas.&quot;);</span>
+<span class="nc" id="L342">                return;</span>
+            }
+
+<span class="nc" id="L345">            submissions.remove(userSubmission);</span>
+<span class="nc" id="L346">            workRequestForm.setSubmissions(submissions);</span>
+<span class="nc" id="L347">            workRepository.updatingCandidacySubmission(workRequestForm);</span>
+
+<span class="nc" id="L349">            MenuView.printMessage(&quot;Votre soumission a été retirée avec succès !&quot;);</span>
+<span class="nc" id="L350">        } catch (Exception e) {</span>
+<span class="nc" id="L351">            MenuView.printMessage(&quot;Une erreur est survenue lors du retrait de la soumission : &quot; + e.getMessage());</span>
+<span class="nc" id="L352">        }</span>
+<span class="nc" id="L353">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

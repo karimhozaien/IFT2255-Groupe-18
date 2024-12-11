@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WorkRequestForm.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.model</a> &gt; <span class="el_source">WorkRequestForm.java</span></div><h1>WorkRequestForm.java</h1><pre class="source lang-java linenums">package com.maville.model;
+
+import com.maville.controller.services.TextUtil;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Classe représentant un formulaire de requête de travaux dans le système Maville.
+ */
+public class WorkRequestForm {
+    private String id;
+    private String submitterId;
+    private String title;
+    private String description;
+    private Project.TypeOfWork projectType;
+    private String expectedDate;
+    private List&lt;String&gt; submissions;
+    private String chosenIntervenant;
+    private String closingMessage;
+
+    /**
+     * Constructeur pour créer un formulaire de requête de travaux.
+     *
+     * @param title        Le titre de la requête.
+     * @param description  La description des travaux demandés.
+     * @param projectType  Le type de travaux (chaîne de caractères à analyser).
+     * @param expectedDate La date de fin espérée pour les travaux.
+     */
+<span class="nc" id="L29">    public WorkRequestForm(String submitterId, String title, String description, String projectType, String expectedDate) {</span>
+<span class="nc" id="L30">        this.id = java.util.UUID.randomUUID().toString();</span>
+<span class="nc" id="L31">        this.submitterId = submitterId;</span>
+<span class="nc" id="L32">        this.title = title;</span>
+<span class="nc" id="L33">        this.description = description;</span>
+<span class="nc" id="L34">        this.projectType = parseProjectType(projectType);</span>
+<span class="nc" id="L35">        this.expectedDate = expectedDate;</span>
+<span class="nc" id="L36">        this.submissions = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L37">    }</span>
+
+    public WorkRequestForm(String id, String submitterId, String title, String description, String projectType,
+<span class="nc" id="L40">                           String expectedDate, List&lt;String&gt; submissions, String chosenIntervenant, String closingMessage) {</span>
+<span class="nc" id="L41">        this.id = id;</span>
+<span class="nc" id="L42">        this.submitterId = submitterId;</span>
+<span class="nc" id="L43">        this.title = title;</span>
+<span class="nc" id="L44">        this.description = description;</span>
+<span class="nc" id="L45">        this.projectType = parseProjectType(projectType);</span>
+<span class="nc" id="L46">        this.expectedDate = expectedDate;</span>
+<span class="nc" id="L47">        this.submissions = new ArrayList&lt;&gt;(submissions);</span>
+<span class="nc" id="L48">        this.chosenIntervenant = chosenIntervenant;</span>
+<span class="nc" id="L49">        this.closingMessage = closingMessage;</span>
+<span class="nc" id="L50">    }</span>
+
+    /**
+     * Ajoute une soumission à la liste des soumissions.
+     *
+     * @param submission La soumission à ajouter.
+     */
+    public void addSubmission(String submission) {
+<span class="nc" id="L58">        this.submissions.add(submission.trim());</span>
+<span class="nc" id="L59">    }</span>
+
+    /**
+     * Analyse une chaîne de caractères pour déterminer le type de travaux correspondant.
+     *
+     * @param projectType La chaîne représentant le type de travaux.
+     * @return Le type de travaux correspondant ou null si aucun ne correspond.
+     */
+    private Project.TypeOfWork parseProjectType(String projectType) {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        for (Project.TypeOfWork typeOfWork : Project.TypeOfWork.values()) {</span>
+<span class="nc" id="L69">            String normalizedProjectType = TextUtil.removeAccents(projectType.toLowerCase());</span>
+<span class="nc" id="L70">            String[] words = normalizedProjectType.split(&quot;\\s+&quot;); // Split on spaces or tabs</span>
+
+<span class="nc bnc" id="L72" title="All 2 branches missed.">            for (String word : words) {</span>
+                // Check if the current word matches or is contained in the enum value
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                if (typeOfWork.toString().toLowerCase().contains(word)) {</span>
+<span class="nc" id="L75">                    return typeOfWork;</span>
+                }
+            }
+        }
+<span class="nc" id="L79">        return null;</span>
+    }
+
+    /**
+     * Retourne une chaîne représentant les informations principales du formulaire.
+     *
+     * @return Une représentation textuelle du formulaire.
+     */
+    @Override
+    public String toString() {
+<span class="nc" id="L89">        return title + &quot;, &quot; + description + &quot;, &quot; + projectType + &quot;, &quot; + expectedDate + &quot;, &quot; + submissions</span>
+                + &quot;, &quot; + closingMessage;
+    }
+
+    // Getters
+    /**
+     * Retourne l'identifiant unique du formulaire.
+     *
+     * @return L'identifiant unique.
+     */
+    public String getId() {
+<span class="nc" id="L100">        return id;</span>
+    }
+
+    /**
+     * Retourne l'identifiant du résident qui a soumis.
+     *
+     * @return L'identifiant du déposant.
+     */
+    public String getSubmitterId() {
+<span class="nc" id="L109">        return submitterId;</span>
+    }
+
+    /**
+     * Retourne le titre de la requête.
+     *
+     * @return Le titre.
+     */
+    public String getTitle() {
+<span class="nc" id="L118">        return title;</span>
+    }
+
+    /**
+     * Retourne la description de la requête.
+     *
+     * @return La description.
+     */
+    public String getDescription() {
+<span class="nc" id="L127">        return description;</span>
+    }
+
+    /**
+     * Retourne le type de travaux demandé.
+     *
+     * @return Le type de travaux.
+     */
+    public Project.TypeOfWork getProjectType() {
+<span class="nc" id="L136">        return projectType;</span>
+    }
+
+    /**
+     * Retourne la date de fin espérée pour les travaux.
+     *
+     * @return La date de fin espérée.
+     */
+    public String getExpectedDate() {
+<span class="nc" id="L145">        return expectedDate;</span>
+    }
+
+    /**
+     * Retourne la liste des soumissions associées à la requête.
+     *
+     * @return La liste des soumissions.
+     */
+    public List&lt;String&gt; getSubmissions() {
+<span class="nc" id="L154">        return submissions;</span>
+    }
+
+    /**
+     * Définit la liste des soumissions associées à la requête.
+     *
+     * @param submissions La nouvelle liste de soumissions à associer au formulaire.
+     */
+    public void setSubmissions(List&lt;String&gt; submissions) {
+<span class="nc" id="L163">        this.submissions = submissions;</span>
+<span class="nc" id="L164">    }</span>
+
+    public String getChosenIntervenant() {
+<span class="nc" id="L167">        return chosenIntervenant;</span>
+    }
+
+    public void setChosenIntervenant(String chosenIntervenant) {
+<span class="nc" id="L171">        this.chosenIntervenant = chosenIntervenant;</span>
+<span class="nc" id="L172">    }</span>
+
+    /**
+     * Retourne le message de fermeture (optionnel) écrit par le déposant.
+     *
+     * @return Le message de fermeture.
+     */
+    public String getClosingMessage() {
+<span class="nc" id="L180">        return closingMessage;</span>
+    }
+
+    /**
+     * Définit le message de fermeture de la requête (qui est envoyé à l'intervenant en charge).
+     *
+     * @param closingMessage Le nouveau message de fermeture.
+     */
+    public void setClosingMessage(String closingMessage) {
+<span class="nc" id="L189">        this.closingMessage = closingMessage;</span>
+<span class="nc" id="L190">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

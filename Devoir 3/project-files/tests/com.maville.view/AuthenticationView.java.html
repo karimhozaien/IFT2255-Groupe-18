@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.view</a> &gt; <span class="el_source">AuthenticationView.java</span></div><h1>AuthenticationView.java</h1><pre class="source lang-java linenums">package com.maville.view;
+
+import com.maville.model.Intervenant;
+
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * Vue responsable de l'affichage des messages d'authentification pour les utilisateurs.
+ * Cette classe fournit des méthodes statiques pour afficher des messages relatifs à la
+ * connexion et l'inscription des résidents ou des intervenants.
+ */
+<span class="nc" id="L13">public class AuthenticationView extends MenuView {</span>
+
+    /**
+     * Messages d'invite pour la connexion des utilisateurs.
+     */
+<span class="nc" id="L18">    public static final String[] LOGIN_INFO_MESSAGES = {</span>
+            &quot;Adresse courriel&quot;,
+            &quot;Mot de passe&quot;
+    };
+
+    /**
+     * Messages d'invite pour l'inscription des résidents.
+     */
+<span class="nc" id="L26">    public static final String[] SIGNUP_RESIDENT_INFO_MESSAGES = {</span>
+            &quot;Nom complet&quot;,
+            &quot;Date de naissance (DD/MM/YYYY)&quot;,
+            &quot;Adresse courriel&quot;,
+            &quot;Mot de passe&quot;,
+            &quot;Numéro de téléphone (optionnel)&quot;,
+            &quot;Adresse résidentielle&quot;
+    };
+
+    /**
+     * Messages d'invite pour l'inscription des intervenants.
+     */
+<span class="nc" id="L38">    public static final String[] SIGNUP_INTERVENANT_INFO_MESSAGES = {</span>
+            &quot;Nom complet&quot;,
+            &quot;Adresse courriel&quot;,
+            &quot;Mot de passe&quot;,
+            &quot;Identifiant de la ville&quot;
+    };
+
+    /**
+     * Affiche un message demandant si l'utilisateur est un résident ou un intervenant.
+     */
+    public static void showAuthMessage() {
+<span class="nc" id="L49">        printMessage(&quot;En tant que résident ou intervenant ?&quot;);</span>
+<span class="nc" id="L50">    }</span>
+
+    /**
+     * Affiche un message indiquant que l'utilisateur est en mode connexion.
+     *
+     * @param userType Le type d'utilisateur (ex. : Résident, Intervenant).
+     */
+    public static void showLogInMessage(String userType) {
+<span class="nc" id="L58">        printMessage(&quot;Connexion en tant que &quot; + userType);</span>
+<span class="nc" id="L59">    }</span>
+
+    /**
+     * Affiche un message indiquant que l'utilisateur est en mode inscription.
+     *
+     * @param userType Le type d'utilisateur (ex. : Résident, Intervenant).
+     */
+    public static void showSignUpMessage(String userType) {
+<span class="nc" id="L67">        printMessage(&quot;Inscription en tant que &quot; + userType);</span>
+<span class="nc" id="L68">    }</span>
+
+    /**
+     * Affiche les options disponibles pour l'authentification.
+     *
+     * @param header  Le titre de la section.
+     * @param options Une carte des options (clé : numéro, valeur : description).
+     */
+    public static void displayAuthOptions(String header, TreeMap&lt;Integer, String&gt; options) {
+<span class="nc" id="L77">        printMessage(&quot;========================================&quot;);</span>
+<span class="nc" id="L78">        printMessage(header);</span>
+<span class="nc" id="L79">        printMessage(&quot;----------------------------------------&quot;);</span>
+<span class="nc" id="L80">        options.forEach((key, value) -&gt; printMessage(&quot;[&quot; + key + &quot;] &quot; + value));</span>
+<span class="nc" id="L81">        printMessage(&quot;========================================&quot;);</span>
+<span class="nc" id="L82">    }</span>
+
+    /**
+     * Affiche les types d'authentification disponibles (résident ou intervenant).
+     */
+    public static void showAuthType() {
+<span class="nc" id="L88">        TreeMap&lt;Integer, String&gt; authOptions = new TreeMap&lt;&gt;(Map.of(</span>
+<span class="nc" id="L89">                0, &quot;Revenir en arrière&quot;,</span>
+<span class="nc" id="L90">                1, &quot;Résident&quot;,</span>
+<span class="nc" id="L91">                2, &quot;Intervenant&quot;</span>
+        ));
+<span class="nc" id="L93">        displayAuthOptions(&quot;Veuillez choisir votre type :&quot;, authOptions);</span>
+<span class="nc" id="L94">    }</span>
+
+    /**
+     * Affiche un message demandant le type de l'entreprise.
+     */
+    public static void showCompanyTypeMessage() {
+<span class="nc" id="L100">        printMessage(&quot;Quel est le type de votre entreprise ?&quot;);</span>
+<span class="nc" id="L101">    }</span>
+
+    /**
+     * Affiche les types d'entreprises disponibles pour un intervenant.
+     *
+     * @param companyTypes Un tableau des types d'entreprises.
+     */
+    public static void showCompanyTypes(Intervenant.CompanyType[] companyTypes) {
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        for (Intervenant.CompanyType companyType : companyTypes) {</span>
+<span class="nc" id="L110">            printMessage(&quot;[&quot; + companyType.getValue() + &quot;] &quot; + companyType.getDisplayType());</span>
+        }
+<span class="nc" id="L112">    }</span>
+
+    /**
+     * Affiche un message d'erreur pour un choix invalide.
+     *
+     * @param maxChoice Le numéro maximum acceptable.
+     */
+    public static void showInvalidChoiceMessage(int maxChoice) {
+<span class="nc" id="L120">        printMessage(&quot;Choix invalide. Veuillez entrer un nombre entre 1 et &quot; + maxChoice);</span>
+<span class="nc" id="L121">    }</span>
+
+    /**
+     * Affiche un message d'erreur pour une entrée invalide.
+     */
+    public static void showInvalidInputMessage() {
+<span class="nc" id="L127">        printMessage(&quot;Veuillez entrer un nombre valide.&quot;);</span>
+<span class="nc" id="L128">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

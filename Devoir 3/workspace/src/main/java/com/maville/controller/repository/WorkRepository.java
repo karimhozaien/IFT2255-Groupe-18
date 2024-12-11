@@ -81,7 +81,7 @@ public class WorkRepository {
      * @throws IOException Si une erreur se produit lors du traitement des données.
      */
     public List<String> getFilteredRoadObstructions(String criteria, String criteriaField) throws IOException {
-        return parseItems(criteria, criteriaField, String.class);
+        return parseItems(criteria, criteriaField, null, String.class);
     }
 
     /**
@@ -92,8 +92,8 @@ public class WorkRepository {
      * @return Une liste de {@code Project} représentant les projets filtrés.
      * @throws IOException Si une erreur se produit lors du traitement des données.
      */
-    public List<Project> getFilteredProjects(String criteria, String criteriaField) throws IOException {
-        return parseItems(criteria, criteriaField, Project.class);
+    public List<Project> getFilteredProjects(String criteria, String criteriaField, List<Project> projects) throws IOException {
+        return parseItems(criteria, criteriaField, projects, Project.class);
     }
 
     /**
@@ -139,11 +139,14 @@ public class WorkRepository {
         return fetchPlannedProjects();
     }
 
-    private <T> List<T> parseItems(String criteria, String criteriaField, Class<T> type) throws IOException {
+    private <T> List<T> parseItems(String criteria, String criteriaField, List<Project> projects, Class<T> type) throws IOException {
         List<T> filteredItems = new ArrayList<>();
 
         if (type.equals(Project.class)) {
-            for (Project project : getAllProjects()) {
+            // Utilisez la liste passée en paramètre ou récupérez tous les projets
+            List<Project> sourceProjects = (projects != null) ? projects : getAllProjects();
+
+            for (Project project : sourceProjects) {
                 if (criteria.equals("quartier")) {
                     if (project.getAffectedNeighbourhood().toLowerCase().contains(criteriaField.toLowerCase())) {
                         filteredItems.add(type.cast(project));
@@ -231,6 +234,47 @@ public class WorkRepository {
             System.out.println("Erreur lors de la connexion à la DB : " + e.getMessage());
             return null;
         }
+    }
+
+    public List<Project> getPlannedProjectsWithinThreeMonths() {
+        List<Project> plannedProjects = new ArrayList<>();
+        String selectSQL = "SELECT * FROM Projects WHERE DATE(start_date) <= DATE('now', '+3 months')";
+
+        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String id = rs.getString("id");
+                    String title = rs.getString("title");
+                    String description = rs.getString("description");
+                    String typeOfWork = rs.getString("type_of_work");
+                    String affectedNeighbourhood = rs.getString("affected_neighbourhood");
+                    String affectedStreets = rs.getString("affected_streets");
+                    String startDate = rs.getString("start_date");
+                    String endDate = rs.getString("end_date");
+                    String workSchedule = rs.getString("work_schedule");
+                    String workStatus = rs.getString("work_status");
+
+                    Project project = new Project(
+                            id,
+                            title,
+                            description,
+                            Project.TypeOfWork.valueOf(typeOfWork),
+                            affectedNeighbourhood,
+                            affectedStreets,
+                            startDate,
+                            endDate,
+                            workSchedule,
+                            Project.WorkStatus.valueOf(workStatus)
+                    );
+                    plannedProjects.add(project);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des projets planifiés : " + e.getMessage());
+        }
+        return plannedProjects;
     }
 
     /**

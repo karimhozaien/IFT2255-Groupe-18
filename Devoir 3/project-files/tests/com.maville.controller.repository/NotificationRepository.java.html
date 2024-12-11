@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificationRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.controller.repository</a> &gt; <span class="el_source">NotificationRepository.java</span></div><h1>NotificationRepository.java</h1><pre class="source lang-java linenums">package com.maville.controller.repository;
+
+import com.maville.controller.services.DatabaseConnectionManager;
+import com.maville.model.Notification;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Dépôt pour gérer les notifications associées aux résidents.
+ * Fournit des fonctionnalités pour sauvegarder, récupérer et mettre à jour les notifications dans la base de données.
+ */
+public class NotificationRepository {
+    private static NotificationRepository instance;
+
+    private NotificationRepository() {}
+
+    public static NotificationRepository getInstance() {
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L25">            instance = new NotificationRepository();</span>
+        }
+<span class="nc" id="L27">        return instance;</span>
+    }
+
+    /**
+     * Enregistre une nouvelle notification dans la base de données et associe les résidents.
+     *
+     * @param notification La notification à enregistrer.
+     */
+    public void saveNotification(Notification notification) {
+<span class="nc" id="L36">        String insertSQL = &quot;INSERT INTO Notifications(id, description, residents_id, seen_residents_ids) VALUES (?, ?, ?, ?)&quot;;</span>
+
+<span class="nc" id="L38">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="nc" id="L39">             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {</span>
+
+<span class="nc" id="L41">            pstmt.setString(1, notification.getId());</span>
+<span class="nc" id="L42">            pstmt.setString(2, notification.getDescription());</span>
+<span class="nc" id="L43">            pstmt.setString(3, String.join(&quot;,&quot;, notification.getResidents()));</span>
+<span class="nc" id="L44">            pstmt.setString(4, &quot;&quot;);</span>
+<span class="nc" id="L45">            pstmt.executeUpdate();</span>
+<span class="nc" id="L46">        } catch (SQLException e) {</span>
+<span class="nc" id="L47">            System.out.println(&quot;Erreur lors de l'enregistrement de la notification : &quot; + e.getMessage());</span>
+<span class="nc" id="L48">        }</span>
+<span class="nc" id="L49">    }</span>
+
+    /**
+     * Récupère les notifications associées à un résident spécifique.
+     *
+     * @param residentId L'ID du résident.
+     * @return Une liste de notifications associées au résident.
+     */
+    public List&lt;Notification&gt; fetchNotificationsByResidentId(String residentId) {
+<span class="nc" id="L58">        List&lt;Notification&gt; notifications = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L59">        String selectSQL = &quot;SELECT * FROM Notifications WHERE residents_id LIKE ?&quot;;</span>
+
+<span class="nc" id="L61">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="nc" id="L62">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
+
+<span class="nc" id="L64">            pstmt.setString(1, &quot;%&quot; + residentId + &quot;%&quot;);</span>
+
+<span class="nc" id="L66">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">                while (rs.next()) {</span>
+<span class="nc" id="L68">                    String id = rs.getString(&quot;id&quot;);</span>
+<span class="nc" id="L69">                    String description = rs.getString(&quot;description&quot;);</span>
+<span class="nc" id="L70">                    String residentsIds = rs.getString(&quot;residents_id&quot;);</span>
+<span class="nc" id="L71">                    String seenResidentsIds = rs.getString(&quot;seen_residents_ids&quot;);</span>
+
+<span class="nc" id="L73">                    Notification notification = new Notification();</span>
+<span class="nc" id="L74">                    notification.setId(id);</span>
+<span class="nc" id="L75">                    notification.setDescription(description);</span>
+<span class="nc bnc" id="L76" title="All 4 branches missed.">                    if (residentsIds != null &amp;&amp; !residentsIds.isEmpty()) {</span>
+<span class="nc" id="L77">                        notification.setResidents(Arrays.asList(residentsIds.split(&quot;,&quot;)));</span>
+                    }
+<span class="nc bnc" id="L79" title="All 4 branches missed.">                    if (seenResidentsIds != null &amp;&amp; !seenResidentsIds.isEmpty()) {</span>
+<span class="nc" id="L80">                        notification.setSeenResidents(Arrays.asList(seenResidentsIds.split(&quot;,&quot;)));</span>
+                    }
+
+<span class="nc" id="L83">                    notifications.add(notification);</span>
+<span class="nc" id="L84">                }</span>
+            }
+
+<span class="nc" id="L87">        } catch (SQLException e) {</span>
+<span class="nc" id="L88">            System.out.println(&quot;Erreur lors de la récupération des notifications : &quot; + e.getMessage());</span>
+<span class="nc" id="L89">        }</span>
+
+<span class="nc" id="L91">        return notifications;</span>
+    }
+
+    /**
+     * Marque une notification comme vue pour un résident spécifique.
+     *
+     * @param notificationId L'ID de la notification.
+     * @param residentId     L'ID du résident.
+     */
+    public void markNotificationAsSeen(String notificationId, String residentId) {
+<span class="nc" id="L101">        String selectSQL = &quot;SELECT seen_residents_ids FROM Notifications WHERE id = ?&quot;;</span>
+<span class="nc" id="L102">        String updateSQL = &quot;UPDATE Notifications SET seen_residents_ids = ? WHERE id = ?&quot;;</span>
+
+<span class="nc" id="L104">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="nc" id="L105">             PreparedStatement pstmtSelect = conn.prepareStatement(selectSQL);</span>
+<span class="nc" id="L106">             PreparedStatement pstmtUpdate = conn.prepareStatement(updateSQL)) {</span>
+
+            // Récupérer les seen_residents_ids actuels
+<span class="nc" id="L109">            pstmtSelect.setString(1, notificationId);</span>
+<span class="nc" id="L110">            String seenResidentsIds = &quot;&quot;;</span>
+<span class="nc" id="L111">            try (ResultSet rs = pstmtSelect.executeQuery()) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">                if (rs.next()) {</span>
+<span class="nc" id="L113">                    seenResidentsIds = rs.getString(&quot;seen_residents_ids&quot;);</span>
+                }
+            }
+
+<span class="nc" id="L117">            List&lt;String&gt; seenResidents = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L118" title="All 4 branches missed.">            if (seenResidentsIds != null &amp;&amp; !seenResidentsIds.isEmpty()) {</span>
+<span class="nc" id="L119">                seenResidents = new ArrayList&lt;&gt;(Arrays.asList(seenResidentsIds.split(&quot;,&quot;)));</span>
+            }
+
+            // Ajouter le residentId s'il n'est pas déjà présent
+<span class="nc bnc" id="L123" title="All 2 branches missed.">            if (!seenResidents.contains(residentId)) {</span>
+<span class="nc" id="L124">                seenResidents.add(residentId);</span>
+            }
+
+            // Mettre à jour la colonne seen_residents_ids
+<span class="nc" id="L128">            String updatedSeenResidentsIds = String.join(&quot;,&quot;, seenResidents);</span>
+<span class="nc" id="L129">            pstmtUpdate.setString(1, updatedSeenResidentsIds);</span>
+<span class="nc" id="L130">            pstmtUpdate.setString(2, notificationId);</span>
+<span class="nc" id="L131">            pstmtUpdate.executeUpdate();</span>
+
+<span class="nc" id="L133">            System.out.println(&quot;La notification a été marquée comme vue.&quot;);</span>
+<span class="nc" id="L134">        } catch (SQLException e) {</span>
+<span class="nc" id="L135">            System.out.println(&quot;Erreur lors de la mise à jour du flag 'vu' : &quot; + e.getMessage());</span>
+<span class="nc" id="L136">        }</span>
+<span class="nc" id="L137">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationMenu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.controller.menu</a> &gt; <span class="el_source">AuthenticationMenu.java</span></div><h1>AuthenticationMenu.java</h1><pre class="source lang-java linenums">package com.maville.controller.menu;
+
+import com.maville.controller.services.Authenticate;
+import com.maville.model.Intervenant;
+import com.maville.view.AuthenticationView;
+import com.maville.view.MenuView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Menu d'authentification permettant de gérer les connexions et inscriptions
+ * des résidents et des intervenants. Fournit des options interactives pour
+ * faciliter l'authentification des utilisateurs dans l'application.
+ */
+<span class="nc" id="L16">public class AuthenticationMenu extends Menu {</span>
+    private Authenticate authenticate;
+
+    /**
+     * Gère le processus de connexion pour les utilisateurs.
+     * Permet à l'utilisateur de choisir son type (résident ou intervenant),
+     * de saisir ses informations de connexion, et de continuer vers le menu principal.
+     */
+    public void logInManager() {
+        while (true) {
+<span class="nc" id="L26">            AuthenticationView.showAuthMessage();</span>
+<span class="nc" id="L27">            AuthenticationView.showAuthType();</span>
+
+<span class="nc bnc" id="L29" title="All 2 branches missed.">            if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier</span>
+<span class="nc" id="L30">                int option = SCANNER.nextInt();</span>
+<span class="nc" id="L31">                selection(option, &quot;login&quot;); // Passe &quot;login&quot; en tant qu'argument pour indiquer la connexion</span>
+<span class="nc" id="L32">                break;</span>
+            } else {
+<span class="nc" id="L34">                MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide.&quot;);</span>
+<span class="nc" id="L35">                SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie</span>
+            }
+        }
+<span class="nc" id="L38">    }</span>
+
+    /**
+     * Gère le processus d'inscription pour les utilisateurs.
+     * Permet à l'utilisateur de choisir son type (résident ou intervenant),
+     * de saisir ses informations de profil, et de compléter l'inscription.
+     */
+    public void signUpManager() {
+        while (true) {
+<span class="nc" id="L47">            AuthenticationView.showAuthMessage();</span>
+<span class="nc" id="L48">            AuthenticationView.showAuthType();</span>
+
+<span class="nc bnc" id="L50" title="All 2 branches missed.">            if (SCANNER.hasNextInt()) { // Vérifie si l'entrée est un entier</span>
+<span class="nc" id="L51">                int option = SCANNER.nextInt();</span>
+<span class="nc" id="L52">                selection(option, &quot;signup&quot;); // Passe &quot;signup&quot; en tant qu'argument pour indiquer l'inscription</span>
+<span class="nc" id="L53">                break;</span>
+            } else {
+<span class="nc" id="L55">                MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide.&quot;);</span>
+<span class="nc" id="L56">                SCANNER.next(); // Consomme l'entrée incorrecte pour éviter une boucle infinie</span>
+            }
+        }
+<span class="nc" id="L59">    }</span>
+
+    /**
+     * Implémente la logique de sélection selon l'action (connexion ou inscription)
+     * et le type d'utilisateur choisi.
+     *
+     * @param option L'option choisie par l'utilisateur.
+     * @param action L'action à effectuer (&quot;login&quot; ou &quot;signup&quot;).
+     */
+    @Override
+    protected void selection(int option, String action) {
+<span class="nc bnc" id="L70" title="All 3 branches missed.">        switch (action) {</span>
+            case &quot;login&quot;:
+<span class="nc" id="L72">                handleLogIn(option);</span>
+<span class="nc" id="L73">                break;</span>
+            case &quot;signup&quot;:
+<span class="nc" id="L75">                handleSignUp(option);</span>
+<span class="nc" id="L76">                break;</span>
+            default:
+<span class="nc" id="L78">                MenuView.printMessage(&quot;Action inconnue.&quot;);</span>
+                break;
+        }
+<span class="nc" id="L81">    }</span>
+
+    /**
+     * Gère la logique de connexion en fonction du type d'utilisateur sélectionné.
+     *
+     * @param option L'option choisie par l'utilisateur (1 pour résident, 2 pour intervenant).
+     */
+    private void handleLogIn(int option) {
+        String userType;
+<span class="nc bnc" id="L90" title="All 4 branches missed.">        switch (option) {</span>
+            case 1:
+<span class="nc" id="L92">                userType = &quot;resident&quot;;</span>
+<span class="nc" id="L93">                continueProcess(userType);</span>
+<span class="nc" id="L94">                break;</span>
+            case 2:
+<span class="nc" id="L96">                userType = &quot;intervenant&quot;;</span>
+<span class="nc" id="L97">                continueProcess(userType);</span>
+<span class="nc" id="L98">                break;</span>
+            case 0:
+<span class="nc" id="L100">                MenuView.backMessage();</span>
+<span class="nc" id="L101">                return;</span>
+            default:
+<span class="nc" id="L103">                MenuView.printMessage(&quot;Option invalide pour la connexion.&quot;);</span>
+        }
+<span class="nc" id="L105">    }</span>
+
+    /**
+     * Poursuit le processus de connexion en collectant les informations de l'utilisateur.
+     *
+     * @param userType Le type d'utilisateur (résident ou intervenant).
+     */
+    private void continueProcess(String userType) {
+<span class="nc" id="L113">        AuthenticationView.showLogInMessage(userType);</span>
+<span class="nc" id="L114">        SCANNER.nextLine(); // Nettoie le buffer</span>
+
+        while (true) {
+<span class="nc" id="L117">            authenticate = new Authenticate(collectUserInfo(AuthenticationView.LOGIN_INFO_MESSAGES));</span>
+
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (authenticate.logIn()) { // Authentification réussie</span>
+<span class="nc" id="L120">                String userTypeFromDB = Authenticate.getUserType();</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">                if (!userType.equals(userTypeFromDB)) {</span>
+<span class="nc" id="L122">                    MenuView.printMessage(&quot;Vous n'êtes pas un &quot; + userType + &quot;.&quot;);</span>
+<span class="nc" id="L123">                    return;</span>
+                }
+<span class="nc" id="L125">                DefaultMenu.showUserMenu(userTypeFromDB); // Affiche le menu utilisateur</span>
+<span class="nc" id="L126">                break;</span>
+            } else {
+<span class="nc" id="L128">                MenuView.printMessage(&quot;Connexion échouée. Veuillez réessayer.&quot;);</span>
+<span class="nc" id="L129">                return;</span>
+            }
+        }
+<span class="nc" id="L132">    }</span>
+
+    /**
+     * Gère la logique d'inscription en fonction du type d'utilisateur sélectionné.
+     *
+     * @param option L'option choisie par l'utilisateur (1 pour résident, 2 pour intervenant).
+     */
+    private void handleSignUp(int option) {
+        String userType;
+        String[] infoMessages;
+
+<span class="nc bnc" id="L143" title="All 4 branches missed.">        switch (option) {</span>
+            case 1:
+<span class="nc" id="L145">                userType = &quot;resident&quot;;</span>
+<span class="nc" id="L146">                infoMessages = AuthenticationView.SIGNUP_RESIDENT_INFO_MESSAGES;</span>
+<span class="nc" id="L147">                break;</span>
+            case 2:
+<span class="nc" id="L149">                userType = &quot;intervenant&quot;;</span>
+<span class="nc" id="L150">                infoMessages = AuthenticationView.SIGNUP_INTERVENANT_INFO_MESSAGES;</span>
+<span class="nc" id="L151">                break;</span>
+            case 0:
+<span class="nc" id="L153">                MenuView.backMessage();</span>
+<span class="nc" id="L154">                return;</span>
+            default:
+<span class="nc" id="L156">                MenuView.printMessage(&quot;Option invalide pour l'inscription.&quot;);</span>
+<span class="nc" id="L157">                return;</span>
+        }
+
+<span class="nc" id="L160">        AuthenticationView.showSignUpMessage(userType);</span>
+<span class="nc" id="L161">        SCANNER.nextLine(); // Nettoie le buffer</span>
+
+<span class="nc" id="L163">        authenticate = new Authenticate(collectUserInfo(infoMessages));</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (authenticate.signUp(userType)) { // Inscription réussie</span>
+<span class="nc" id="L165">            MenuView.printMessage(&quot;Inscription réussie. Veuillez-vous connecter.&quot;);</span>
+        } else {
+<span class="nc" id="L167">            MenuView.printMessage(&quot;Inscription échouée. Veuillez réessayer.&quot;);</span>
+        }
+<span class="nc" id="L169">    }</span>
+
+    /**
+     * Collecte les informations nécessaires pour la connexion ou l'inscription.
+     *
+     * @param infoMessages Les messages d'invite pour chaque champ d'information.
+     * @return Une liste contenant les informations saisies par l'utilisateur.
+     */
+    private List&lt;String&gt; collectUserInfo(String[] infoMessages) {
+<span class="nc" id="L178">        List&lt;String&gt; userInfo = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        for (String message : infoMessages) {</span>
+<span class="nc" id="L180">            AuthenticationView.printMessage(message);</span>
+<span class="nc" id="L181">            String input = SCANNER.nextLine();</span>
+<span class="nc" id="L182">            userInfo.add(input);</span>
+        }
+<span class="nc" id="L184">        return userInfo;</span>
+    }
+
+    /**
+     * Demande à l'utilisateur de sélectionner le type d'intervenant
+     * parmi les types d'entreprises disponibles.
+     *
+     * @return Le numéro correspondant au type d'entreprise choisi.
+     */
+    public static int askForCompanyType() {
+<span class="nc" id="L194">        Intervenant.CompanyType[] companyTypes = Intervenant.CompanyType.values();</span>
+
+        while (true) {
+<span class="nc" id="L197">            AuthenticationView.showCompanyTypeMessage();</span>
+<span class="nc" id="L198">            AuthenticationView.showCompanyTypes(companyTypes);</span>
+
+<span class="nc" id="L200">            int choice = getInput();</span>
+<span class="nc bnc" id="L201" title="All 4 branches missed.">            if (choice &gt;= 1 &amp;&amp; choice &lt;= companyTypes.length) {</span>
+<span class="nc" id="L202">                return choice;</span>
+            } else {
+<span class="nc" id="L204">                AuthenticationView.showInvalidChoiceMessage(companyTypes.length);</span>
+            }
+<span class="nc" id="L206">        }</span>
+    }
+
+    /**
+     * Gère la saisie sécurisée d'un entier par l'utilisateur.
+     *
+     * @return L'entier saisi.
+     */
+    private static int getInput() {
+        while (true) {
+            try {
+<span class="nc" id="L217">                return Integer.parseInt(SCANNER.nextLine().trim());</span>
+<span class="nc" id="L218">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L219">                AuthenticationView.showInvalidInputMessage();</span>
+<span class="nc" id="L220">            }</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

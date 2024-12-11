@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Parser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.controller.services</a> &gt; <span class="el_source">Parser.java</span></div><h1>Parser.java</h1><pre class="source lang-java linenums">package com.maville.controller.services;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.maville.controller.repository.WorkRepository.Result.Record;
+import com.maville.model.Project;
+
+/**
+ * Classe utilitaire pour analyser et convertir des enregistrements récupérés depuis le dépôt
+ * en objets utilisables tels que {@code Project} ou d'autres formats selon les besoins.
+ *
+ * @param &lt;T&gt; Le type d'objet à générer à partir des enregistrements.
+ */
+public class Parser&lt;T&gt; {
+    List&lt;Record&gt; records;
+
+<span class="nc" id="L17">    public Parser(List&lt;Record&gt; records) {</span>
+<span class="nc" id="L18">        this.records = records;</span>
+<span class="nc" id="L19">    }</span>
+
+    /**
+     * Analyse les enregistrements et retourne une liste d'objets du type spécifié.
+     *
+     * @param option Le type d'analyse à effectuer (par exemple, &quot;works&quot; pour des projets ou
+     *               &quot;road_obstructions&quot; pour des informations sur les obstructions).
+     * @param type La classe du type d'objet à générer.
+     * @return Une liste d'objets du type spécifié, construite à partir des enregistrements.
+     */
+    public List&lt;T&gt; initializeParsing(String option, Class&lt;T&gt; type) {
+<span class="nc" id="L30">        List&lt;T&gt; items = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L32" title="All 4 branches missed.">        if (type.equals(Project.class) &amp;&amp; option.equals(&quot;works&quot;)) {</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">            for (Record record : records) {</span>
+<span class="nc" id="L34">                Project project = new Project(record.getId(),</span>
+<span class="nc" id="L35">                        createTitle(record),</span>
+                        null,
+<span class="nc" id="L37">                        parseTypeOfWork(record),</span>
+<span class="nc" id="L38">                        record.getAffectedNeighbourhood(),</span>
+<span class="nc" id="L39">                        record.getAffectedStreets(),</span>
+<span class="nc" id="L40">                        parseDate(record.getStartDate()),</span>
+<span class="nc" id="L41">                        parseDate(record.getEndDate()),</span>
+<span class="nc" id="L42">                        parseWorkSchedule(record),</span>
+                        Project.WorkStatus.ONGOING
+                );
+<span class="nc" id="L45">                items.add(type.cast(project));</span>
+<span class="nc" id="L46">            }</span>
+<span class="nc bnc" id="L47" title="All 4 branches missed.">        } else if (type.equals(String.class) &amp;&amp; option.equals(&quot;road_obstructions&quot;)) {</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">            for (Record record : records) {</span>
+<span class="nc" id="L49">                String output = record.getStreetImpactType() + &quot; &quot; + record.getStreetId()</span>
+<span class="nc" id="L50">                        + &quot;sur &quot; + record.getStreetImpactWidth();</span>
+<span class="nc" id="L51">                items.add(type.cast(output));</span>
+<span class="nc" id="L52">            }</span>
+        }
+<span class="nc" id="L54">        return items;</span>
+    }
+
+
+    private String createTitle(Record record) {
+<span class="nc" id="L59">        String typeOfWork = record.getTypeOfWorkRaw();</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (typeOfWork.trim().equals(&quot;Autre&quot;)) {</span>
+<span class="nc" id="L61">            typeOfWork = &quot;Travaux&quot;;</span>
+        }
+<span class="nc" id="L63">        return typeOfWork + &quot; direction &quot; + record.getAffectedStreets();</span>
+    }
+
+    private String parseDate(String date) {
+<span class="nc" id="L67">        return date.split(&quot;T&quot;)[0];</span>
+    }
+
+    private Project.TypeOfWork parseTypeOfWork(Record record) {
+<span class="nc" id="L71">        return record.getTypeOfWork() ;</span>
+    }
+
+    private String parseWorkSchedule(Record record) {
+<span class="nc" id="L75">        return String.join(&quot;,&quot;, record.buildScheduleList());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

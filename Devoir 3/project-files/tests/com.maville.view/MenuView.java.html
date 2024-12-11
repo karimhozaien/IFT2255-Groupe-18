@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MenuView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">untitled</a> &gt; <a href="index.source.html" class="el_package">com.maville.view</a> &gt; <span class="el_source">MenuView.java</span></div><h1>MenuView.java</h1><pre class="source lang-java linenums">package com.maville.view;
+
+import com.maville.model.Project;
+import java.util.*;
+import java.util.stream.IntStream;
+import org.fusesource.jansi.Ansi;
+import static org.fusesource.jansi.Ansi.Color.*;
+
+/**
+ * Classe MenuView.
+ * Cette classe fournit des méthodes utilitaires pour afficher les différents menus et messages
+ * de l'application Maville. Elle gère les interactions avec l'utilisateur via des entrées et sorties console.
+ */
+<span class="nc" id="L14">public class MenuView {</span>
+<span class="nc" id="L15">    private static final Scanner scanner = new Scanner(System.in);</span>
+
+    // Messages
+    public static void welcomeMessage() {
+<span class="nc" id="L19">        printMessage(</span>
+                &quot;&quot;&quot;
+                        __  __    _    __     __ ___ _     _     _____\s
+                       |  \\/  |  / \\   \\ \\   / /|_ _| |   | |   |____|
+                       | |\\/| | / _ \\   \\ \\ / /  | || |   | |   | __| \s
+                       | |  | |/ ___ \\   \\ V /   | || |___| |___| |___\s
+                       |_|  |_/_/   \\_\\   \\_/   |___|_____|_____|_____|
+                &quot;&quot;&quot;
+        );
+<span class="nc" id="L28">        printMessage(&quot;Bienvenue dans l'application MaVille!\nVoulez-vous vous inscrire ou vous connecter ?&quot;);</span>
+<span class="nc" id="L29">    }</span>
+
+    /**
+     * Affiche le message de sortie de l'application.
+     */
+    public static void exitMessage() {
+<span class="nc" id="L35">        printMessage(&quot;Vous avez quitté l'application, au revoir!&quot;);</span>
+<span class="nc" id="L36">    }</span>
+
+    /**
+     * Affiche un message indiquant que l'utilisateur est revenu en arrière.
+     */
+    public static void backMessage() {
+<span class="nc" id="L42">        printMessage(&quot;Vous êtes revenu en arrière!&quot;);</span>
+<span class="nc" id="L43">    }</span>
+
+    /**
+     * Affiche les options d'authentification pour l'utilisateur.
+     */
+    public static void authMessage() {
+<span class="nc" id="L49">        displayOptions(</span>
+                &quot;Choisissez une option :&quot;,
+<span class="nc" id="L51">                new TreeMap&lt;&gt;(Map.of(1, &quot;S'enregistrer&quot;, 2, &quot;Se connecter&quot;, 0, &quot;Quitter l'application&quot;))</span>
+        );
+<span class="nc" id="L53">    }</span>
+
+    /**
+     * Affiche des options simples.
+     */
+    public static void askSimpleOptions(String header, String... options) {
+<span class="nc" id="L59">        TreeMap&lt;Integer, String&gt; optionMap = new TreeMap&lt;&gt;();</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        for (int i = 0; i &lt; options.length; i++) {</span>
+<span class="nc" id="L61">            optionMap.put(i, options[i]);</span>
+        }
+
+<span class="nc" id="L64">        displayOptions(header, optionMap);</span>
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * Affiche le menu pour un résident avec des options spécifiques.
+     */
+    public static void residentMenuMessages() {
+<span class="nc" id="L71">        displayOptions(</span>
+                &quot;Choisissez l'une des options :&quot;,
+<span class="nc" id="L73">                new TreeMap&lt;&gt;(Map.of(</span>
+<span class="nc" id="L74">                        1, &quot;Consulter les travaux&quot;,</span>
+<span class="nc" id="L75">                        2, &quot;Consulter les entraves routières&quot;,</span>
+<span class="nc" id="L76">                        3, &quot;Rechercher des travaux&quot;,</span>
+<span class="nc" id="L77">                        4, &quot;Participer à une planification&quot;,</span>
+<span class="nc" id="L78">                        5, &quot;Soumettre une requête de travaux&quot;,</span>
+<span class="nc" id="L79">                        6, &quot;Consulter mes notifications&quot;,</span>
+<span class="nc" id="L80">                        0, &quot;Quitter&quot;</span>
+                ))
+        );
+<span class="nc" id="L83">    }</span>
+
+    /**
+     * Affiche le menu pour un intervenant avec des options spécifiques.
+     */
+    public static void intervenantMenuMessages() {
+<span class="nc" id="L89">        displayOptions(</span>
+                &quot;Choisissez l'une des options :&quot;,
+<span class="nc" id="L91">                new TreeMap&lt;&gt;(Map.of(</span>
+<span class="nc" id="L92">                        1, &quot;Soumettre de nouveaux travaux&quot;,</span>
+<span class="nc" id="L93">                        2, &quot;Mettre à jour les travaux&quot;,</span>
+<span class="nc" id="L94">                        3, &quot;Consulter les requêtes de travaux&quot;,</span>
+<span class="nc" id="L95">                        0, &quot;Quitter&quot;</span>
+                ))
+        );
+<span class="nc" id="L98">    }</span>
+
+    /**
+     * Demande à l'utilisateur de choisir un filtre.
+     *
+     * @param filterTypes Les types de filtres possibles.
+     */
+    public static void askFilter(String... filterTypes) {
+<span class="nc" id="L106">        TreeMap&lt;Integer, String&gt; options = new TreeMap&lt;&gt;();</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        for (int i = 0; i &lt; filterTypes.length; i++) {</span>
+<span class="nc" id="L108">            options.put(i + 1, filterTypes[i]); // Indexer à partir de 1</span>
+        }
+
+<span class="nc" id="L111">        displayOptions(&quot;Désirez-vous filtrer par quartier ou par type de travaux ?&quot;, options);</span>
+<span class="nc" id="L112">    }</span>
+
+    /**
+     * Demande des informations nécessaires pour soumettre une requête de travaux.
+     *
+     * @return Liste des informations saisies.
+     */
+    public static List&lt;String&gt; askFormInfo() {
+<span class="nc" id="L120">        return askInputs(</span>
+                &quot;Entrez les informations suivantes pour la requête :&quot;,
+                &quot;Titre : &quot;, &quot;Description : &quot;, &quot;Type de travaux : &quot;, &quot;Date de fin espérée (AAAA-MM-JJ) : &quot;
+        );
+    }
+
+    /**
+     * Demande à l'utilisateur de fournir des préférences d'horaires hebdomadaires pour un projet.
+     *
+     * @return Une liste contenant : &lt;br&gt;
+     *         - La rue pour laquelle la demande est effectuée. &lt;br&gt;
+     *         - Le quartier (trois premiers caractères du code postal). &lt;br&gt;
+     *         - Les plages horaires hebdomadaires formatées en une chaîne unique.
+     */
+    public static List&lt;String&gt; askSchedulePreferences() {
+<span class="nc" id="L135">        List&lt;String&gt; infos = new ArrayList&lt;&gt;();</span>
+
+<span class="nc" id="L137">        printMessage(&quot;Veuillez entrer vos préférences :&quot;);</span>
+<span class="nc" id="L138">        infos.add(askSingleInput(&quot;Pour quelle rue voulez-vous faire votre demande ? : &quot;));</span>
+<span class="nc" id="L139">        infos.add(collectWeeklySchedules());</span>
+
+<span class="nc" id="L141">        return infos;</span>
+    }
+
+    /**
+     * Demande à l'utilisateur de saisir les informations nécessaires pour une soumission de candidature.
+     *
+     * @return Une liste contenant : &lt;br&gt;
+     *         - La date de début de la candidature. &lt;br&gt;
+     *         - La date de fin de la candidature.
+     */
+    public static List&lt;String&gt; askInfoForCandidacySubmission() {
+<span class="nc" id="L152">        List&lt;String&gt; infos = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        while (infos.size() &lt; 2) {</span>
+<span class="nc" id="L155">            printMessage(&quot;Veuillez entrer la date de début et de fin.&quot;);</span>
+
+            // Ask for &quot;Date de début&quot;
+            String startDate;
+            while (true) {
+<span class="nc" id="L160">                startDate = askSingleInput(&quot;Date de début : &quot;);</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">                if (!startDate.trim().isEmpty()) { // Ensure input is not empty</span>
+<span class="nc" id="L162">                    break;</span>
+                } else {
+<span class="nc" id="L164">                    printMessage(&quot;La date de début est obligatoire. Veuillez entrer une valeur.&quot;);</span>
+                }
+            }
+<span class="nc" id="L167">            infos.add(startDate);</span>
+
+            // Ask for &quot;Date de fin&quot;
+            String endDate;
+            while (true) {
+<span class="nc" id="L172">                endDate = askSingleInput(&quot;Date de fin : &quot;);</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">                if (!endDate.trim().isEmpty()) { // Ensure input is not empty</span>
+<span class="nc" id="L174">                    break;</span>
+                } else {
+<span class="nc" id="L176">                    printMessage(&quot;La date de fin est obligatoire. Veuillez entrer une valeur.&quot;);</span>
+                }
+            }
+<span class="nc" id="L179">            infos.add(endDate);</span>
+<span class="nc" id="L180">        }</span>
+
+<span class="nc" id="L182">        return infos;</span>
+    }
+
+    /**
+     * Demande à l'utilisateur de fournir les informations nécessaires pour soumettre un projet.
+     *
+     * @return Une liste contenant : &lt;br&gt;
+     *         - Le titre du projet. &lt;br&gt;
+     *         - La description du projet. &lt;br&gt;
+     *         - Le type de travaux. &lt;br&gt;
+     *         - La date de fin espérée. &lt;br&gt;
+     *         - Les quartiers affectés (trois premiers caractères des codes postaux, séparés par des virgules). &lt;br&gt;
+     *         - Les rues concernées (séparées par des virgules). &lt;br&gt;
+     *         - La date de début du projet.
+     */
+    public static List&lt;String&gt; askFormInfoForProjectSubmission() {
+<span class="nc" id="L198">        List&lt;String&gt; infos = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L199">        printMessage(&quot;Entrez les informations suivantes pour soumettre un projet :&quot;);</span>
+
+<span class="nc" id="L201">        infos.add(askSingleInput(&quot;Titre : &quot;));</span>
+<span class="nc" id="L202">        infos.add(askSingleInput(&quot;Description : &quot;));</span>
+<span class="nc" id="L203">        infos.add(askWorkType());</span>
+<span class="nc" id="L204">        infos.add(askSingleInput(&quot;Date de fin espérée (AAAA-MM-JJ) : &quot;));</span>
+<span class="nc" id="L205">        infos.add(askSingleInput(&quot;Entrez les trois premiers caractères du code postal (séparés par des virgules) : &quot;));</span>
+<span class="nc" id="L206">        infos.add(askSingleInput(&quot;Rues concernées (séparées par des virgules) : &quot;));</span>
+<span class="nc" id="L207">        infos.add(askSingleInput(&quot;Date de début (AAAA-MM-JJ) : &quot;));</span>
+
+<span class="nc" id="L209">        return infos;</span>
+    }
+
+    /**
+     * Collecte les préférences d'horaires hebdomadaires.
+     *
+     * @return Une chaîne de caractères représentant les horaires hebdomadaires.
+     */
+    public static String collectWeeklySchedules() {
+<span class="nc" id="L218">        String[] days = {&quot;lundi&quot;, &quot;mardi&quot;, &quot;mercredi&quot;, &quot;jeudi&quot;, &quot;vendredi&quot;, &quot;samedi&quot;, &quot;dimanche&quot;};</span>
+<span class="nc" id="L219">        String[] schedules = new String[7];</span>
+
+<span class="nc bnc" id="L221" title="All 2 branches missed.">        for (int i = 0; i &lt; days.length; i++) {</span>
+<span class="nc" id="L222">            String input = askSingleInput(&quot;Quelles plages horaires sont disponibles pour &quot; + days[i]</span>
+                    + &quot;? (format : XX:XX-XX:XX,...) : &quot;);
+<span class="nc bnc" id="L224" title="All 2 branches missed.">            if (input.isEmpty()) { // Permettre au user de ne rien entrer</span>
+<span class="nc" id="L225">                schedules[i] = &quot;N/A&quot;;</span>
+            } else {
+<span class="nc" id="L227">                schedules[i] = input;</span>
+            }
+        }
+<span class="nc" id="L230">        return String.join(&quot;,&quot;, schedules); // Retourner les horaires sous forme de chaîne unique</span>
+    }
+
+    /**
+     * Demande à l'utilisateur de fournir les informations nécessaires pour mettre à jour un projet.
+     *
+     * @return Une liste contenant : &lt;br&gt;
+     *         - La nouvelle description du projet. &lt;br&gt;
+     *         - La nouvelle date de fin espérée. &lt;br&gt;
+     *         - Le statut mis à jour du projet.
+     */
+    public static List&lt;String&gt; askFormInfoForProjectUpdate() {
+<span class="nc" id="L242">        List&lt;String&gt; inputs = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L243">        printMessage(&quot;Entrez les informations suivantes pour mettre à jour le projet :&quot;);</span>
+
+<span class="nc" id="L245">        inputs.add(askSingleInput(&quot;Description : &quot;));</span>
+<span class="nc" id="L246">        inputs.add(askSingleInput(&quot;Date de fin espérée (AAAA-MM-JJ) : &quot;));</span>
+
+<span class="nc" id="L248">        printMessage(&quot;Statut du projet :&quot;);</span>
+<span class="nc" id="L249">        Project.WorkStatus[] workStatuses = Project.WorkStatus.values();</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">        for (int i = 0; i &lt; workStatuses.length; i++) {</span>
+<span class="nc" id="L251">            printMessage(&quot;[&quot; + (i + 1) + &quot;] &quot; + workStatuses[i]);</span>
+        }
+
+        int option;
+        while (true) {
+            try {
+<span class="nc" id="L257">                String input = askSingleInput(&quot;Sélectionnez le statut du projet : &quot;);</span>
+<span class="nc" id="L258">                option = Integer.parseInt(input) - 1; // Adjust for 0-based index</span>
+<span class="nc bnc" id="L259" title="All 4 branches missed.">                if (option &gt;= 0 &amp;&amp; option &lt; workStatuses.length) {</span>
+<span class="nc" id="L260">                    inputs.add(workStatuses[option].toString());</span>
+<span class="nc" id="L261">                    break;</span>
+                } else {
+<span class="nc" id="L263">                    printMessage(&quot;Option invalide. Veuillez entrer un numéro valide.&quot;);</span>
+                }
+<span class="nc" id="L265">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L266">                printMessage(&quot;Entrée invalide. Veuillez entrer un numéro.&quot;);</span>
+<span class="nc" id="L267">            }</span>
+        }
+
+<span class="nc" id="L270">        return inputs;</span>
+    }
+
+    /**
+     * Affiche les résultats d'une liste sous forme numérotée.
+     *
+     * @param items Liste des éléments à afficher.
+     * @param &lt;T&gt;   Type des éléments de la liste.
+     */
+    public static &lt;T&gt; void showResults(List&lt;T&gt; items) {
+<span class="nc" id="L280">        IntStream.range(0, items.size())</span>
+<span class="nc" id="L281">                .mapToObj(i -&gt; (i + 1) + &quot;. &quot; + items.get(i))</span>
+<span class="nc" id="L282">                .toList()</span>
+<span class="nc" id="L283">                .forEach(MenuView::printMessage);</span>
+<span class="nc" id="L284">    }</span>
+
+    /**
+     * Affiche une liste d'options avec un en-tête.
+     *
+     * @param header  Le titre à afficher.
+     * @param options Les options sous forme de TreeMap.
+     */
+    public static void displayOptions(String header, TreeMap&lt;Integer, String&gt; options) {
+<span class="nc" id="L293">        printMessage(header);</span>
+<span class="nc" id="L294">        printMessage(&quot;****************************************&quot;);</span>
+<span class="nc" id="L295">        options.forEach((key, value) -&gt;</span>
+<span class="nc" id="L296">                printMessage(Ansi.ansi().fg(CYAN).a(&quot;[&quot; + key + &quot;] &quot;).reset() + value));</span>
+<span class="nc" id="L297">        printMessage(&quot;****************************************&quot;);</span>
+<span class="nc" id="L298">    }</span>
+
+    /**
+     * Affiche un message et retourne l'entrée utilisateur.
+     *
+     * @param prompt Le message à afficher.
+     * @return L'entrée utilisateur.
+     */
+    public static String askSingleInput(String prompt) {
+<span class="nc" id="L307">        printMessageInline(prompt);</span>
+<span class="nc" id="L308">        return scanner.nextLine();</span>
+    }
+
+    private static List&lt;String&gt; askInputs(String header, String... prompts) {
+<span class="nc" id="L312">        List&lt;String&gt; inputs = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L313">        printMessage(header);</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">        for (String prompt : prompts) {</span>
+<span class="nc" id="L315">            inputs.add(askSingleInput(prompt));</span>
+        }
+<span class="nc" id="L317">        return inputs;</span>
+    }
+
+    /**
+     * Demande à l'utilisateur une saisie textuelle longue après l'affichage d'un en-tête et de plusieurs invites.
+     *
+     * @param header  L'en-tête à afficher avant les invites.
+     * @param prompts Les différentes invites à afficher avant de demander l'entrée utilisateur.
+     * @return Une chaîne de caractères contenant la saisie utilisateur.
+     */
+    public static String askLongInput(String header, String... prompts) {
+<span class="nc" id="L328">        printMessage(header);</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        for (String prompt : prompts) {</span>
+<span class="nc" id="L330">            printMessage(prompt);</span>
+        }
+<span class="nc" id="L332">        return scanner.nextLine();</span>
+    }
+
+    private static String askWorkType() {
+<span class="nc" id="L336">        TreeMap&lt;Integer, Project.TypeOfWork&gt; typeOfWorkMap = new TreeMap&lt;&gt;(Map.of(</span>
+<span class="nc" id="L337">                1, Project.TypeOfWork.ROAD,</span>
+<span class="nc" id="L338">                2, Project.TypeOfWork.GAS_ELECTRICITY,</span>
+<span class="nc" id="L339">                3, Project.TypeOfWork.CONSTRUCTION_RENOVATION,</span>
+<span class="nc" id="L340">                4, Project.TypeOfWork.LANDSCAPE,</span>
+<span class="nc" id="L341">                5, Project.TypeOfWork.PUBLIC_TRANSPORT,</span>
+<span class="nc" id="L342">                6, Project.TypeOfWork.SIGNAGE_LIGHTING,</span>
+<span class="nc" id="L343">                7, Project.TypeOfWork.UNDERGROUND,</span>
+<span class="nc" id="L344">                8, Project.TypeOfWork.RESIDENTIAL,</span>
+<span class="nc" id="L345">                9, Project.TypeOfWork.URBAN_MAINTENANCE,</span>
+<span class="nc" id="L346">                10, Project.TypeOfWork.TELECOMMUNICATION_NETWORKS</span>
+        ));
+
+<span class="nc" id="L349">        displayOptions(&quot;Type de travaux :&quot;, new TreeMap&lt;&gt;(Map.of(</span>
+<span class="nc" id="L350">                1, &quot;Travaux routiers&quot;, 2, &quot;Travaux de gaz ou électricité&quot;,</span>
+<span class="nc" id="L351">                3, &quot;Construction ou rénovation&quot;, 4, &quot;Entretien paysager&quot;,</span>
+<span class="nc" id="L352">                5, &quot;Travaux liés aux transports en commun&quot;, 6, &quot;Travaux de signalisation et éclairage&quot;,</span>
+<span class="nc" id="L353">                7, &quot;Travaux souterrains&quot;, 8, &quot;Travaux résidentiels&quot;,</span>
+<span class="nc" id="L354">                9, &quot;Entretien urbain&quot;, 10, &quot;Entretien des réseaux de télécommunication&quot;</span>
+        )));
+
+<span class="nc" id="L357">        int option = scanner.nextInt();</span>
+<span class="nc" id="L358">        scanner.nextLine(); // Clear buffer</span>
+
+<span class="nc" id="L360">        Project.TypeOfWork selectedWork = typeOfWorkMap.get(option);</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">        if (selectedWork != null) {</span>
+<span class="nc" id="L362">            return selectedWork.toString();</span>
+        } else {
+<span class="nc" id="L364">            printMessage(&quot;Option invalide. Veuillez réessayer.&quot;);</span>
+<span class="nc" id="L365">            return askWorkType();</span>
+        }
+    }
+
+    private static void printMessageInline(String message) {
+<span class="nc" id="L370">        System.out.print(message);</span>
+<span class="nc" id="L371">    }</span>
+
+    /**
+     * Affiche un message avec un retour à la ligne.
+     *
+     * @param message Le message à afficher.
+     */
+    public static void printMessage(String message) {
+<span class="nc" id="L379">        System.out.println(message);</span>
+<span class="nc" id="L380">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
