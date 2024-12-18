@@ -150,23 +150,6 @@ public class DatabaseConnectionManager {
             }
         }
 
-        if (isTableInitialized(conn, "PreferencesHoraire")) {
-            //System.out.println("La table Préférences horaire existe déjà."); // helper
-        } else {
-            //System.out.println("Création de la table Préférences horaire..."); // helper
-            String preferencesTableSQL =
-                    "CREATE TABLE IF NOT EXISTS PreferencesHoraire (" +
-                            "rue TEXT NOT NULL," +
-                            "quartier TEXT NOT NULL," +
-                            "heures_en_semaine TEXT NOT NULL," +
-                            "heures_en_fin_de_semaine TEXT NOT NULL" +
-                            ");";
-            try (Statement stmt = conn.createStatement()) {
-                stmt.execute(preferencesTableSQL);
-            }
-            //System.out.println("La table Préférences horaire a été créée."); // helper
-        }
-
         if (isTableInitialized(conn, "WorkRequests")) {
             // System.out.println("La table WorkRequests existe déjà."); // helper
         } else {

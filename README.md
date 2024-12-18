@@ -18,14 +18,19 @@ MaVille est une application en ligne de commande conçue pour améliorer la comm
 ## Données utilisateurs
 
 ### Résidents
-1. Adresse courriel : john.doe@gmail.com | Mot de passe : johndoe123
-2. Adresse courriel : jane.smith@outlook.com | Mot de passe : janesmith95
-3. Adresse courriel : alex.dupont@gmail.com | Mot de passe : alexdu88
+1. Adresse courriel : camille.dupont@gmail.com | Mot de passe : Dupont@1985
+2. Adresse courriel : alex.tremblay@yahoo.ca | Mot de passe : Tremblay_92
+3. Adresse courriel : sophie.lavoie@gmail.com | Mot de passe : !Sophie_Lavoie90
+4. Adresse courriel : marcandre.b@outlook.com | Mot de passe : Bouchard.Marc4$
+5. Adresse courriel : emilie.gagnon@proton.me | Mot de passe : Gagnon@Mtl
+-> camille.dupont@gmail.com et alex.tremblay@yahoo.ca habitent tous les deux au Plateau Mont-Royal
 
 ### Intervenants
-1. Adresse courriel : paul.martin@company.com | Mot de passe : paulmartin80
-2. Adresse courriel : sophie.leclerc@service.com | Mot de passe : sophiel92
-3. Adresse courriel : michel.durand@tech.com | Mot de passe : michel75
+1. Adresse courriel : aisha.ahmed@construction.com | Mot de passe : ConstructeurAhmed@Mtl
+2. Adresse courriel : carlos@reparateur.com | Mot de passe : Rivera_C
+3. Adresse courriel : mathieu.robert@quickfix.com | Mot de passe : robertQUICK!
+4. Adresse courriel : mei.lin@linindustries.com | Mot de passe : MEIinc2024
+5. Adresse courriel : juju.martin@mtl.ca | Mot de passe : julieM_90
 
 ## Exécuter le fichier JAR
 Rendez-vous dans le dossier `application` à partir de votre terminal. Exécuter le fichier jar avec la commande :
