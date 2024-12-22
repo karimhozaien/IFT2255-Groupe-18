@@ -2031,17 +2031,23 @@ MVC peuvent être trouvés dans la section <a href="#design-choice">Choix du des
                 <img class="sequence-diagram" src="./assets/diagrammes/DiagrammeS3.svg" alt="Diagramme de sequence">
                 <h3 class="subsection-title" id="design-choice">Choix du design</h3>
                 <p>
-                    Nous avons choisi de structurer l’application selon l’architecture MVC, en 
-                    raison des avantages qu’elle offre en termes de modularité et de flexibilité. L’une des 
+                    Nous avons choisi de structurer l’application selon l’architecture MVC en 
+                    raison des avantages qu’elle offre en termes de modularité et de flexibilité. Ainsi, grâce à 
+                    la modularité de notre architecture, chaque composant peut être développé, testé et remplacé 
+                    indépendamment, ce qui confère une grande flexibilité pour intégrer des évolutions futures, 
+                    comme l'ajout de nouvelles fonctionnalités ou le changement de framework de présentation. L’une des 
                     principales considérations a été de réduire le couplage entre les différentes parties de 
-                    l’application tout en maintenant une forte cohésion au sein de chaque composant. En 
+                    l’application tout en maintenant une forte cohésion au sein de chaque composant. Par exemple, 
+                    nous avons des contrôleurs différents selon le type d’utilisateur, et notre vue et modèle ne 
+                    communiquent pas directement entre eux, mais passent par le contrôleur. En 
                     séparant les responsabilités — le modèle gérant la logique métier et les données, la vue 
                     s’occupant de l’affichage, et le contrôleur orchestrant les interactions — nous avons pu améliorer 
-                    l’encapsulation. Cela garantit que chaque classe a un rôle bien défini et limite son impact 
-                    sur le reste du système. À noter que ce choix a également été fait parce qu’il est souvent 
-                    utilisé dans les projets web, où la vue est représentée par l’interface utilisateur front-end. 
-                    Étant donné que nous nous orientons vers une telle interface pour le devoir 3, MVC était un 
-                    excellent point de départ.
+                    l’encapsulation. Ainsi, les données du modèle sont accessibles uniquement via des getters et setters, 
+                    empêchant toute manipulation directe par d’autres composants. Cela favorise donc un design où les 
+                    modifications locales n’affectent pas le reste du système. Nous avons choisi JSON comme format d’échange 
+                    pour les données car cela permet à notre application de se connecter à d’autres services web, 
+                    comme une API, et ainsi s’assurer de l’interopérabilité.
+                    
                 </p>
             </section>
 
