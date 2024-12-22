@@ -32,6 +32,11 @@ MaVille est une application en ligne de commande conçue pour améliorer la comm
 4. Adresse courriel : mei.lin@linindustries.com | Mot de passe : MEIinc2024
 5. Adresse courriel : juju.martin@mtl.ca | Mot de passe : julieM_90
 
+## Description des données incluses dans l'application
+Notre application inclut 5 résidents, dont 2 habitant dans le même quartier, et 5 intervenants de type varié.
+De plus, dans la base de données, vous pouvez trouver 5 requêtes de travail provenant des résidents, et 2 d'entre elles ont une candidature. 5 projets sont aussi disponible, dont 4 prévus dans les 3 prochains mois. 
+
+
 ## Exécuter le fichier JAR
 Rendez-vous dans le dossier `application` à partir de votre terminal. Exécuter le fichier jar avec la commande :
 ```shell
