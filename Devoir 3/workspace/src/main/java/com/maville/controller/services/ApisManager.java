@@ -32,8 +32,8 @@ public class ApisManager {
      */
     public List<List<String>> parallelComputingForRequests(Project.TypeOfWork criteriaField) throws Exception {
         int threadPoolSize = Runtime.getRuntime().availableProcessors();
-        ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
 
+        ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
         List<String> recordsList = getListOfRecordsRoadObstructions();
         CompletableFuture<?>[] futures = new CompletableFuture[recordsList.size()];
 

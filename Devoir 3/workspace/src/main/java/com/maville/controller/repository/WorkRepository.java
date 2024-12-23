@@ -152,7 +152,7 @@ public class WorkRepository {
                         filteredItems.add(type.cast(project));
                     }
                 } else if (criteria.equals("travail")) {
-                    if (project.getTitle().toLowerCase().contains(criteriaField.toLowerCase())) {
+                    if (project.getTypeOfWork().equals(TypeOfWork.valueOf(criteriaField))) {
                         filteredItems.add(type.cast(project));
                     }
                 }
@@ -167,10 +167,10 @@ public class WorkRepository {
             } else if (criteria.equals("travail")) {
                 try {
                     ApisManager apisManager = new ApisManager();
-                    List<List<String>> filteredRoadObstructions = apisManager.parallelComputingForRequests(Project.getTypeOfWork(criteriaField));
+                    List<List<String>> filteredRoadObstructions = apisManager.parallelComputingForRequests(TypeOfWork.valueOf(criteriaField));
                     for (List<String> filteredRoadObstruction : filteredRoadObstructions) {
                         for (String s : filteredRoadObstruction) {
-                            filteredItems.add(type.cast(s.split("\\. ")[1]));
+                            filteredItems.add(type.cast(s));
                         }
                     }
                 } catch (Exception e) {

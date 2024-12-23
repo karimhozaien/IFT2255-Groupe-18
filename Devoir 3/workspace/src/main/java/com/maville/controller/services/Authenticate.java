@@ -81,24 +81,26 @@ public class Authenticate {
                     .id()
                     .build();
         } catch (IllegalArgumentException e) {
-            System.out.println("Erreur durant l'enregistrement : " + e.getMessage());
+            MenuView.printMessage("Erreur durant l'enregistrement : " + e.getMessage());
             return null;
         }
     }
 
     private User signUpIntervenant() {
-        try {
-            return new Intervenant.IntervenantBuilder()
-                    .name(userInfo.get(0))
-                    .email(userInfo.get(1))
-                    .password(userInfo.get(2))
-                    .identifier(userInfo.get(3))
-                    .companyType(AuthenticationMenu.askForCompanyType())
-                    .id()
-                    .build();
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erreur durant l'enregistrement : " + e.getMessage());
-            return null;
+        while (true) {
+            try {
+                return new Intervenant.IntervenantBuilder()
+                        .name(userInfo.get(0))
+                        .email(userInfo.get(1))
+                        .password(userInfo.get(2))
+                        .identifier(userInfo.get(3))
+                        .companyType(AuthenticationMenu.askForCompanyType())
+                        .id()
+                        .build();
+            } catch (IllegalArgumentException e) {
+                MenuView.printMessage("Erreur durant l'enregistrement : " + e.getMessage());
+                return null;
+            }
         }
     }
 

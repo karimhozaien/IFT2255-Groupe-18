@@ -69,7 +69,7 @@ public class MenuView {
      */
     public static void residentMenuMessages() {
         displayOptions(
-                "Choisissez l'une des options :",
+                "\nChoisissez l'une des options :",
                 new TreeMap<>(Map.of(
                         1, "Consulter les travaux",
                         2, "Consulter les entraves routières",
@@ -312,7 +312,11 @@ public class MenuView {
         List<String> inputs = new ArrayList<>();
         printMessage(header);
         for (String prompt : prompts) {
-            inputs.add(askSingleInput(prompt));
+            if (prompt.equals("Type de travaux : ")) {
+                inputs.add(askWorkType());
+            } else {
+                inputs.add(askSingleInput(prompt));
+            }
         }
         return inputs;
     }
@@ -332,7 +336,7 @@ public class MenuView {
         return scanner.nextLine();
     }
 
-    private static String askWorkType() {
+    public static String askWorkType() {
         TreeMap<Integer, Project.TypeOfWork> typeOfWorkMap = new TreeMap<>(Map.of(
                 1, Project.TypeOfWork.ROAD,
                 2, Project.TypeOfWork.GAS_ELECTRICITY,
