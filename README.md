@@ -51,83 +51,45 @@ version de notre application, s'il vous plait voir le dernier release.
 
 Arborescence des dossiers pour notre plus récente remise: 
 
-📦Devoir 3
- ┣ 📂feedback-dm2
- ┣ 📂project-files
- ┃ ┣ 📂assets
- ┃ ┃ ┣ 📂architecture
- ┃ ┃ ┣ 📂diagrammes
- ┃ ┣ 📂diagrammes
- ┃ ┃ ┣ 📂d_activites
- ┃ ┃ ┣ 📂de_cas_d_utilisation
- ┃ ┃ ┣ 📂de_classes
- ┃ ┃ ┣ 📂de_sequences
- ┃ ┣ 📂docs
- ┃ ┃ ┣ 📂com
- ┃ ┃ ┃ ┗ 📂maville
- ┃ ┃ ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┃ ┃ ┣ 📂account
- ┃ ┃ ┃ ┃ ┃ ┣ 📂activity
- ┃ ┃ ┃ ┃ ┃ ┣ 📂menu
- ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┃ ┃ ┗ 📂services
- ┃ ┃ ┃ ┃ ┣ 📂model
- ┃ ┃ ┃ ┃ ┣ 📂view
- ┃ ┃ ┣ 📂index-files
- ┃ ┃ ┣ 📂legal
- ┃ ┃ ┣ 📂resource-files
- ┃ ┃ ┃ ┣ 📂fonts
- ┃ ┃ ┣ 📂script-files
- ┃ ┣ 📂tests
- ┃ ┃ ┣ 📂com.maville
- ┃ ┃ ┣ 📂com.maville.controller.account
- ┃ ┃ ┣ 📂com.maville.controller.activity
- ┃ ┃ ┣ 📂com.maville.controller.menu
- ┃ ┃ ┣ 📂com.maville.controller.repository
- ┃ ┃ ┣ 📂com.maville.controller.services
- ┃ ┃ ┣ 📂com.maville.model
- ┃ ┃ ┣ 📂com.maville.view
- ┃ ┃ ┣ 📂jacoco-resources
- ┣ 📂workspace
- ┃ ┣ 📂.idea
- ┃ ┃ ┣ 📂inspectionProfiles
- ┃ ┣ 📂data
- ┃ ┣ 📂src
- ┃ ┃ ┣ 📂main
- ┃ ┃ ┃ ┗ 📂java
- ┃ ┃ ┃ ┃ ┗ 📂com
- ┃ ┃ ┃ ┃ ┃ ┗ 📂maville
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂account
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂activity
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂menu
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂services
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂model
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂view
- ┃ ┃ ┗ 📂test
- ┃ ┃ ┃ ┗ 📂java
- ┃ ┃ ┃ ┃ ┗ 📂com
- ┃ ┃ ┃ ┃ ┃ ┗ 📂maville
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂activity
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂services
- ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂model
- ┃ ┣ 📂target
- ┃ ┃ ┣ 📂classes
- ┃ ┃ ┃ ┣ 📂com
- ┃ ┃ ┃ ┃ ┣ 📂maville
- ┃ ┃ ┃ ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂account
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂activity
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂menu
- ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂services
- ┃ ┃ ┃ ┃ ┃ ┣ 📂model
- ┃ ┃ ┃ ┃ ┃ ┣ 📂view
- ┃ ┃ ┣ 📂generated-sources
- ┃ ┃ ┃ ┣ 📂annotations
+Devoir 3
+├── feedback-dm2
+├── project-files
+│   ├── assets
+│   │   ├── architecture
+│   │   ├── diagrammes
+│   │   │   ├── d_activites
+│   │   │   ├── de_cas_d_utilisation
+│   │   │   └── de_classes
+│   └── docs
+├── com
+│   └── maville
+│       ├── controller
+│       │   ├── account
+│       │   ├── repository
+│       │   ├── activity
+│       │   ├── menu
+│       │   └── services
+│       ├── model
+│       └── view
+├── jacoco-resources
+├── src
+│   └── main
+│       └── java
+│           └── com
+│               └── maville
+│                   ├── controller
+│                   │   ├── account
+│                   │   ├── repository
+│                   │   ├── activity
+│                   │   ├── menu
+│                   │   └── services
+│                   ├── model
+│                   └── view
+├── test
+└── target
+    ├── classes
+    ├── generated-sources
+    └── annotations
 
 
 ## Exécuter l'application (avec JAR)
@@ -144,7 +106,7 @@ Rendez-vous dans le dossier `./Devoir\ 3/workspace/` à partir de votre terminal
 
 ## Installer l'application complète
 
-Pour installer l'application complète, il vous faudra un JDK (Nous avons utilisé 23.0.1) et Maven (3.9.9). Il faudra ensuite cloner le repositoire et télécharger les dépendances Maven disponibles dans pom.xml. Vous pourriez ensuite compiler et exécuter le projet et les tests.
+Pour installer l'application complète, il vous faudra un JDK (Nous avons utilisé 23.0.1) et Maven (3.9.9). Il faudra ensuite cloner le répertoire et télécharger les dépendances Maven disponibles dans pom.xml. Vous pourriez ensuite compiler et exécuter le projet et les tests.
 
 ## Tester l'application
 Les 18 tests unitaires se retrouvent dans le chemin workspace/src/test/java/com/maville. Ils sont accessibles via le répertoire GitHub dans le dossier Devoir 3. Pour plus de détails sur comment les exécuter, voir la fin du rapport.
