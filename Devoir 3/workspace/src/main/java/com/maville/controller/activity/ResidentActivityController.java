@@ -294,6 +294,7 @@ public class ResidentActivityController {
                     break;
                 case 1:
                     addWorkRequest();
+                    MenuView.printMessage("L'enregistrement de la requête a été faite!");
                     break;
                 case 2:
                     List<WorkRequestForm> workRequests = consultUserWorkRequests();

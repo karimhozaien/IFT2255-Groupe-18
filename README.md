@@ -8,12 +8,17 @@ MaVille est une application en ligne de commande conçue pour améliorer la comm
 ### Pour les résidents
 - **Inscription** : Créer un compte avec nom, courriel, mot de passe et adresse résidentielle.
 - **Consulter les travaux** : Visualiser les travaux en cours ou prévus, filtrés par quartier, rue ou type de travaux.
+- **Consulter les entraves** : Visualiser les entraves en cours, filtrées par rue ou par type de travaux.
 - **Rechercher des travaux** : Rechercher des projets par titre, type ou localisation.
 - **Soumettre une requête de travail** : Proposer des travaux à réaliser dans son quartier et suivre leur progression.
-
+- **Ajouter des préférences horaires** : Ajouter ses préférences horaires pour les heures de travaux dans son quartier.
+- **Consulter ses notifications** : Consulter toutes les notifications reçues à propos de l'ajout de projets et de la modification de projets.
 ### Pour les intervenants
 - **Inscription** : Créer un compte avec identifiant municipal.
-- **Consulter les requêtes** : Accéder aux demandes de travaux soumises par les résidents.
+- **Consulter les requêtes de travail** : Accéder aux demandes de travaux soumises par les résidents.
+- **Soumettre un projet** : Soumettre une idée de projet à la ville de Montréal.
+- **Mettre à jour un projet** : Mettre à jour un projet à venir.
+- **Soumettre sa candidature** : Soumettre sa candidature pour une requête de travail. Possibilité de suivre le processus.
 
 ## Données utilisateurs
 
@@ -42,7 +47,7 @@ Rendez-vous dans le dossier `./Devoir\ 3/project-files/application/` à partir d
 java -jar MaVille.jar
 ```
 
-## Exécuter l'application (avec script Bash & Docker)
+## Exécuter l'application (avec script Bash & Docker) à partir du répertoire GitHub
 Rendez-vous dans le dossier `./Devoir\ 3/workspace/` à partir de votre terminal. Exécuter le script avec la commande :
 ```shell
 ./run.sh --build
