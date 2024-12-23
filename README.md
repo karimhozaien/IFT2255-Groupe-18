@@ -41,6 +41,95 @@ MaVille est une application en ligne de commande conçue pour améliorer la comm
 Notre application inclut 5 résidents, dont 2 habitant dans le même quartier, et 5 intervenants de type varié.
 De plus, dans la base de données, vous pouvez trouver 5 requêtes de travail provenant des résidents, et 2 d'entre elles ont une candidature. 5 projets sont aussi disponible, dont 4 prévus dans les 3 prochains mois. 
 
+## Organisation des fichiers du répertoire
+
+Chaque dossier Devoir représente les différentes remises qui on été nécessaires pour ce projet.
+Dans chacun des dossiers, vous allez trouver un dossier workplace avec le code source du projet
+et la base de données ainsi qu'un dossier project files avec un rapport et les documents nécessaires 
+à ce rapport ainsi que les informations consernant javadoc et jacoco. Pour avoir accès à la dernière 
+version de notre application, s'il vous plait voir le dernier release.
+
+Arborescence des dossiers pour notre plus récente remise: 
+
+📦Devoir 3
+ ┣ 📂feedback-dm2
+ ┣ 📂project-files
+ ┃ ┣ 📂assets
+ ┃ ┃ ┣ 📂architecture
+ ┃ ┃ ┣ 📂diagrammes
+ ┃ ┣ 📂diagrammes
+ ┃ ┃ ┣ 📂d_activites
+ ┃ ┃ ┣ 📂de_cas_d_utilisation
+ ┃ ┃ ┣ 📂de_classes
+ ┃ ┃ ┣ 📂de_sequences
+ ┃ ┣ 📂docs
+ ┃ ┃ ┣ 📂com
+ ┃ ┃ ┃ ┗ 📂maville
+ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂account
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂activity
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂menu
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂services
+ ┃ ┃ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┃ ┣ 📂view
+ ┃ ┃ ┣ 📂index-files
+ ┃ ┃ ┣ 📂legal
+ ┃ ┃ ┣ 📂resource-files
+ ┃ ┃ ┃ ┣ 📂fonts
+ ┃ ┃ ┣ 📂script-files
+ ┃ ┣ 📂tests
+ ┃ ┃ ┣ 📂com.maville
+ ┃ ┃ ┣ 📂com.maville.controller.account
+ ┃ ┃ ┣ 📂com.maville.controller.activity
+ ┃ ┃ ┣ 📂com.maville.controller.menu
+ ┃ ┃ ┣ 📂com.maville.controller.repository
+ ┃ ┃ ┣ 📂com.maville.controller.services
+ ┃ ┃ ┣ 📂com.maville.model
+ ┃ ┃ ┣ 📂com.maville.view
+ ┃ ┃ ┣ 📂jacoco-resources
+ ┣ 📂workspace
+ ┃ ┣ 📂.idea
+ ┃ ┃ ┣ 📂inspectionProfiles
+ ┃ ┣ 📂data
+ ┃ ┣ 📂src
+ ┃ ┃ ┣ 📂main
+ ┃ ┃ ┃ ┗ 📂java
+ ┃ ┃ ┃ ┃ ┗ 📂com
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂maville
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂account
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂activity
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂menu
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂services
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂view
+ ┃ ┃ ┗ 📂test
+ ┃ ┃ ┃ ┗ 📂java
+ ┃ ┃ ┃ ┃ ┗ 📂com
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂maville
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂activity
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂services
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂model
+ ┃ ┣ 📂target
+ ┃ ┃ ┣ 📂classes
+ ┃ ┃ ┃ ┣ 📂com
+ ┃ ┃ ┃ ┃ ┣ 📂maville
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂account
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂activity
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂menu
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂services
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂view
+ ┃ ┃ ┣ 📂generated-sources
+ ┃ ┃ ┃ ┣ 📂annotations
+
+
 ## Exécuter l'application (avec JAR)
 Rendez-vous dans le dossier `./Devoir\ 3/project-files/application/` à partir de votre terminal. Exécuter le fichier jar avec la commande :
 ```shell
