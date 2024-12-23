@@ -36,14 +36,20 @@ MaVille est une application en ligne de commande conçue pour améliorer la comm
 Notre application inclut 5 résidents, dont 2 habitant dans le même quartier, et 5 intervenants de type varié.
 De plus, dans la base de données, vous pouvez trouver 5 requêtes de travail provenant des résidents, et 2 d'entre elles ont une candidature. 5 projets sont aussi disponible, dont 4 prévus dans les 3 prochains mois. 
 
-
-## Exécuter le fichier JAR
-Rendez-vous dans le dossier `application` à partir de votre terminal. Exécuter le fichier jar avec la commande :
+## Exécuter l'application (avec JAR)
+Rendez-vous dans le dossier `./Devoir\ 3/project-files/application/` à partir de votre terminal. Exécuter le fichier jar avec la commande :
 ```shell
-java -jar prototype.jar
+java -jar MaVille.jar
 ```
+
+## Exécuter l'application (avec script Bash & Docker)
+Rendez-vous dans le dossier `./Devoir\ 3/workspace/` à partir de votre terminal. Exécuter le script avec la commande :
+```shell
+./run.sh --build
+```
+
 ## Tester l'application
-Les 9 tests unitaires se retrouvent dans le chemin workspace/src/test/java/com/maville. Ils sont accessibles via le répertoire GitHub dans le dossier Devoir 2. Pour plus de détails sur comment les exécuter, voir la fin du rapport.
+Les 18 tests unitaires se retrouvent dans le chemin workspace/src/test/java/com/maville. Ils sont accessibles via le répertoire GitHub dans le dossier Devoir 3. Pour plus de détails sur comment les exécuter, voir la fin du rapport.
 
 ### Soumettre une requête
 Quand un résident désire soumettre une requête de travail, il faut faire attention d'entrer un type de travaux valide, autrement ça plante (la gestion d'erreur n'a pas été fait partout). Également, il faut que le type de travaux soit entré en anglais (encore une fois, ceci est en attendant l'interfaçe front-end qui permettra la gestion des choix avec des menus déroulants). Un exemple serait `urban_maintenance` pour le type aménagament urbain ou encore `underground` pour tout ce qui est soutterain. Pour que cela soit plus facile pour vous, je conseil de visiter le fichier `Project.java` qui contient le enum `TypeOfWork`. 
