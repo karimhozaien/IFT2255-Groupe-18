@@ -51,6 +51,7 @@ version de notre application, s'il vous plait voir le dernier release.
 
 Arborescence des dossiers pour notre plus récente remise: 
 
+```plaintext
 Devoir 3
 ├── feedback-dm2
 ├── project-files
@@ -64,7 +65,6 @@ Devoir 3
 ├── com
 │   └── maville
 │       ├── controller
-│       │   ├── account
 │       │   ├── repository
 │       │   ├── activity
 │       │   ├── menu
@@ -90,7 +90,7 @@ Devoir 3
     ├── classes
     ├── generated-sources
     └── annotations
-
+```
 
 ## Exécuter l'application (avec JAR)
 Rendez-vous dans le dossier `./Devoir\ 3/project-files/application/` à partir de votre terminal. Exécuter le fichier jar avec la commande :

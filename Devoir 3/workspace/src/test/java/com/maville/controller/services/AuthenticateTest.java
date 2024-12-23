@@ -1,9 +1,8 @@
 package com.maville.controller.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -98,7 +97,7 @@ public class AuthenticateTest {
             boolean isValid = duplicateAuth.signUp("resident");
 
             // Vérifie que l'inscription échoue à cause de l'email en double
-            assertFalse("L'inscription devrait échouer pour un courriel déjà utilisé", isValid);
+            assertFalse(isValid, "L'inscription devrait échouer pour un courriel déjà utilisé");
         } finally {
             // Nettoie la base de données après le test
             deleteTestUser("john.doe@gmail.com");

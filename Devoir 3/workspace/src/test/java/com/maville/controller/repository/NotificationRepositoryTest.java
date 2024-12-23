@@ -2,8 +2,6 @@ package com.maville.controller.repository;
 
 import com.maville.controller.services.DatabaseConnectionManager;
 import com.maville.model.Notification;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,14 +9,16 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NotificationRepositoryTest {
 
     // Référence à l'instance unique de NotificationRepository utilisée pour les tests
     NotificationRepository notificationRepo = NotificationRepository.getInstance();
 
-    @Before
+    @BeforeEach
     public void cleanUp() {
         // Nettoie les notifications de test de la base de données avant chaque test
         deleteTestNotifications();
@@ -43,8 +43,8 @@ public class NotificationRepositoryTest {
         List<Notification> notifications = notificationRepo.fetchNotificationsByResidentId(residentId);
         assertNotNull(notifications);
         assertEquals(1, notifications.size());
-        assertTrue("La notification devrait être marquée comme vue",
-                notifications.getFirst().getSeenResidents().contains(residentId));
+        assertTrue(notifications.getFirst().getSeenResidents().contains(residentId),
+                "La notification devrait être marquée comme vue");
     }
 
     @Test
@@ -75,8 +75,8 @@ public class NotificationRepositoryTest {
         assertEquals(2, notifications.size());
 
         for (Notification notif : notifications) {
-            assertTrue("Toutes les notifications devraient être marquées comme vues",
-                    notif.getSeenResidents().contains(residentId));
+            assertTrue(notif.getSeenResidents().contains(residentId),
+                    "Toutes les notifications devraient être marquées comme vues");
         }
     }
 
@@ -107,10 +107,10 @@ public class NotificationRepositoryTest {
         assertEquals(1, notificationsResident1.size());
         assertEquals(1, notificationsResident2.size());
 
-        assertTrue("La notification devrait être marquée comme vue par le résident 1",
-                notificationsResident1.getFirst().getSeenResidents().contains(resident1));
-        assertTrue("La notification devrait être marquée comme vue par le résident 2",
-                notificationsResident2.getFirst().getSeenResidents().contains(resident2));
+        assertTrue(notificationsResident1.getFirst().getSeenResidents().contains(resident1),
+                "La notification devrait être marquée comme vue par le résident 1");
+        assertTrue(notificationsResident2.getFirst().getSeenResidents().contains(resident2),
+                "La notification devrait être marquée comme vue par le résident 2");
     }
 
     private void deleteTestNotifications() {

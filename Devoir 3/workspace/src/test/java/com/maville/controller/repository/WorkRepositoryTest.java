@@ -2,7 +2,7 @@ package com.maville.controller.repository;
 
 import com.maville.controller.services.DatabaseConnectionManager;
 import com.maville.model.Project;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WorkRepositoryTest {
 
@@ -55,8 +55,8 @@ public class WorkRepositoryTest {
 
         // Vérifie que chaque projet récupéré contient "construction" dans son titre
         for (Project project : filteredProjects) {
-            assertTrue("Le titre devrait contenir le terme 'construction'",
-                    project.getTitle().toLowerCase().contains("construction"));
+            assertTrue(project.getTitle().toLowerCase().contains("construction"),
+                    "Le titre devrait contenir le terme 'construction'");
         }
     }
 
@@ -85,7 +85,7 @@ public class WorkRepositoryTest {
 
         // Vérifie que la liste des projets n'est pas nulle et qu'elle n'est pas vide
         assertNotNull(plannedProjects);
-        assertFalse("La liste des projets planifiés ne devrait pas être vide", plannedProjects.isEmpty());
+        assertFalse(plannedProjects.isEmpty(), "La liste des projets planifiés ne devrait pas être vide");
 
         // Vérifie que le dernier projet ajouté est correctement récupéré
         Project fetchedProject = plannedProjects.get(plannedProjects.size() - 1);

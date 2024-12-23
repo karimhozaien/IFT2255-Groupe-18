@@ -8,8 +8,6 @@ import com.maville.model.Notification;
 import com.maville.model.SchedulePreferences;
 import com.maville.model.WorkRequestForm;
 import com.maville.model.Project;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,7 +15,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class ResidentActivityControllerTest {
     // Dépôt pour gérer les travaux
@@ -27,7 +28,7 @@ public class ResidentActivityControllerTest {
     // Dépôt pour gérer les préférences de planification
     private SchedulePreferencesRepository preferencesRepo;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Initialisation des dépôts avant chaque test
         workRepo = new WorkRepository();

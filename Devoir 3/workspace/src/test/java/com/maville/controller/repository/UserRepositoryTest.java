@@ -1,7 +1,7 @@
 package com.maville.controller.repository;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +11,8 @@ public class UserRepositoryTest {
     public void testFetchUser() {
         // Prépare une liste contenant les informations utilisateur valides
         List<String> userInfo = new ArrayList<>();
-        userInfo.add("john.doe@gmail.com"); // Adresse courriel
-        userInfo.add("johndoe123"); // Mot de passe correct
+        userInfo.add("camille.dupont@gmail.com"); // Adresse courriel
+        userInfo.add("Dupont@1985"); // Mot de passe correct
 
         // Récupère les informations utilisateur via UserRepository
         UserRepository userRepo = UserRepository.getInstance();
@@ -20,7 +20,7 @@ public class UserRepositoryTest {
         String userIdFetched = importantInfo[0]; // Récupère l'identifiant utilisateur
 
         // Vérifie que l'identifiant correspond à celui attendu
-        assertEquals("755bf798-da16-4116-95e3-9fae9a220037", userIdFetched);
+        assertEquals("46c1b676-1094-4def-8a4d-8fd73437550f", userIdFetched);
     }
 
     @Test
@@ -35,6 +35,6 @@ public class UserRepositoryTest {
         String[] importantInfo = userRepo.fetchUser(userInfo);
 
         // Vérifie que la méthode retourne null pour un mot de passe incorrect
-        assertNull("Devrais être vide", importantInfo);
+        assertNull(importantInfo, "Devrais être vide");
     }
 }

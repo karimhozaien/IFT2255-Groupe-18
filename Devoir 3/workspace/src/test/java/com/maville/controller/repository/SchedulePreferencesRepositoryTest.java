@@ -1,10 +1,9 @@
 package com.maville.controller.repository;
 
 import com.maville.model.SchedulePreferences;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SchedulePreferencesRepositoryTest {
 
@@ -23,7 +22,7 @@ public class SchedulePreferencesRepositoryTest {
         boolean result = scheduleRepo.checkPreferences(projectSchedule, neighbourhoods);
 
         // L'horaire devrait être compatible
-        assertTrue("Les préférences devraient être compatibles", result);
+        assertTrue(result, "Les préférences devraient être compatibles");
     }
 
     @Test
@@ -41,8 +40,8 @@ public class SchedulePreferencesRepositoryTest {
         boolean result = scheduleRepo.checkPreferences(projectSchedule, neighbourhoods);
 
         // Les préférences ne devraient pas être compatibles
-        assertFalse("Les préférences ne devraient pas être compatibles", result);
-        assertFalse("Il devrait y avoir au moins un conflit", scheduleRepo.getScheduleConflicts().isEmpty());
+        assertFalse(result, "Les préférences ne devraient pas être compatibles");
+        assertFalse(scheduleRepo.getScheduleConflicts().isEmpty(), "Il devrait y avoir au moins un conflit");
     }
 
     @Test
@@ -57,6 +56,6 @@ public class SchedulePreferencesRepositoryTest {
         boolean result = scheduleRepo.checkPreferences(projectSchedule, neighbourhoods);
 
         // Si aucune préférence n'existe, l'horaire est considéré comme compatible
-        assertTrue("Si aucune préférence n'existe, l'horaire est compatible par défaut", result);
+        assertTrue(result, "Si aucune préférence n'existe, l'horaire est compatible par défaut");
     }
 }
