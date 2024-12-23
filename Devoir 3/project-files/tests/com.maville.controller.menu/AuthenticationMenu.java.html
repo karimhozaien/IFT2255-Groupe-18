@@ -177,12 +177,32 @@ import java.util.List;
     private List&lt;String&gt; collectUserInfo(String[] infoMessages) {
 <span class="nc" id="L178">        List&lt;String&gt; userInfo = new ArrayList&lt;&gt;();</span>
 <span class="nc bnc" id="L179" title="All 2 branches missed.">        for (String message : infoMessages) {</span>
-<span class="nc" id="L180">            AuthenticationView.printMessage(message);</span>
-<span class="nc" id="L181">            String input = SCANNER.nextLine();</span>
-<span class="nc" id="L182">            userInfo.add(input);</span>
+<span class="nc" id="L180">            String input = &quot;&quot;;</span>
+<span class="nc" id="L181">            boolean isValid = false;</span>
+
+<span class="nc bnc" id="L183" title="All 2 branches missed.">            while (!isValid) {</span>
+<span class="nc" id="L184">                AuthenticationView.printMessage(message);</span>
+<span class="nc" id="L185">                input = SCANNER.nextLine();</span>
+
+                // Special validation for &quot;Identifiant de la ville&quot;
+<span class="nc bnc" id="L188" title="All 2 branches missed.">                if (message.equals(&quot;Identifiant de la ville&quot;)) {</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">                    if (input.matches(&quot;\\d{8}&quot;)) { // Matches exactly 8 digits</span>
+<span class="nc" id="L190">                        isValid = true;</span>
+                    } else {
+<span class="nc" id="L192">                        AuthenticationView.printMessage(&quot;L'identifiant doit être un nombre composé de 8 chiffres. &quot; +</span>
+                                &quot;Veuillez réessayer.&quot;);
+                    }
+                } else {
+                    // For all other messages, accept any input
+<span class="nc" id="L197">                    isValid = true;</span>
+                }
+            }
+
+<span class="nc" id="L201">            userInfo.add(input);</span>
         }
-<span class="nc" id="L184">        return userInfo;</span>
+<span class="nc" id="L203">        return userInfo;</span>
     }
+
 
     /**
      * Demande à l'utilisateur de sélectionner le type d'intervenant
@@ -191,19 +211,19 @@ import java.util.List;
      * @return Le numéro correspondant au type d'entreprise choisi.
      */
     public static int askForCompanyType() {
-<span class="nc" id="L194">        Intervenant.CompanyType[] companyTypes = Intervenant.CompanyType.values();</span>
+<span class="nc" id="L214">        Intervenant.CompanyType[] companyTypes = Intervenant.CompanyType.values();</span>
 
         while (true) {
-<span class="nc" id="L197">            AuthenticationView.showCompanyTypeMessage();</span>
-<span class="nc" id="L198">            AuthenticationView.showCompanyTypes(companyTypes);</span>
+<span class="nc" id="L217">            AuthenticationView.showCompanyTypeMessage();</span>
+<span class="nc" id="L218">            AuthenticationView.showCompanyTypes(companyTypes);</span>
 
-<span class="nc" id="L200">            int choice = getInput();</span>
-<span class="nc bnc" id="L201" title="All 4 branches missed.">            if (choice &gt;= 1 &amp;&amp; choice &lt;= companyTypes.length) {</span>
-<span class="nc" id="L202">                return choice;</span>
+<span class="nc" id="L220">            int choice = getInput();</span>
+<span class="nc bnc" id="L221" title="All 4 branches missed.">            if (choice &gt;= 1 &amp;&amp; choice &lt;= companyTypes.length) {</span>
+<span class="nc" id="L222">                return choice;</span>
             } else {
-<span class="nc" id="L204">                AuthenticationView.showInvalidChoiceMessage(companyTypes.length);</span>
+<span class="nc" id="L224">                AuthenticationView.showInvalidChoiceMessage(companyTypes.length);</span>
             }
-<span class="nc" id="L206">        }</span>
+<span class="nc" id="L226">        }</span>
     }
 
     /**
@@ -214,10 +234,10 @@ import java.util.List;
     private static int getInput() {
         while (true) {
             try {
-<span class="nc" id="L217">                return Integer.parseInt(SCANNER.nextLine().trim());</span>
-<span class="nc" id="L218">            } catch (NumberFormatException e) {</span>
-<span class="nc" id="L219">                AuthenticationView.showInvalidInputMessage();</span>
-<span class="nc" id="L220">            }</span>
+<span class="nc" id="L237">                return Integer.parseInt(SCANNER.nextLine().trim());</span>
+<span class="nc" id="L238">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L239">                AuthenticationView.showInvalidInputMessage();</span>
+<span class="nc" id="L240">            }</span>
         }
     }
 }

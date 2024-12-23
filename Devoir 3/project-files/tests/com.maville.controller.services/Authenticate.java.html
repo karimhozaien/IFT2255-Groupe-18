@@ -20,9 +20,9 @@ public class Authenticate {
     private static String currentLogInUserId;
     private static String userType;
 
-<span class="nc" id="L23">    public Authenticate(List&lt;String&gt; userInfo) {</span>
-<span class="nc" id="L24">        this.userInfo = userInfo;</span>
-<span class="nc" id="L25">    }</span>
+<span class="fc" id="L23">    public Authenticate(List&lt;String&gt; userInfo) {</span>
+<span class="fc" id="L24">        this.userInfo = userInfo;</span>
+<span class="fc" id="L25">    }</span>
 
     /**
      * Tente de connecter l'utilisateur avec les informations fournies.
@@ -31,16 +31,16 @@ public class Authenticate {
      * @return {@code true} si la connexion est réussie, sinon {@code false}.
      */
     public boolean logIn() {
-<span class="nc" id="L34">        UserRepository instanceUserRepo = UserRepository.getInstance();</span>
-<span class="nc" id="L35">        String[] importantInfo = instanceUserRepo.fetchUser(userInfo); // Le UUID est suffisant</span>
+<span class="fc" id="L34">        UserRepository instanceUserRepo = UserRepository.getInstance();</span>
+<span class="fc" id="L35">        String[] importantInfo = instanceUserRepo.fetchUser(userInfo); // Le UUID est suffisant</span>
 
-<span class="nc bnc" id="L37" title="All 2 branches missed.">        if (importantInfo != null) {</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (importantInfo != null) {</span>
 <span class="nc" id="L38">            currentLogInUserId = importantInfo[0];</span>
 <span class="nc" id="L39">            userType = importantInfo[1];</span>
 <span class="nc" id="L40">            fetchedUserInfo = importantInfo;</span>
         }
 
-<span class="nc bnc" id="L43" title="All 2 branches missed.">        return currentLogInUserId != null;</span>
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        return currentLogInUserId != null;</span>
     }
 
     /**
@@ -50,55 +50,57 @@ public class Authenticate {
      * @return {@code true} si l'inscription est réussie, sinon {@code false}.
      */
     public boolean signUp(String userType) {
-<span class="nc" id="L53">        UserRepository instanceUserRepo = UserRepository.getInstance();</span>
-<span class="nc bnc" id="L54" title="All 3 branches missed.">        User currentSignUpUser = switch (userType) {</span>
-<span class="nc" id="L55">            case &quot;resident&quot; -&gt; signUpResident();</span>
+<span class="fc" id="L53">        UserRepository instanceUserRepo = UserRepository.getInstance();</span>
+<span class="pc bpc" id="L54" title="2 of 3 branches missed.">        User currentSignUpUser = switch (userType) {</span>
+<span class="fc" id="L55">            case &quot;resident&quot; -&gt; signUpResident();</span>
 <span class="nc" id="L56">            case &quot;intervenant&quot; -&gt; signUpIntervenant();</span>
 <span class="nc" id="L57">            default -&gt; null;</span>
         };
 
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (currentSignUpUser != null) {</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (currentSignUpUser != null) {</span>
             try {
-<span class="nc" id="L62">                instanceUserRepo.saveUser(currentSignUpUser);</span>
-<span class="nc" id="L63">                currentLogInUserId = currentSignUpUser.getID();</span>
-<span class="nc" id="L64">            } catch (SQLException e) {</span>
-<span class="nc" id="L65">                MenuView.printMessage(&quot;Erreur : Cette adresse courriel est déjà utilisée.&quot;);</span>
-<span class="nc" id="L66">                return false;</span>
-<span class="nc" id="L67">            }</span>
+<span class="fc" id="L62">                instanceUserRepo.saveUser(currentSignUpUser);</span>
+<span class="fc" id="L63">                currentLogInUserId = currentSignUpUser.getID();</span>
+<span class="fc" id="L64">            } catch (SQLException e) {</span>
+<span class="fc" id="L65">                MenuView.printMessage(&quot;Erreur : Cette adresse courriel est déjà utilisée.&quot;);</span>
+<span class="fc" id="L66">                return false;</span>
+<span class="fc" id="L67">            }</span>
         }
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        return currentLogInUserId != null;</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        return currentLogInUserId != null;</span>
     }
 
     private User signUpResident() {
         try {
-<span class="nc" id="L74">            return new Resident.ResidentBuilder()</span>
-<span class="nc" id="L75">                    .name(userInfo.get(0))</span>
-<span class="nc" id="L76">                    .birthday(userInfo.get(1))</span>
-<span class="nc" id="L77">                    .email(userInfo.get(2))</span>
-<span class="nc" id="L78">                    .password(userInfo.get(3))</span>
-<span class="nc" id="L79">                    .phoneNumber(userInfo.get(4))</span>
-<span class="nc" id="L80">                    .address(userInfo.get(5))</span>
-<span class="nc" id="L81">                    .id()</span>
-<span class="nc" id="L82">                    .build();</span>
+<span class="fc" id="L74">            return new Resident.ResidentBuilder()</span>
+<span class="fc" id="L75">                    .name(userInfo.get(0))</span>
+<span class="fc" id="L76">                    .birthday(userInfo.get(1))</span>
+<span class="fc" id="L77">                    .email(userInfo.get(2))</span>
+<span class="fc" id="L78">                    .password(userInfo.get(3))</span>
+<span class="fc" id="L79">                    .phoneNumber(userInfo.get(4))</span>
+<span class="fc" id="L80">                    .address(userInfo.get(5))</span>
+<span class="fc" id="L81">                    .id()</span>
+<span class="fc" id="L82">                    .build();</span>
 <span class="nc" id="L83">        } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L84">            System.out.println(&quot;Erreur durant l'enregistrement : &quot; + e.getMessage());</span>
+<span class="nc" id="L84">            MenuView.printMessage(&quot;Erreur durant l'enregistrement : &quot; + e.getMessage());</span>
 <span class="nc" id="L85">            return null;</span>
         }
     }
 
     private User signUpIntervenant() {
-        try {
-<span class="nc" id="L91">            return new Intervenant.IntervenantBuilder()</span>
-<span class="nc" id="L92">                    .name(userInfo.get(0))</span>
-<span class="nc" id="L93">                    .email(userInfo.get(1))</span>
-<span class="nc" id="L94">                    .password(userInfo.get(2))</span>
-<span class="nc" id="L95">                    .identifier(userInfo.get(3))</span>
-<span class="nc" id="L96">                    .companyType(AuthenticationMenu.askForCompanyType())</span>
-<span class="nc" id="L97">                    .id()</span>
-<span class="nc" id="L98">                    .build();</span>
-<span class="nc" id="L99">        } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L100">            System.out.println(&quot;Erreur durant l'enregistrement : &quot; + e.getMessage());</span>
-<span class="nc" id="L101">            return null;</span>
+        while (true) {
+            try {
+<span class="nc" id="L92">                return new Intervenant.IntervenantBuilder()</span>
+<span class="nc" id="L93">                        .name(userInfo.get(0))</span>
+<span class="nc" id="L94">                        .email(userInfo.get(1))</span>
+<span class="nc" id="L95">                        .password(userInfo.get(2))</span>
+<span class="nc" id="L96">                        .identifier(userInfo.get(3))</span>
+<span class="nc" id="L97">                        .companyType(AuthenticationMenu.askForCompanyType())</span>
+<span class="nc" id="L98">                        .id()</span>
+<span class="nc" id="L99">                        .build();</span>
+<span class="nc" id="L100">            } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L101">                MenuView.printMessage(&quot;Erreur durant l'enregistrement : &quot; + e.getMessage());</span>
+<span class="nc" id="L102">                return null;</span>
+            }
         }
     }
 
@@ -107,7 +109,7 @@ public class Authenticate {
      *
      * @return L'identifiant unique de l'utilisateur connecté.
      */
-<span class="nc" id="L110">    public static String getUserId() { return currentLogInUserId; }</span>
+<span class="nc" id="L112">    public static String getUserId() { return currentLogInUserId; }</span>
 
     /**
      * Récupère le type de l'utilisateur actuellement connecté.
@@ -115,7 +117,7 @@ public class Authenticate {
      * @return Le type de l'utilisateur connecté (par exemple, &quot;resident&quot; ou &quot;intervenant&quot;).
      */
     public static String getUserType() {
-<span class="nc" id="L118">        return userType;</span>
+<span class="nc" id="L120">        return userType;</span>
     }
 
     /**
@@ -123,6 +125,6 @@ public class Authenticate {
      *
      * @return Un tableau contenant les informations récupérées.
      */
-<span class="nc" id="L126">    public static String[] getFetchedUserInfo() { return fetchedUserInfo; }</span>
+<span class="nc" id="L128">    public static String[] getFetchedUserInfo() { return fetchedUserInfo; }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

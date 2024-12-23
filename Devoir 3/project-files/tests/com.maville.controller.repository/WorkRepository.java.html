@@ -21,9 +21,9 @@ import java.util.List;
  * Fournit des fonctionnalités pour récupérer, filtrer et stocker des informations provenant
  * d'APIs externes ou de la base de données locale.
  */
-<span class="nc" id="L24">public class WorkRepository {</span>
-<span class="nc" id="L25">    public static String worksAPI = &quot;https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=cc41b532-f12d-40fb-9f55-eb58c9a2b12b&quot;;</span>
-<span class="nc" id="L26">    public static String roadObstructionsAPI = &quot;https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=a2bc8014-488c-495d-941b-e7ae1999d1bd&quot;;</span>
+<span class="fc" id="L24">public class WorkRepository {</span>
+<span class="fc" id="L25">    public static String worksAPI = &quot;https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=cc41b532-f12d-40fb-9f55-eb58c9a2b12b&quot;;</span>
+<span class="fc" id="L26">    public static String roadObstructionsAPI = &quot;https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=a2bc8014-488c-495d-941b-e7ae1999d1bd&quot;;</span>
 
     /**
      * Récupère les enregistrements à partir d'une réponse JSON.
@@ -33,23 +33,23 @@ import java.util.List;
      * @throws IOException Si le JSON est invalide ou incomplet.
      */
     public List&lt;Result.Record&gt; getRecords(String jsonResponse) throws IOException {
-<span class="nc" id="L36">        Moshi moshi = new Moshi.Builder().build();</span>
-<span class="nc" id="L37">        JsonAdapter&lt;ApiResponse&gt; jsonAdapter = moshi.adapter(ApiResponse.class);</span>
-<span class="nc" id="L38">        ApiResponse apiResponse = jsonAdapter.fromJson(jsonResponse);</span>
+<span class="fc" id="L36">        Moshi moshi = new Moshi.Builder().build();</span>
+<span class="fc" id="L37">        JsonAdapter&lt;ApiResponse&gt; jsonAdapter = moshi.adapter(ApiResponse.class);</span>
+<span class="fc" id="L38">        ApiResponse apiResponse = jsonAdapter.fromJson(jsonResponse);</span>
 
-<span class="nc bnc" id="L40" title="All 6 branches missed.">        if (apiResponse == null || apiResponse.result == null || apiResponse.result.records == null) {</span>
+<span class="pc bpc" id="L40" title="3 of 6 branches missed.">        if (apiResponse == null || apiResponse.result == null || apiResponse.result.records == null) {</span>
 <span class="nc" id="L41">            throw new IOException(&quot;JSON invalide : Les variables 'result' ou 'records' sont manquantes/inexistantes.&quot;);</span>
         }
-<span class="nc" id="L43">        return apiResponse.result.records;</span>
+<span class="fc" id="L43">        return apiResponse.result.records;</span>
     }
 
     private &lt;T&gt; List&lt;T&gt; fetchAndParseRecords(String apiUrl, String option, Class&lt;T&gt; type) throws IOException {
-<span class="nc" id="L47">        ApiClient apiClient = new ApiClient();</span>
-<span class="nc" id="L48">        apiClient.connect(apiUrl); // Connection à l'API</span>
+<span class="fc" id="L47">        ApiClient apiClient = new ApiClient();</span>
+<span class="fc" id="L48">        apiClient.connect(apiUrl); // Connection à l'API</span>
 
-<span class="nc" id="L50">        List&lt;Result.Record&gt; records = getRecords(apiClient.getJsonResponse());</span>
-<span class="nc" id="L51">        Parser&lt;T&gt; parser = new Parser&lt;&gt;(records);</span>
-<span class="nc" id="L52">        return parser.initializeParsing(option, type);</span>
+<span class="fc" id="L50">        List&lt;Result.Record&gt; records = getRecords(apiClient.getJsonResponse());</span>
+<span class="fc" id="L51">        Parser&lt;T&gt; parser = new Parser&lt;&gt;(records);</span>
+<span class="fc" id="L52">        return parser.initializeParsing(option, type);</span>
     }
 
     /**
@@ -59,7 +59,7 @@ import java.util.List;
      * @throws IOException Si une erreur se produit lors de la récupération ou du traitement des données.
      */
     public List&lt;Project&gt; getOngoingProjects() throws IOException {
-<span class="nc" id="L62">        return fetchAndParseRecords(worksAPI, &quot;works&quot;, Project.class);</span>
+<span class="fc" id="L62">        return fetchAndParseRecords(worksAPI, &quot;works&quot;, Project.class);</span>
     }
 
     /**
@@ -81,7 +81,7 @@ import java.util.List;
      * @throws IOException Si une erreur se produit lors du traitement des données.
      */
     public List&lt;String&gt; getFilteredRoadObstructions(String criteria, String criteriaField) throws IOException {
-<span class="nc" id="L84">        return parseItems(criteria, criteriaField, String.class);</span>
+<span class="nc" id="L84">        return parseItems(criteria, criteriaField, null, String.class);</span>
     }
 
     /**
@@ -92,8 +92,8 @@ import java.util.List;
      * @return Une liste de {@code Project} représentant les projets filtrés.
      * @throws IOException Si une erreur se produit lors du traitement des données.
      */
-    public List&lt;Project&gt; getFilteredProjects(String criteria, String criteriaField) throws IOException {
-<span class="nc" id="L96">        return parseItems(criteria, criteriaField, Project.class);</span>
+    public List&lt;Project&gt; getFilteredProjects(String criteria, String criteriaField, List&lt;Project&gt; projects) throws IOException {
+<span class="fc" id="L96">        return parseItems(criteria, criteriaField, projects, Project.class);</span>
     }
 
     /**
@@ -124,10 +124,10 @@ import java.util.List;
      * @throws IOException Si une erreur se produit lors de la récupération ou du traitement des données.
      */
     public List&lt;Project&gt; getAllProjects() throws IOException {
-<span class="nc" id="L127">        List&lt;Project&gt; allProjects = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L128">        allProjects.addAll(getOngoingProjects());</span>
-<span class="nc" id="L129">        allProjects.addAll(getPlannedProjects());</span>
-<span class="nc" id="L130">        return allProjects;</span>
+<span class="fc" id="L127">        List&lt;Project&gt; allProjects = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L128">        allProjects.addAll(getOngoingProjects());</span>
+<span class="fc" id="L129">        allProjects.addAll(getPlannedProjects());</span>
+<span class="fc" id="L130">        return allProjects;</span>
     }
 
     /**
@@ -136,47 +136,50 @@ import java.util.List;
      * @return Une liste de {@code Project} représentant les projets planifiés.
      */
     public List&lt;Project&gt; getPlannedProjects() {
-<span class="nc" id="L139">        return fetchPlannedProjects();</span>
+<span class="fc" id="L139">        return fetchPlannedProjects();</span>
     }
 
-    private &lt;T&gt; List&lt;T&gt; parseItems(String criteria, String criteriaField, Class&lt;T&gt; type) throws IOException {
-<span class="nc" id="L143">        List&lt;T&gt; filteredItems = new ArrayList&lt;&gt;();</span>
+    private &lt;T&gt; List&lt;T&gt; parseItems(String criteria, String criteriaField, List&lt;Project&gt; projects, Class&lt;T&gt; type) throws IOException {
+<span class="fc" id="L143">        List&lt;T&gt; filteredItems = new ArrayList&lt;&gt;();</span>
 
-<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (type.equals(Project.class)) {</span>
-<span class="nc bnc" id="L146" title="All 2 branches missed.">            for (Project project : getAllProjects()) {</span>
-<span class="nc bnc" id="L147" title="All 2 branches missed.">                if (criteria.equals(&quot;quartier&quot;)) {</span>
-<span class="nc bnc" id="L148" title="All 2 branches missed.">                    if (project.getAffectedNeighbourhood().toLowerCase().contains(criteriaField.toLowerCase())) {</span>
-<span class="nc" id="L149">                        filteredItems.add(type.cast(project));</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (type.equals(Project.class)) {</span>
+            // Utilisez la liste passée en paramètre ou récupérez tous les projets
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">            List&lt;Project&gt; sourceProjects = (projects != null) ? projects : getAllProjects();</span>
+
+<span class="fc bfc" id="L149" title="All 2 branches covered.">            for (Project project : sourceProjects) {</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">                if (criteria.equals(&quot;quartier&quot;)) {</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                    if (project.getAffectedNeighbourhood().toLowerCase().contains(criteriaField.toLowerCase())) {</span>
+<span class="nc" id="L152">                        filteredItems.add(type.cast(project));</span>
                     }
-<span class="nc bnc" id="L151" title="All 2 branches missed.">                } else if (criteria.equals(&quot;travail&quot;)) {</span>
-<span class="nc bnc" id="L152" title="All 2 branches missed.">                    if (project.getTitle().toLowerCase().contains(criteriaField.toLowerCase())) {</span>
-<span class="nc" id="L153">                        filteredItems.add(type.cast(project));</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">                } else if (criteria.equals(&quot;travail&quot;)) {</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                    if (project.getTypeOfWork().equals(TypeOfWork.valueOf(criteriaField))) {</span>
+<span class="nc" id="L156">                        filteredItems.add(type.cast(project));</span>
                     }
                 }
-<span class="nc" id="L156">            }</span>
-<span class="nc bnc" id="L157" title="All 2 branches missed.">        } else if (type.equals(String.class)) {</span>
-<span class="nc bnc" id="L158" title="All 2 branches missed.">            if (criteria.equals(&quot;rue&quot;)) {</span>
-<span class="nc bnc" id="L159" title="All 2 branches missed.">                for (String roadObsutruction : getRoadObstructions()) {</span>
-<span class="nc bnc" id="L160" title="All 2 branches missed.">                    if (roadObsutruction.toLowerCase().contains(criteriaField.toLowerCase())) {</span>
-<span class="nc" id="L161">                        filteredItems.add(type.cast(roadObsutruction.split(&quot;\\. &quot;)[1]));</span>
+<span class="fc" id="L159">            }</span>
+<span class="pc bnc" id="L160" title="All 2 branches missed.">        } else if (type.equals(String.class)) {</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">            if (criteria.equals(&quot;rue&quot;)) {</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">                for (String roadObsutruction : getRoadObstructions()) {</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">                    if (roadObsutruction.toLowerCase().contains(criteriaField.toLowerCase())) {</span>
+<span class="nc" id="L164">                        filteredItems.add(type.cast(roadObsutruction.split(&quot;\\. &quot;)[1]));</span>
                     }
-<span class="nc" id="L163">                }</span>
-<span class="nc bnc" id="L164" title="All 2 branches missed.">            } else if (criteria.equals(&quot;travail&quot;)) {</span>
+<span class="nc" id="L166">                }</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">            } else if (criteria.equals(&quot;travail&quot;)) {</span>
                 try {
-<span class="nc" id="L166">                    ApisManager apisManager = new ApisManager();</span>
-<span class="nc" id="L167">                    List&lt;List&lt;String&gt;&gt; filteredRoadObstructions = apisManager.parallelComputingForRequests(Project.getTypeOfWork(criteriaField));</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">                    for (List&lt;String&gt; filteredRoadObstruction : filteredRoadObstructions) {</span>
-<span class="nc bnc" id="L169" title="All 2 branches missed.">                        for (String s : filteredRoadObstruction) {</span>
-<span class="nc" id="L170">                            filteredItems.add(type.cast(s.split(&quot;\\. &quot;)[1]));</span>
-<span class="nc" id="L171">                        }</span>
-<span class="nc" id="L172">                    }</span>
-<span class="nc" id="L173">                } catch (Exception e) {</span>
-<span class="nc" id="L174">                    throw new RuntimeException(e);</span>
-<span class="nc" id="L175">                }</span>
+<span class="nc" id="L169">                    ApisManager apisManager = new ApisManager();</span>
+<span class="nc" id="L170">                    List&lt;List&lt;String&gt;&gt; filteredRoadObstructions = apisManager.parallelComputingForRequests(TypeOfWork.valueOf(criteriaField));</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">                    for (List&lt;String&gt; filteredRoadObstruction : filteredRoadObstructions) {</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">                        for (String s : filteredRoadObstruction) {</span>
+<span class="nc" id="L173">                            filteredItems.add(type.cast(s));</span>
+<span class="nc" id="L174">                        }</span>
+<span class="nc" id="L175">                    }</span>
+<span class="nc" id="L176">                } catch (Exception e) {</span>
+<span class="nc" id="L177">                    throw new RuntimeException(e);</span>
+<span class="nc" id="L178">                }</span>
             }
         }
 
-<span class="nc" id="L179">        return filteredItems;</span>
+<span class="fc" id="L182">        return filteredItems;</span>
     }
 
     /**
@@ -186,51 +189,92 @@ import java.util.List;
      *         Retourne {@code null} si aucune donnée n'est trouvée ou en cas d'erreur.
      */
     public List&lt;Project&gt; fetchPlannedProjects() {
-<span class="nc" id="L189">        List&lt;Project&gt; plannedProjects = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L190">        String selectSQL = &quot;SELECT * FROM Projects&quot;;</span>
+<span class="fc" id="L192">        List&lt;Project&gt; plannedProjects = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L193">        String selectSQL = &quot;SELECT * FROM Projects&quot;;</span>
 
-<span class="nc" id="L192">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L193">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
+<span class="fc" id="L195">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="fc" id="L196">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
 
-<span class="nc" id="L195">            try (ResultSet rs = pstmt.executeQuery()) {</span>
-<span class="nc bnc" id="L196" title="All 2 branches missed.">                while (rs.next()) {</span>
-<span class="nc" id="L197">                    String idFromDB = rs.getString(&quot;id&quot;);</span>
-<span class="nc" id="L198">                    String titleFromDB = rs.getString(&quot;title&quot;);</span>
-<span class="nc" id="L199">                    String descriptionFromDB = rs.getString(&quot;description&quot;);</span>
-<span class="nc" id="L200">                    String typeOfWorkRawFromDB = rs.getString(&quot;type_of_work&quot;);</span>
-<span class="nc" id="L201">                    String affectedNeighbourhoodFromDB = rs.getString(&quot;affected_neighbourhood&quot;);</span>
-<span class="nc" id="L202">                    String affectedStreetsFromDB = rs.getString(&quot;affected_streets&quot;);</span>
-<span class="nc" id="L203">                    String startDateFromDB = rs.getString(&quot;start_date&quot;);</span>
-<span class="nc" id="L204">                    String endDateFromDB = rs.getString(&quot;end_date&quot;);</span>
-<span class="nc" id="L205">                    String workScheduleFromDB = rs.getString(&quot;work_schedule&quot;);</span>
-<span class="nc" id="L206">                    String workStatusFromDB = rs.getString(&quot;work_status&quot;);</span>
+<span class="fc" id="L198">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">                while (rs.next()) {</span>
+<span class="fc" id="L200">                    String idFromDB = rs.getString(&quot;id&quot;);</span>
+<span class="fc" id="L201">                    String titleFromDB = rs.getString(&quot;title&quot;);</span>
+<span class="fc" id="L202">                    String descriptionFromDB = rs.getString(&quot;description&quot;);</span>
+<span class="fc" id="L203">                    String typeOfWorkRawFromDB = rs.getString(&quot;type_of_work&quot;);</span>
+<span class="fc" id="L204">                    String affectedNeighbourhoodFromDB = rs.getString(&quot;affected_neighbourhood&quot;);</span>
+<span class="fc" id="L205">                    String affectedStreetsFromDB = rs.getString(&quot;affected_streets&quot;);</span>
+<span class="fc" id="L206">                    String startDateFromDB = rs.getString(&quot;start_date&quot;);</span>
+<span class="fc" id="L207">                    String endDateFromDB = rs.getString(&quot;end_date&quot;);</span>
+<span class="fc" id="L208">                    String workScheduleFromDB = rs.getString(&quot;work_schedule&quot;);</span>
+<span class="fc" id="L209">                    String workStatusFromDB = rs.getString(&quot;work_status&quot;);</span>
 
-<span class="nc" id="L208">                    Project project = new Project(</span>
+<span class="fc" id="L211">                    Project project = new Project(</span>
                             idFromDB,
                             titleFromDB,
                             descriptionFromDB,
-<span class="nc" id="L212">                            Project.TypeOfWork.valueOf(typeOfWorkRawFromDB),</span>
+<span class="fc" id="L215">                            Project.TypeOfWork.valueOf(typeOfWorkRawFromDB),</span>
                             affectedNeighbourhoodFromDB,
                             affectedStreetsFromDB,
                             startDateFromDB,
                             endDateFromDB,
                             workScheduleFromDB,
-<span class="nc" id="L218">                            Project.WorkStatus.valueOf(workStatusFromDB)</span>
+<span class="fc" id="L221">                            Project.WorkStatus.valueOf(workStatusFromDB)</span>
                     );
-<span class="nc" id="L220">                    plannedProjects.add(project);</span>
-<span class="nc" id="L221">                }</span>
+<span class="fc" id="L223">                    plannedProjects.add(project);</span>
+<span class="fc" id="L224">                }</span>
 
-<span class="nc bnc" id="L223" title="All 2 branches missed.">                if (plannedProjects.isEmpty()) {</span>
-<span class="nc" id="L224">                    System.out.println(&quot;Erreur lors du fetching.&quot;);</span>
-<span class="nc" id="L225">                    return null;</span>
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">                if (plannedProjects.isEmpty()) {</span>
+<span class="nc" id="L227">                    System.out.println(&quot;Erreur lors du fetching.&quot;);</span>
+<span class="nc" id="L228">                    return null;</span>
                 }
 
-<span class="nc" id="L228">                return plannedProjects;</span>
-<span class="nc bnc" id="L229" title="All 2 branches missed.">            }</span>
-<span class="nc bnc" id="L230" title="All 4 branches missed.">        } catch (SQLException e) {</span>
-<span class="nc" id="L231">            System.out.println(&quot;Erreur lors de la connexion à la DB : &quot; + e.getMessage());</span>
-<span class="nc" id="L232">            return null;</span>
+<span class="fc" id="L231">                return plannedProjects;</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">            }</span>
+<span class="nc bnc" id="L233" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L234">            System.out.println(&quot;Erreur lors de la connexion à la DB : &quot; + e.getMessage());</span>
+<span class="nc" id="L235">            return null;</span>
         }
+    }
+
+    public List&lt;Project&gt; getPlannedProjectsWithinThreeMonths() {
+<span class="nc" id="L240">        List&lt;Project&gt; plannedProjects = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L241">        String selectSQL = &quot;SELECT * FROM Projects WHERE DATE(start_date) &lt;= DATE('now', '+3 months')&quot;;</span>
+
+<span class="nc" id="L243">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="nc" id="L244">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
+
+<span class="nc" id="L246">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">                while (rs.next()) {</span>
+<span class="nc" id="L248">                    String id = rs.getString(&quot;id&quot;);</span>
+<span class="nc" id="L249">                    String title = rs.getString(&quot;title&quot;);</span>
+<span class="nc" id="L250">                    String description = rs.getString(&quot;description&quot;);</span>
+<span class="nc" id="L251">                    String typeOfWork = rs.getString(&quot;type_of_work&quot;);</span>
+<span class="nc" id="L252">                    String affectedNeighbourhood = rs.getString(&quot;affected_neighbourhood&quot;);</span>
+<span class="nc" id="L253">                    String affectedStreets = rs.getString(&quot;affected_streets&quot;);</span>
+<span class="nc" id="L254">                    String startDate = rs.getString(&quot;start_date&quot;);</span>
+<span class="nc" id="L255">                    String endDate = rs.getString(&quot;end_date&quot;);</span>
+<span class="nc" id="L256">                    String workSchedule = rs.getString(&quot;work_schedule&quot;);</span>
+<span class="nc" id="L257">                    String workStatus = rs.getString(&quot;work_status&quot;);</span>
+
+<span class="nc" id="L259">                    Project project = new Project(</span>
+                            id,
+                            title,
+                            description,
+<span class="nc" id="L263">                            Project.TypeOfWork.valueOf(typeOfWork),</span>
+                            affectedNeighbourhood,
+                            affectedStreets,
+                            startDate,
+                            endDate,
+                            workSchedule,
+<span class="nc" id="L269">                            Project.WorkStatus.valueOf(workStatus)</span>
+                    );
+<span class="nc" id="L271">                    plannedProjects.add(project);</span>
+<span class="nc" id="L272">                }</span>
+            }
+<span class="nc" id="L274">        } catch (SQLException e) {</span>
+<span class="nc" id="L275">            System.out.println(&quot;Erreur lors de la récupération des projets planifiés : &quot; + e.getMessage());</span>
+<span class="nc" id="L276">        }</span>
+<span class="nc" id="L277">        return plannedProjects;</span>
     }
 
     /**
@@ -239,29 +283,29 @@ import java.util.List;
      * @param project Le projet à enregistrer.
      */
     public void savePlannedProject(Project project) {
-<span class="nc" id="L242">        String insertSQL = &quot;INSERT INTO Projects(id, title, description, type_of_work, affected_neighbourhood, &quot; +</span>
+<span class="fc" id="L286">        String insertSQL = &quot;INSERT INTO Projects(id, title, description, type_of_work, affected_neighbourhood, &quot; +</span>
                 &quot;affected_streets, start_date, end_date, work_schedule, work_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)&quot;;
 
-<span class="nc" id="L245">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L246">            PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {</span>
+<span class="fc" id="L289">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="fc" id="L290">            PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {</span>
 
-<span class="nc" id="L248">            pstmt.setString(1, project.getId());</span>
-<span class="nc" id="L249">            pstmt.setString(2, project.getTitle());</span>
-<span class="nc" id="L250">            pstmt.setString(3, project.getDescription());</span>
-<span class="nc" id="L251">            pstmt.setString(4, project.getTypeOfWork().toString());</span>
-<span class="nc" id="L252">            pstmt.setString(5, project.getAffectedNeighbourhood());</span>
-<span class="nc" id="L253">            pstmt.setString(6, project.getAffectedStreets());</span>
-<span class="nc" id="L254">            pstmt.setString(7, project.getStartDate());</span>
-<span class="nc" id="L255">            pstmt.setString(8, project.getEndDate());</span>
-<span class="nc" id="L256">            pstmt.setString(9, project.getWorkSchedule());</span>
-<span class="nc" id="L257">            pstmt.setString(10, project.getWorkStatus().toString());</span>
+<span class="fc" id="L292">            pstmt.setString(1, project.getId());</span>
+<span class="fc" id="L293">            pstmt.setString(2, project.getTitle());</span>
+<span class="fc" id="L294">            pstmt.setString(3, project.getDescription());</span>
+<span class="fc" id="L295">            pstmt.setString(4, project.getTypeOfWork().toString());</span>
+<span class="fc" id="L296">            pstmt.setString(5, project.getAffectedNeighbourhood());</span>
+<span class="fc" id="L297">            pstmt.setString(6, project.getAffectedStreets());</span>
+<span class="fc" id="L298">            pstmt.setString(7, project.getStartDate());</span>
+<span class="fc" id="L299">            pstmt.setString(8, project.getEndDate());</span>
+<span class="fc" id="L300">            pstmt.setString(9, project.getWorkSchedule());</span>
+<span class="fc" id="L301">            pstmt.setString(10, project.getWorkStatus().toString());</span>
 
-<span class="nc" id="L259">            pstmt.executeUpdate();</span>
+<span class="fc" id="L303">            pstmt.executeUpdate();</span>
             //System.out.println(&quot;Le projet a été sauvegardée.&quot;); // Message helper
-<span class="nc" id="L261">        } catch (SQLException e) {</span>
-<span class="nc" id="L262">            System.out.println(&quot;Erreur lors de l'enregistrement du projet : &quot; + e.getMessage());</span>
-<span class="nc" id="L263">        }</span>
-<span class="nc" id="L264">    }</span>
+<span class="nc" id="L305">        } catch (SQLException e) {</span>
+<span class="nc" id="L306">            System.out.println(&quot;Erreur lors de l'enregistrement du projet : &quot; + e.getMessage());</span>
+<span class="fc" id="L307">        }</span>
+<span class="fc" id="L308">    }</span>
 
     /**
      * Met à jour un projet planifié existant dans la base de données locale.
@@ -269,34 +313,34 @@ import java.util.List;
      * @param project Le projet à mettre à jour.
      */
     public void updatePlannedProject(Project project) {
-<span class="nc" id="L272">        String updateSQL = &quot;UPDATE Projects SET title = ?, description = ?, type_of_work = ?, &quot; +</span>
+<span class="nc" id="L316">        String updateSQL = &quot;UPDATE Projects SET title = ?, description = ?, type_of_work = ?, &quot; +</span>
                 &quot;affected_neighbourhood = ?, affected_streets = ?, start_date = ?, end_date = ?, &quot; +
                 &quot;work_schedule = ?, work_status = ? WHERE id = ?&quot;;
 
-<span class="nc" id="L276">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L277">             PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {</span>
+<span class="nc" id="L320">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="nc" id="L321">             PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {</span>
 
-<span class="nc" id="L279">            pstmt.setString(1, project.getTitle());</span>
-<span class="nc" id="L280">            pstmt.setString(2, project.getDescription());</span>
-<span class="nc" id="L281">            pstmt.setString(3, project.getTypeOfWork().toString());</span>
-<span class="nc" id="L282">            pstmt.setString(4, project.getAffectedNeighbourhood());</span>
-<span class="nc" id="L283">            pstmt.setString(5, project.getAffectedStreets());</span>
-<span class="nc" id="L284">            pstmt.setString(6, project.getStartDate());</span>
-<span class="nc" id="L285">            pstmt.setString(7, project.getEndDate());</span>
-<span class="nc" id="L286">            pstmt.setString(8, project.getWorkSchedule());</span>
-<span class="nc" id="L287">            pstmt.setString(9, project.getWorkStatus().toString());</span>
-<span class="nc" id="L288">            pstmt.setString(10, project.getId()); // Ensure the correct project is updated</span>
+<span class="nc" id="L323">            pstmt.setString(1, project.getTitle());</span>
+<span class="nc" id="L324">            pstmt.setString(2, project.getDescription());</span>
+<span class="nc" id="L325">            pstmt.setString(3, project.getTypeOfWork().toString());</span>
+<span class="nc" id="L326">            pstmt.setString(4, project.getAffectedNeighbourhood());</span>
+<span class="nc" id="L327">            pstmt.setString(5, project.getAffectedStreets());</span>
+<span class="nc" id="L328">            pstmt.setString(6, project.getStartDate());</span>
+<span class="nc" id="L329">            pstmt.setString(7, project.getEndDate());</span>
+<span class="nc" id="L330">            pstmt.setString(8, project.getWorkSchedule());</span>
+<span class="nc" id="L331">            pstmt.setString(9, project.getWorkStatus().toString());</span>
+<span class="nc" id="L332">            pstmt.setString(10, project.getId()); // Ensure the correct project is updated</span>
 
-<span class="nc" id="L290">            int rowsAffected = pstmt.executeUpdate();</span>
-<span class="nc bnc" id="L291" title="All 2 branches missed.">            if (rowsAffected == 0) {</span>
-<span class="nc" id="L292">                System.out.println(&quot;Aucun projet mis à jour. ID invalide ou inexistant.&quot;);</span>
+<span class="nc" id="L334">            int rowsAffected = pstmt.executeUpdate();</span>
+<span class="nc bnc" id="L335" title="All 2 branches missed.">            if (rowsAffected == 0) {</span>
+<span class="nc" id="L336">                System.out.println(&quot;Aucun projet mis à jour. ID invalide ou inexistant.&quot;);</span>
             } else {
-<span class="nc" id="L294">                System.out.println(&quot;Projet mis à jour avec succès.&quot;);</span>
+<span class="nc" id="L338">                System.out.println(&quot;Projet mis à jour avec succès.&quot;);</span>
             }
-<span class="nc" id="L296">        } catch (SQLException e) {</span>
-<span class="nc" id="L297">            System.out.println(&quot;Erreur lors de la mise à jour du projet : &quot; + e.getMessage());</span>
-<span class="nc" id="L298">        }</span>
-<span class="nc" id="L299">    }</span>
+<span class="nc" id="L340">        } catch (SQLException e) {</span>
+<span class="nc" id="L341">            System.out.println(&quot;Erreur lors de la mise à jour du projet : &quot; + e.getMessage());</span>
+<span class="nc" id="L342">        }</span>
+<span class="nc" id="L343">    }</span>
 
     /**
      * Enregistre une requête de travaux dans la base de données locale.
@@ -304,24 +348,24 @@ import java.util.List;
      * @param workRequestForm La requête à enregistrer.
      */
     public void saveWorkRequest(WorkRequestForm workRequestForm) {
-<span class="nc" id="L307">        String insertSQL = &quot;INSERT INTO WorkRequests(id, submitter_id, title, description, project_type, expected_date) &quot; +</span>
+<span class="fc" id="L351">        String insertSQL = &quot;INSERT INTO WorkRequests(id, submitter_id, title, description, project_type, expected_date) &quot; +</span>
                 &quot;VALUES (?, ?, ?, ?, ?, ?)&quot;;
 
-<span class="nc" id="L310">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L311">             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {</span>
-<span class="nc" id="L312">            pstmt.setString(1, workRequestForm.getId());</span>
-<span class="nc" id="L313">            pstmt.setString(2, workRequestForm.getSubmitterId());</span>
-<span class="nc" id="L314">            pstmt.setString(3, workRequestForm.getTitle());</span>
-<span class="nc" id="L315">            pstmt.setString(4, workRequestForm.getDescription());</span>
-<span class="nc" id="L316">            pstmt.setString(5, workRequestForm.getProjectType().toString());</span>
-<span class="nc" id="L317">            pstmt.setString(6, workRequestForm.getExpectedDate());</span>
+<span class="fc" id="L354">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="fc" id="L355">             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {</span>
+<span class="fc" id="L356">            pstmt.setString(1, workRequestForm.getId());</span>
+<span class="fc" id="L357">            pstmt.setString(2, workRequestForm.getSubmitterId());</span>
+<span class="fc" id="L358">            pstmt.setString(3, workRequestForm.getTitle());</span>
+<span class="fc" id="L359">            pstmt.setString(4, workRequestForm.getDescription());</span>
+<span class="fc" id="L360">            pstmt.setString(5, workRequestForm.getProjectType().toString());</span>
+<span class="fc" id="L361">            pstmt.setString(6, workRequestForm.getExpectedDate());</span>
 
-<span class="nc" id="L319">            pstmt.executeUpdate();</span>
+<span class="fc" id="L363">            pstmt.executeUpdate();</span>
             //System.out.println(&quot;La requête a été sauvegardée.&quot;); // Message helper
-<span class="nc" id="L321">        } catch (SQLException e) {</span>
-<span class="nc" id="L322">            System.out.println(&quot;Erreur lors de l'enregistrement de la requête : &quot; + e.getMessage());</span>
-<span class="nc" id="L323">        }</span>
-<span class="nc" id="L324">    }</span>
+<span class="nc" id="L365">        } catch (SQLException e) {</span>
+<span class="nc" id="L366">            System.out.println(&quot;Erreur lors de l'enregistrement de la requête : &quot; + e.getMessage());</span>
+<span class="fc" id="L367">        }</span>
+<span class="fc" id="L368">    }</span>
 
     /**
      * Met à jour une requête de travaux existante dans la base de données locale.
@@ -329,32 +373,32 @@ import java.util.List;
      * @param workRequestForm La requête à mettre à jour.
      */
     public void updatingCandidacySubmission(WorkRequestForm workRequestForm) {
-<span class="nc" id="L332">        String updateSQL = &quot;UPDATE WorkRequests SET submitter_id = ?, title = ?, description = ?, project_type = ?, &quot; +</span>
+<span class="nc" id="L376">        String updateSQL = &quot;UPDATE WorkRequests SET submitter_id = ?, title = ?, description = ?, project_type = ?, &quot; +</span>
                 &quot;expected_date = ?, submissions = ?, chosen_intervenant = ?, closing_message = ? WHERE id = ?&quot;;
 
-<span class="nc" id="L335">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L336">             PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {</span>
+<span class="nc" id="L379">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="nc" id="L380">             PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {</span>
 
-<span class="nc" id="L338">            pstmt.setString(1, workRequestForm.getSubmitterId());</span>
-<span class="nc" id="L339">            pstmt.setString(2, workRequestForm.getTitle());</span>
-<span class="nc" id="L340">            pstmt.setString(3, workRequestForm.getDescription());</span>
-<span class="nc" id="L341">            pstmt.setString(4, workRequestForm.getProjectType().toString());</span>
-<span class="nc" id="L342">            pstmt.setString(5, workRequestForm.getExpectedDate());</span>
-<span class="nc" id="L343">            pstmt.setString(6, String.join(&quot;,&quot;, workRequestForm.getSubmissions()));</span>
-<span class="nc" id="L344">            pstmt.setString(7, workRequestForm.getChosenIntervenant());</span>
-<span class="nc" id="L345">            pstmt.setString(8, workRequestForm.getClosingMessage());</span>
-<span class="nc" id="L346">            pstmt.setString(9, workRequestForm.getId()); // Ensure the correct project is updated</span>
+<span class="nc" id="L382">            pstmt.setString(1, workRequestForm.getSubmitterId());</span>
+<span class="nc" id="L383">            pstmt.setString(2, workRequestForm.getTitle());</span>
+<span class="nc" id="L384">            pstmt.setString(3, workRequestForm.getDescription());</span>
+<span class="nc" id="L385">            pstmt.setString(4, workRequestForm.getProjectType().toString());</span>
+<span class="nc" id="L386">            pstmt.setString(5, workRequestForm.getExpectedDate());</span>
+<span class="nc" id="L387">            pstmt.setString(6, String.join(&quot;,&quot;, workRequestForm.getSubmissions()));</span>
+<span class="nc" id="L388">            pstmt.setString(7, workRequestForm.getChosenIntervenant());</span>
+<span class="nc" id="L389">            pstmt.setString(8, workRequestForm.getClosingMessage());</span>
+<span class="nc" id="L390">            pstmt.setString(9, workRequestForm.getId()); // Ensure the correct project is updated</span>
 
-<span class="nc" id="L348">            int rowsAffected = pstmt.executeUpdate();</span>
-<span class="nc bnc" id="L349" title="All 2 branches missed.">            if (rowsAffected == 0) {</span>
-<span class="nc" id="L350">                System.out.println(&quot;Aucune requête mise à jour. ID invalide ou inexistant.&quot;);</span>
+<span class="nc" id="L392">            int rowsAffected = pstmt.executeUpdate();</span>
+<span class="nc bnc" id="L393" title="All 2 branches missed.">            if (rowsAffected == 0) {</span>
+<span class="nc" id="L394">                System.out.println(&quot;Aucune requête mise à jour. ID invalide ou inexistant.&quot;);</span>
             } else {
-<span class="nc" id="L352">                System.out.println(&quot;Requête mise à jour avec succès.&quot;);</span>
+<span class="nc" id="L396">                System.out.println(&quot;Requête mise à jour avec succès.&quot;);</span>
             }
-<span class="nc" id="L354">        } catch (SQLException e) {</span>
-<span class="nc" id="L355">            System.out.println(&quot;Erreur lors de la mise à jour du projet : &quot; + e.getMessage());</span>
-<span class="nc" id="L356">        }</span>
-<span class="nc" id="L357">    }</span>
+<span class="nc" id="L398">        } catch (SQLException e) {</span>
+<span class="nc" id="L399">            System.out.println(&quot;Erreur lors de la mise à jour du projet : &quot; + e.getMessage());</span>
+<span class="nc" id="L400">        }</span>
+<span class="nc" id="L401">    }</span>
 
     /**
      * Récupère toutes les requêtes soumises par un utilisateur spécifique.
@@ -363,43 +407,43 @@ import java.util.List;
      * @return Une liste de {@code WorkRequestForm} représentant les requêtes de l'utilisateur.
      */
     public List&lt;WorkRequestForm&gt; fetchWorkRequestsByUserId(String userId) {
-<span class="nc" id="L366">        List&lt;WorkRequestForm&gt; userWorkRequests = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L367">        String selectSQL = &quot;SELECT * FROM WorkRequests WHERE submitter_id = ?&quot;;</span>
+<span class="nc" id="L410">        List&lt;WorkRequestForm&gt; userWorkRequests = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L411">        String selectSQL = &quot;SELECT * FROM WorkRequests WHERE submitter_id = ?&quot;;</span>
 
-<span class="nc" id="L369">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L370">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
-<span class="nc" id="L371">            pstmt.setString(1, userId);</span>
+<span class="nc" id="L413">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="nc" id="L414">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
+<span class="nc" id="L415">            pstmt.setString(1, userId);</span>
 
-<span class="nc" id="L373">            try (ResultSet rs = pstmt.executeQuery()) {</span>
-<span class="nc bnc" id="L374" title="All 2 branches missed.">                while (rs.next()) {</span>
-<span class="nc" id="L375">                    String id = rs.getString(&quot;id&quot;);</span>
-<span class="nc" id="L376">                    String submitterId = rs.getString(&quot;submitter_id&quot;);</span>
-<span class="nc" id="L377">                    String title = rs.getString(&quot;title&quot;);</span>
-<span class="nc" id="L378">                    String description = rs.getString(&quot;description&quot;);</span>
-<span class="nc" id="L379">                    String projectType = rs.getString(&quot;project_type&quot;);</span>
-<span class="nc" id="L380">                    String expectedDate = rs.getString(&quot;expected_date&quot;);</span>
-<span class="nc" id="L381">                    String submissions = rs.getString(&quot;submissions&quot;);</span>
-<span class="nc" id="L382">                    String chosenIntervenant = rs.getString(&quot;chosen_intervenant&quot;);</span>
-<span class="nc" id="L383">                    String closingMessage = rs.getString(&quot;closing_message&quot;);</span>
+<span class="nc" id="L417">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="nc bnc" id="L418" title="All 2 branches missed.">                while (rs.next()) {</span>
+<span class="nc" id="L419">                    String id = rs.getString(&quot;id&quot;);</span>
+<span class="nc" id="L420">                    String submitterId = rs.getString(&quot;submitter_id&quot;);</span>
+<span class="nc" id="L421">                    String title = rs.getString(&quot;title&quot;);</span>
+<span class="nc" id="L422">                    String description = rs.getString(&quot;description&quot;);</span>
+<span class="nc" id="L423">                    String projectType = rs.getString(&quot;project_type&quot;);</span>
+<span class="nc" id="L424">                    String expectedDate = rs.getString(&quot;expected_date&quot;);</span>
+<span class="nc" id="L425">                    String submissions = rs.getString(&quot;submissions&quot;);</span>
+<span class="nc" id="L426">                    String chosenIntervenant = rs.getString(&quot;chosen_intervenant&quot;);</span>
+<span class="nc" id="L427">                    String closingMessage = rs.getString(&quot;closing_message&quot;);</span>
 
-<span class="nc" id="L385">                    WorkRequestForm workRequestForm = new WorkRequestForm(</span>
+<span class="nc" id="L429">                    WorkRequestForm workRequestForm = new WorkRequestForm(</span>
                             id,
                             submitterId,
                             title,
                             description,
                             projectType,
                             expectedDate,
-<span class="nc bnc" id="L392" title="All 2 branches missed.">                            submissions != null ? Arrays.asList(submissions.split(&quot;,(?! )&quot;)) : new ArrayList&lt;&gt;(),</span>
+<span class="nc bnc" id="L436" title="All 2 branches missed.">                            submissions != null ? Arrays.asList(submissions.split(&quot;,(?! )&quot;)) : new ArrayList&lt;&gt;(),</span>
                             chosenIntervenant,
                             closingMessage
                     );
-<span class="nc" id="L396">                    userWorkRequests.add(workRequestForm);</span>
-<span class="nc" id="L397">                }</span>
+<span class="nc" id="L440">                    userWorkRequests.add(workRequestForm);</span>
+<span class="nc" id="L441">                }</span>
             }
-<span class="nc" id="L399">        } catch (SQLException e) {</span>
-<span class="nc" id="L400">            System.out.println(&quot;Erreur lors de la récupération des requêtes utilisateur : &quot; + e.getMessage());</span>
-<span class="nc" id="L401">        }</span>
-<span class="nc" id="L402">        return userWorkRequests;</span>
+<span class="nc" id="L443">        } catch (SQLException e) {</span>
+<span class="nc" id="L444">            System.out.println(&quot;Erreur lors de la récupération des requêtes utilisateur : &quot; + e.getMessage());</span>
+<span class="nc" id="L445">        }</span>
+<span class="nc" id="L446">        return userWorkRequests;</span>
     }
 
     /**
@@ -408,48 +452,48 @@ import java.util.List;
      * @return Une liste de {@code WorkRequestForm} représentant les requêtes de travaux.
      */
     public List&lt;WorkRequestForm&gt; fetchWorkRequests() {
-<span class="nc" id="L411">        List&lt;WorkRequestForm&gt; workRequestForms = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L412">        String selectSQL = &quot;SELECT * FROM WorkRequests&quot;;</span>
-<span class="nc" id="L413">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L414">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
+<span class="fc" id="L455">        List&lt;WorkRequestForm&gt; workRequestForms = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L456">        String selectSQL = &quot;SELECT * FROM WorkRequests&quot;;</span>
+<span class="fc" id="L457">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="fc" id="L458">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
 
-<span class="nc" id="L416">            try (ResultSet rs = pstmt.executeQuery()) {</span>
-<span class="nc bnc" id="L417" title="All 2 branches missed.">                while (rs.next()) {</span>
-<span class="nc" id="L418">                    String idFromDb = rs.getString(&quot;id&quot;);</span>
-<span class="nc" id="L419">                    String submitterIdFromDB = rs.getString(&quot;submitter_id&quot;);</span>
-<span class="nc" id="L420">                    String titleFromDB = rs.getString(&quot;title&quot;);</span>
-<span class="nc" id="L421">                    String descriptionFromDB = rs.getString(&quot;description&quot;);</span>
-<span class="nc" id="L422">                    String projectTypeFromDB = rs.getString(&quot;project_type&quot;);</span>
-<span class="nc" id="L423">                    String expectedDateFromDB = rs.getString(&quot;expected_date&quot;);</span>
-<span class="nc" id="L424">                    String submissionsFromDB = rs.getString(&quot;submissions&quot;);</span>
-<span class="nc" id="L425">                    String chosenIntervenantFromDB = rs.getString(&quot;chosen_intervenant&quot;);</span>
-<span class="nc" id="L426">                    String closingMessageFromDB = rs.getString(&quot;closing_message&quot;);</span>
+<span class="fc" id="L460">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="fc bfc" id="L461" title="All 2 branches covered.">                while (rs.next()) {</span>
+<span class="fc" id="L462">                    String idFromDb = rs.getString(&quot;id&quot;);</span>
+<span class="fc" id="L463">                    String submitterIdFromDB = rs.getString(&quot;submitter_id&quot;);</span>
+<span class="fc" id="L464">                    String titleFromDB = rs.getString(&quot;title&quot;);</span>
+<span class="fc" id="L465">                    String descriptionFromDB = rs.getString(&quot;description&quot;);</span>
+<span class="fc" id="L466">                    String projectTypeFromDB = rs.getString(&quot;project_type&quot;);</span>
+<span class="fc" id="L467">                    String expectedDateFromDB = rs.getString(&quot;expected_date&quot;);</span>
+<span class="fc" id="L468">                    String submissionsFromDB = rs.getString(&quot;submissions&quot;);</span>
+<span class="fc" id="L469">                    String chosenIntervenantFromDB = rs.getString(&quot;chosen_intervenant&quot;);</span>
+<span class="fc" id="L470">                    String closingMessageFromDB = rs.getString(&quot;closing_message&quot;);</span>
 
-<span class="nc" id="L428">                    WorkRequestForm workRequestForm = new WorkRequestForm(</span>
+<span class="fc" id="L472">                    WorkRequestForm workRequestForm = new WorkRequestForm(</span>
                             idFromDb,
                             submitterIdFromDB,
                             titleFromDB,
                             descriptionFromDB,
                             projectTypeFromDB,
                             expectedDateFromDB,
-<span class="nc bnc" id="L435" title="All 2 branches missed.">                            submissionsFromDB != null ? Arrays.asList(submissionsFromDB.split(&quot;,(?! )&quot;)) : new ArrayList&lt;&gt;(),</span>
+<span class="fc bfc" id="L479" title="All 2 branches covered.">                            submissionsFromDB != null ? Arrays.asList(submissionsFromDB.split(&quot;,(?! )&quot;)) : new ArrayList&lt;&gt;(),</span>
                             chosenIntervenantFromDB,
                             closingMessageFromDB
 
                     );
-<span class="nc" id="L440">                    workRequestForms.add(workRequestForm);</span>
-<span class="nc" id="L441">                }</span>
+<span class="fc" id="L484">                    workRequestForms.add(workRequestForm);</span>
+<span class="fc" id="L485">                }</span>
 
-<span class="nc bnc" id="L443" title="All 2 branches missed.">                if (workRequestForms.isEmpty()) {</span>
-<span class="nc" id="L444">                    System.out.println(&quot;Erreur lors du fetching.&quot;);</span>
-<span class="nc" id="L445">                    return null;</span>
+<span class="pc bpc" id="L487" title="1 of 2 branches missed.">                if (workRequestForms.isEmpty()) {</span>
+<span class="nc" id="L488">                    System.out.println(&quot;Erreur lors du fetching.&quot;);</span>
+<span class="nc" id="L489">                    return null;</span>
                 }
 
-<span class="nc" id="L448">                return workRequestForms;</span>
-<span class="nc bnc" id="L449" title="All 2 branches missed.">            }</span>
-<span class="nc bnc" id="L450" title="All 4 branches missed.">        } catch (SQLException e) {</span>
-<span class="nc" id="L451">            System.out.println(&quot;Erreur lors de la connexion à la DB : &quot; + e.getMessage());</span>
-<span class="nc" id="L452">            return null;</span>
+<span class="fc" id="L492">                return workRequestForms;</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">            }</span>
+<span class="nc bnc" id="L494" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L495">            System.out.println(&quot;Erreur lors de la connexion à la DB : &quot; + e.getMessage());</span>
+<span class="nc" id="L496">            return null;</span>
         }
     }
 
@@ -459,37 +503,37 @@ import java.util.List;
      * @param workRequestId L'identifiant unique de la requête à supprimer.
      */
     public void deleteWorkRequest(String workRequestId) {
-<span class="nc" id="L462">        String deleteSQL = &quot;DELETE FROM WorkRequests WHERE id = ?&quot;;</span>
-<span class="nc" id="L463">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L464">             PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {</span>
+<span class="nc" id="L506">        String deleteSQL = &quot;DELETE FROM WorkRequests WHERE id = ?&quot;;</span>
+<span class="nc" id="L507">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="nc" id="L508">             PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {</span>
 
-<span class="nc" id="L466">            pstmt.setString(1, workRequestId); // Bind the work request ID to the query</span>
-<span class="nc" id="L467">            int rowsAffected = pstmt.executeUpdate();</span>
+<span class="nc" id="L510">            pstmt.setString(1, workRequestId); // Bind the work request ID to the query</span>
+<span class="nc" id="L511">            int rowsAffected = pstmt.executeUpdate();</span>
 
-<span class="nc bnc" id="L469" title="All 2 branches missed.">            if (rowsAffected &gt; 0) {</span>
-<span class="nc" id="L470">                System.out.println(&quot;Requête supprimée avec succès.&quot;);</span>
+<span class="nc bnc" id="L513" title="All 2 branches missed.">            if (rowsAffected &gt; 0) {</span>
+<span class="nc" id="L514">                System.out.println(&quot;Requête supprimée avec succès.&quot;);</span>
             } else {
-<span class="nc" id="L472">                System.out.println(&quot;Aucune requête trouvée avec cet identifiant.&quot;);</span>
+<span class="nc" id="L516">                System.out.println(&quot;Aucune requête trouvée avec cet identifiant.&quot;);</span>
             }
-<span class="nc" id="L474">        } catch (SQLException e) {</span>
-<span class="nc" id="L475">            throw new RuntimeException(&quot;Erreur lors de la suppression de la requête : &quot; + e.getMessage());</span>
-<span class="nc" id="L476">        }</span>
-<span class="nc" id="L477">    }</span>
+<span class="nc" id="L518">        } catch (SQLException e) {</span>
+<span class="nc" id="L519">            throw new RuntimeException(&quot;Erreur lors de la suppression de la requête : &quot; + e.getMessage());</span>
+<span class="nc" id="L520">        }</span>
+<span class="nc" id="L521">    }</span>
 
 
     // ##################### Classes utilisées pour le casting avec Mochi's Adapters #####################
     // Classe ApiResponse pour le Json au complet
-<span class="nc" id="L482">    public static class ApiResponse {</span>
+<span class="fc" id="L526">    public static class ApiResponse {</span>
         public Result result;
     }
 
     // Classe Result pour l'objet &quot;result&quot;
-<span class="nc" id="L487">    public static class Result {</span>
+<span class="fc" id="L531">    public static class Result {</span>
         @Json(name = &quot;records&quot;)
         public List&lt;Record&gt; records;
 
         // Classe Record pour l'objet &quot;records&quot; qui contient tous les projets en cours
-<span class="nc" id="L492">        public static class Record {</span>
+<span class="fc" id="L536">        public static class Record {</span>
             // Travaux
             @Json(name = &quot;id&quot;)
             private String id;
@@ -543,65 +587,65 @@ import java.util.List;
             private String streetImpactType;
 
             public TypeOfWork getTypeOfWork() {
-<span class="nc bnc" id="L546" title="All 2 branches missed.">                if (typeOfWork != null) {</span>
+<span class="pc bpc" id="L590" title="1 of 2 branches missed.">                if (typeOfWork != null) {</span>
                     // Matching partielle dans typeOfWork
-<span class="nc bnc" id="L548" title="All 2 branches missed.">                    if (typeOfWork.contains(&quot;souterraine&quot;)) {</span>
-<span class="nc" id="L549">                        return TypeOfWork.UNDERGROUND;</span>
-<span class="nc bnc" id="L550" title="All 2 branches missed.">                    } else if (typeOfWork.contains(&quot;routier&quot;)) {</span>
-<span class="nc" id="L551">                        return TypeOfWork.ROAD;</span>
-<span class="nc bnc" id="L552" title="All 4 branches missed.">                    } else if (typeOfWork.contains(&quot;gaz&quot;) || typeOfWork.contains(&quot;électricité&quot;)) {</span>
-<span class="nc" id="L553">                        return TypeOfWork.GAS_ELECTRICITY;</span>
-<span class="nc bnc" id="L554" title="All 4 branches missed.">                    } else if (typeOfWork.contains(&quot;construction&quot;) || typeOfWork.contains(&quot;rénovation&quot;)) {</span>
-<span class="nc" id="L555">                        return TypeOfWork.CONSTRUCTION_RENOVATION;</span>
-<span class="nc bnc" id="L556" title="All 2 branches missed.">                    } else if (typeOfWork.contains(&quot;paysagement&quot;)) {</span>
-<span class="nc" id="L557">                        return TypeOfWork.LANDSCAPE;</span>
-<span class="nc bnc" id="L558" title="All 2 branches missed.">                    } else if (typeOfWork.contains(&quot;transports publics&quot;)) {</span>
-<span class="nc" id="L559">                        return TypeOfWork.PUBLIC_TRANSPORT;</span>
-<span class="nc bnc" id="L560" title="All 4 branches missed.">                    } else if (typeOfWork.contains(&quot;signalisation&quot;) || typeOfWork.contains(&quot;éclairage&quot;)) {</span>
-<span class="nc" id="L561">                        return TypeOfWork.SIGNAGE_LIGHTING;</span>
-<span class="nc bnc" id="L562" title="All 2 branches missed.">                    } else if (typeOfWork.contains(&quot;résidentiels&quot;)) {</span>
-<span class="nc" id="L563">                        return TypeOfWork.RESIDENTIAL;</span>
-<span class="nc bnc" id="L564" title="All 2 branches missed.">                    } else if (typeOfWork.contains(&quot;Entretien&quot;)) {</span>
-<span class="nc" id="L565">                        return TypeOfWork.URBAN_MAINTENANCE;</span>
-<span class="nc bnc" id="L566" title="All 2 branches missed.">                    } else if (typeOfWork.contains(&quot;télécommunication&quot;)) {</span>
-<span class="nc" id="L567">                        return TypeOfWork.TELECOMMUNICATION_NETWORKS;</span>
+<span class="pc bpc" id="L592" title="1 of 2 branches missed.">                    if (typeOfWork.contains(&quot;souterraine&quot;)) {</span>
+<span class="nc" id="L593">                        return TypeOfWork.UNDERGROUND;</span>
+<span class="fc bfc" id="L594" title="All 2 branches covered.">                    } else if (typeOfWork.contains(&quot;routier&quot;)) {</span>
+<span class="fc" id="L595">                        return TypeOfWork.ROAD;</span>
+<span class="pc bpc" id="L596" title="2 of 4 branches missed.">                    } else if (typeOfWork.contains(&quot;gaz&quot;) || typeOfWork.contains(&quot;électricité&quot;)) {</span>
+<span class="nc" id="L597">                        return TypeOfWork.GAS_ELECTRICITY;</span>
+<span class="pc bpc" id="L598" title="1 of 4 branches missed.">                    } else if (typeOfWork.contains(&quot;construction&quot;) || typeOfWork.contains(&quot;rénovation&quot;)) {</span>
+<span class="fc" id="L599">                        return TypeOfWork.CONSTRUCTION_RENOVATION;</span>
+<span class="pc bpc" id="L600" title="1 of 2 branches missed.">                    } else if (typeOfWork.contains(&quot;paysagement&quot;)) {</span>
+<span class="nc" id="L601">                        return TypeOfWork.LANDSCAPE;</span>
+<span class="pc bpc" id="L602" title="1 of 2 branches missed.">                    } else if (typeOfWork.contains(&quot;transports publics&quot;)) {</span>
+<span class="nc" id="L603">                        return TypeOfWork.PUBLIC_TRANSPORT;</span>
+<span class="pc bpc" id="L604" title="1 of 4 branches missed.">                    } else if (typeOfWork.contains(&quot;signalisation&quot;) || typeOfWork.contains(&quot;éclairage&quot;)) {</span>
+<span class="fc" id="L605">                        return TypeOfWork.SIGNAGE_LIGHTING;</span>
+<span class="pc bpc" id="L606" title="1 of 2 branches missed.">                    } else if (typeOfWork.contains(&quot;résidentiels&quot;)) {</span>
+<span class="nc" id="L607">                        return TypeOfWork.RESIDENTIAL;</span>
+<span class="fc bfc" id="L608" title="All 2 branches covered.">                    } else if (typeOfWork.contains(&quot;Entretien&quot;)) {</span>
+<span class="fc" id="L609">                        return TypeOfWork.URBAN_MAINTENANCE;</span>
+<span class="pc bpc" id="L610" title="1 of 2 branches missed.">                    } else if (typeOfWork.contains(&quot;télécommunication&quot;)) {</span>
+<span class="nc" id="L611">                        return TypeOfWork.TELECOMMUNICATION_NETWORKS;</span>
                     }
                 }
 
-<span class="nc" id="L571">                return TypeOfWork.OTHER;</span>
+<span class="fc" id="L615">                return TypeOfWork.OTHER;</span>
             }
 
             public List&lt;String&gt; buildScheduleList() {
-<span class="nc" id="L575">                List&lt;String&gt; scheduleList = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L576">                scheduleList.add(formatTimeRange(saturdayStartTime, saturdayEndTime));  // Saturday</span>
-<span class="nc" id="L577">                scheduleList.add(formatTimeRange(sundayStartTime, sundayEndTime));      // Sunday</span>
-<span class="nc" id="L578">                scheduleList.add(formatTimeRange(mondayStartTime, mondayEndTime));      // Monday</span>
-<span class="nc" id="L579">                scheduleList.add(formatTimeRange(tuesdayStartTime, tuesdayEndTime));    // Tuesday</span>
-<span class="nc" id="L580">                scheduleList.add(formatTimeRange(wednesdayStartTime, wednesdayEndTime));// Wednesday</span>
-<span class="nc" id="L581">                scheduleList.add(formatTimeRange(thursdayStartTime, thursdayEndTime));  // Thursday</span>
-<span class="nc" id="L582">                scheduleList.add(formatTimeRange(fridayStartTime, fridayEndTime));      // Friday</span>
-<span class="nc" id="L583">                return scheduleList;</span>
+<span class="fc" id="L619">                List&lt;String&gt; scheduleList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L620">                scheduleList.add(formatTimeRange(saturdayStartTime, saturdayEndTime));  // Saturday</span>
+<span class="fc" id="L621">                scheduleList.add(formatTimeRange(sundayStartTime, sundayEndTime));      // Sunday</span>
+<span class="fc" id="L622">                scheduleList.add(formatTimeRange(mondayStartTime, mondayEndTime));      // Monday</span>
+<span class="fc" id="L623">                scheduleList.add(formatTimeRange(tuesdayStartTime, tuesdayEndTime));    // Tuesday</span>
+<span class="fc" id="L624">                scheduleList.add(formatTimeRange(wednesdayStartTime, wednesdayEndTime));// Wednesday</span>
+<span class="fc" id="L625">                scheduleList.add(formatTimeRange(thursdayStartTime, thursdayEndTime));  // Thursday</span>
+<span class="fc" id="L626">                scheduleList.add(formatTimeRange(fridayStartTime, fridayEndTime));      // Friday</span>
+<span class="fc" id="L627">                return scheduleList;</span>
             }
 
             private String formatTimeRange(String startTime, String endTime) {
-<span class="nc bnc" id="L587" title="All 2 branches missed.">                String formattedStartTime = (startTime != null) ? startTime : &quot;N/A&quot;;</span>
-<span class="nc bnc" id="L588" title="All 2 branches missed.">                String formattedEndTime = (endTime != null) ? endTime : &quot;N/A&quot;;</span>
-<span class="nc" id="L589">                return formattedStartTime + &quot;-&quot; + formattedEndTime;</span>
+<span class="fc bfc" id="L631" title="All 2 branches covered.">                String formattedStartTime = (startTime != null) ? startTime : &quot;N/A&quot;;</span>
+<span class="fc bfc" id="L632" title="All 2 branches covered.">                String formattedEndTime = (endTime != null) ? endTime : &quot;N/A&quot;;</span>
+<span class="fc" id="L633">                return formattedStartTime + &quot;-&quot; + formattedEndTime;</span>
             }
 
             // Getters pour travaux
-<span class="nc" id="L593">            public String getId() { return id; }</span>
-<span class="nc" id="L594">            public String getTypeOfWorkRaw() { return this.typeOfWork; }</span>
-<span class="nc" id="L595">            public String getAffectedNeighbourhood() { return affectedNeighbourhood; }</span>
-<span class="nc" id="L596">            public String getAffectedStreets() { return affectedStreets; }</span>
-<span class="nc" id="L597">            public String getStartDate() { return startDate; }</span>
-<span class="nc" id="L598">            public String getEndDate() { return endDate; }</span>
+<span class="fc" id="L637">            public String getId() { return id; }</span>
+<span class="fc" id="L638">            public String getTypeOfWorkRaw() { return this.typeOfWork; }</span>
+<span class="fc" id="L639">            public String getAffectedNeighbourhood() { return affectedNeighbourhood; }</span>
+<span class="fc" id="L640">            public String getAffectedStreets() { return affectedStreets; }</span>
+<span class="fc" id="L641">            public String getStartDate() { return startDate; }</span>
+<span class="fc" id="L642">            public String getEndDate() { return endDate; }</span>
 
             // Getters pour entraves
-<span class="nc" id="L601">            public String getIdRequest() { return idRequest; }</span>
-<span class="nc" id="L602">            public String getStreetId() { return streetId; }</span>
-<span class="nc" id="L603">            public String getStreetImpactWidth() { return streetImpactWidth; }</span>
-<span class="nc" id="L604">            public String getStreetImpactType() { return streetImpactType; }</span>
+<span class="nc" id="L645">            public String getIdRequest() { return idRequest; }</span>
+<span class="nc" id="L646">            public String getStreetId() { return streetId; }</span>
+<span class="nc" id="L647">            public String getStreetImpactWidth() { return streetImpactWidth; }</span>
+<span class="nc" id="L648">            public String getStreetImpactType() { return streetImpactType; }</span>
         }
     }
 }

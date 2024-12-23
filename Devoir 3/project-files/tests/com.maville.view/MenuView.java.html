@@ -12,7 +12,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
  * de l'application Maville. Elle gère les interactions avec l'utilisateur via des entrées et sorties console.
  */
 <span class="nc" id="L14">public class MenuView {</span>
-<span class="nc" id="L15">    private static final Scanner scanner = new Scanner(System.in);</span>
+<span class="fc" id="L15">    private static final Scanner scanner = new Scanner(System.in);</span>
 
     // Messages
     public static void welcomeMessage() {
@@ -69,7 +69,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
      */
     public static void residentMenuMessages() {
 <span class="nc" id="L71">        displayOptions(</span>
-                &quot;Choisissez l'une des options :&quot;,
+                &quot;\nChoisissez l'une des options :&quot;,
 <span class="nc" id="L73">                new TreeMap&lt;&gt;(Map.of(</span>
 <span class="nc" id="L74">                        1, &quot;Consulter les travaux&quot;,</span>
 <span class="nc" id="L75">                        2, &quot;Consulter les entraves routières&quot;,</span>
@@ -312,9 +312,13 @@ import static org.fusesource.jansi.Ansi.Color.*;
 <span class="nc" id="L312">        List&lt;String&gt; inputs = new ArrayList&lt;&gt;();</span>
 <span class="nc" id="L313">        printMessage(header);</span>
 <span class="nc bnc" id="L314" title="All 2 branches missed.">        for (String prompt : prompts) {</span>
-<span class="nc" id="L315">            inputs.add(askSingleInput(prompt));</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">            if (prompt.equals(&quot;Type de travaux : &quot;)) {</span>
+<span class="nc" id="L316">                inputs.add(askWorkType());</span>
+            } else {
+<span class="nc" id="L318">                inputs.add(askSingleInput(prompt));</span>
+            }
         }
-<span class="nc" id="L317">        return inputs;</span>
+<span class="nc" id="L321">        return inputs;</span>
     }
 
     /**
@@ -325,50 +329,50 @@ import static org.fusesource.jansi.Ansi.Color.*;
      * @return Une chaîne de caractères contenant la saisie utilisateur.
      */
     public static String askLongInput(String header, String... prompts) {
-<span class="nc" id="L328">        printMessage(header);</span>
-<span class="nc bnc" id="L329" title="All 2 branches missed.">        for (String prompt : prompts) {</span>
-<span class="nc" id="L330">            printMessage(prompt);</span>
+<span class="nc" id="L332">        printMessage(header);</span>
+<span class="nc bnc" id="L333" title="All 2 branches missed.">        for (String prompt : prompts) {</span>
+<span class="nc" id="L334">            printMessage(prompt);</span>
         }
-<span class="nc" id="L332">        return scanner.nextLine();</span>
+<span class="nc" id="L336">        return scanner.nextLine();</span>
     }
 
-    private static String askWorkType() {
-<span class="nc" id="L336">        TreeMap&lt;Integer, Project.TypeOfWork&gt; typeOfWorkMap = new TreeMap&lt;&gt;(Map.of(</span>
-<span class="nc" id="L337">                1, Project.TypeOfWork.ROAD,</span>
-<span class="nc" id="L338">                2, Project.TypeOfWork.GAS_ELECTRICITY,</span>
-<span class="nc" id="L339">                3, Project.TypeOfWork.CONSTRUCTION_RENOVATION,</span>
-<span class="nc" id="L340">                4, Project.TypeOfWork.LANDSCAPE,</span>
-<span class="nc" id="L341">                5, Project.TypeOfWork.PUBLIC_TRANSPORT,</span>
-<span class="nc" id="L342">                6, Project.TypeOfWork.SIGNAGE_LIGHTING,</span>
-<span class="nc" id="L343">                7, Project.TypeOfWork.UNDERGROUND,</span>
-<span class="nc" id="L344">                8, Project.TypeOfWork.RESIDENTIAL,</span>
-<span class="nc" id="L345">                9, Project.TypeOfWork.URBAN_MAINTENANCE,</span>
-<span class="nc" id="L346">                10, Project.TypeOfWork.TELECOMMUNICATION_NETWORKS</span>
+    public static String askWorkType() {
+<span class="nc" id="L340">        TreeMap&lt;Integer, Project.TypeOfWork&gt; typeOfWorkMap = new TreeMap&lt;&gt;(Map.of(</span>
+<span class="nc" id="L341">                1, Project.TypeOfWork.ROAD,</span>
+<span class="nc" id="L342">                2, Project.TypeOfWork.GAS_ELECTRICITY,</span>
+<span class="nc" id="L343">                3, Project.TypeOfWork.CONSTRUCTION_RENOVATION,</span>
+<span class="nc" id="L344">                4, Project.TypeOfWork.LANDSCAPE,</span>
+<span class="nc" id="L345">                5, Project.TypeOfWork.PUBLIC_TRANSPORT,</span>
+<span class="nc" id="L346">                6, Project.TypeOfWork.SIGNAGE_LIGHTING,</span>
+<span class="nc" id="L347">                7, Project.TypeOfWork.UNDERGROUND,</span>
+<span class="nc" id="L348">                8, Project.TypeOfWork.RESIDENTIAL,</span>
+<span class="nc" id="L349">                9, Project.TypeOfWork.URBAN_MAINTENANCE,</span>
+<span class="nc" id="L350">                10, Project.TypeOfWork.TELECOMMUNICATION_NETWORKS</span>
         ));
 
-<span class="nc" id="L349">        displayOptions(&quot;Type de travaux :&quot;, new TreeMap&lt;&gt;(Map.of(</span>
-<span class="nc" id="L350">                1, &quot;Travaux routiers&quot;, 2, &quot;Travaux de gaz ou électricité&quot;,</span>
-<span class="nc" id="L351">                3, &quot;Construction ou rénovation&quot;, 4, &quot;Entretien paysager&quot;,</span>
-<span class="nc" id="L352">                5, &quot;Travaux liés aux transports en commun&quot;, 6, &quot;Travaux de signalisation et éclairage&quot;,</span>
-<span class="nc" id="L353">                7, &quot;Travaux souterrains&quot;, 8, &quot;Travaux résidentiels&quot;,</span>
-<span class="nc" id="L354">                9, &quot;Entretien urbain&quot;, 10, &quot;Entretien des réseaux de télécommunication&quot;</span>
+<span class="nc" id="L353">        displayOptions(&quot;Type de travaux :&quot;, new TreeMap&lt;&gt;(Map.of(</span>
+<span class="nc" id="L354">                1, &quot;Travaux routiers&quot;, 2, &quot;Travaux de gaz ou électricité&quot;,</span>
+<span class="nc" id="L355">                3, &quot;Construction ou rénovation&quot;, 4, &quot;Entretien paysager&quot;,</span>
+<span class="nc" id="L356">                5, &quot;Travaux liés aux transports en commun&quot;, 6, &quot;Travaux de signalisation et éclairage&quot;,</span>
+<span class="nc" id="L357">                7, &quot;Travaux souterrains&quot;, 8, &quot;Travaux résidentiels&quot;,</span>
+<span class="nc" id="L358">                9, &quot;Entretien urbain&quot;, 10, &quot;Entretien des réseaux de télécommunication&quot;</span>
         )));
 
-<span class="nc" id="L357">        int option = scanner.nextInt();</span>
-<span class="nc" id="L358">        scanner.nextLine(); // Clear buffer</span>
+<span class="nc" id="L361">        int option = scanner.nextInt();</span>
+<span class="nc" id="L362">        scanner.nextLine(); // Clear buffer</span>
 
-<span class="nc" id="L360">        Project.TypeOfWork selectedWork = typeOfWorkMap.get(option);</span>
-<span class="nc bnc" id="L361" title="All 2 branches missed.">        if (selectedWork != null) {</span>
-<span class="nc" id="L362">            return selectedWork.toString();</span>
+<span class="nc" id="L364">        Project.TypeOfWork selectedWork = typeOfWorkMap.get(option);</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">        if (selectedWork != null) {</span>
+<span class="nc" id="L366">            return selectedWork.toString();</span>
         } else {
-<span class="nc" id="L364">            printMessage(&quot;Option invalide. Veuillez réessayer.&quot;);</span>
-<span class="nc" id="L365">            return askWorkType();</span>
+<span class="nc" id="L368">            printMessage(&quot;Option invalide. Veuillez réessayer.&quot;);</span>
+<span class="nc" id="L369">            return askWorkType();</span>
         }
     }
 
     private static void printMessageInline(String message) {
-<span class="nc" id="L370">        System.out.print(message);</span>
-<span class="nc" id="L371">    }</span>
+<span class="nc" id="L374">        System.out.print(message);</span>
+<span class="nc" id="L375">    }</span>
 
     /**
      * Affiche un message avec un retour à la ligne.
@@ -376,7 +380,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
      * @param message Le message à afficher.
      */
     public static void printMessage(String message) {
-<span class="nc" id="L379">        System.out.println(message);</span>
-<span class="nc" id="L380">    }</span>
+<span class="fc" id="L383">        System.out.println(message);</span>
+<span class="fc" id="L384">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

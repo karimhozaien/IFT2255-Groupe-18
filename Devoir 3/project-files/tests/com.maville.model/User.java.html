@@ -17,12 +17,12 @@ public class User {
      *
      * @param builder Le Builder contenant les données nécessaires pour créer l'utilisateur.
      */
-<span class="nc" id="L20">    protected User(Builder&lt;?&gt; builder) {</span>
-<span class="nc" id="L21">        this.ID = builder.id;</span>
-<span class="nc" id="L22">        this.name = builder.name;</span>
-<span class="nc" id="L23">        this.email = builder.email;</span>
-<span class="nc" id="L24">        this.password = builder.password;</span>
-<span class="nc" id="L25">    }</span>
+<span class="fc" id="L20">    protected User(Builder&lt;?&gt; builder) {</span>
+<span class="fc" id="L21">        this.ID = builder.id;</span>
+<span class="fc" id="L22">        this.name = builder.name;</span>
+<span class="fc" id="L23">        this.email = builder.email;</span>
+<span class="fc" id="L24">        this.password = builder.password;</span>
+<span class="fc" id="L25">    }</span>
 
     /**
      * Retourne l'identifiant unique de l'utilisateur.
@@ -30,7 +30,7 @@ public class User {
      * @return L'identifiant unique.
      */
     public String getID() {
-<span class="nc" id="L33">        return ID;</span>
+<span class="fc" id="L33">        return ID;</span>
     }
 
     /**
@@ -39,7 +39,7 @@ public class User {
      * @return Le nom de l'utilisateur.
      */
     public String getName() {
-<span class="nc" id="L42">        return name;</span>
+<span class="fc" id="L42">        return name;</span>
     }
 
     /**
@@ -48,7 +48,7 @@ public class User {
      * @return L'adresse email.
      */
     public String getEmail() {
-<span class="nc" id="L51">        return email;</span>
+<span class="fc" id="L51">        return email;</span>
     }
 
     /**
@@ -57,7 +57,7 @@ public class User {
      * @return Le mot de passe.
      */
     public String getPassword() {
-<span class="nc" id="L60">        return password;</span>
+<span class="fc" id="L60">        return password;</span>
     }
 
     /**
@@ -74,7 +74,7 @@ public class User {
      *
      * @param &lt;T&gt; Le type du Builder spécifique.
      */
-<span class="nc" id="L77">    public static abstract class Builder&lt;T extends Builder&lt;T&gt;&gt; {</span>
+<span class="fc" id="L77">    public static abstract class Builder&lt;T extends Builder&lt;T&gt;&gt; {</span>
         protected String id;
         protected String name;
         protected String email;
@@ -87,8 +87,8 @@ public class User {
          * @return L'instance courante du Builder.
          */
         public T name(String name) {
-<span class="nc" id="L90">            this.name = name;</span>
-<span class="nc" id="L91">            return self();</span>
+<span class="fc" id="L90">            this.name = name;</span>
+<span class="fc" id="L91">            return self();</span>
         }
 
         /**
@@ -98,8 +98,8 @@ public class User {
          * @return L'instance courante du Builder.
          */
         public T email(String email) {
-<span class="nc" id="L101">            this.email = email;</span>
-<span class="nc" id="L102">            return self();</span>
+<span class="fc" id="L101">            this.email = email;</span>
+<span class="fc" id="L102">            return self();</span>
         }
 
         /**
@@ -109,8 +109,8 @@ public class User {
          * @return L'instance courante du Builder.
          */
         public T password(String password) {
-<span class="nc" id="L112">            this.password = password;</span>
-<span class="nc" id="L113">            return self();</span>
+<span class="fc" id="L112">            this.password = password;</span>
+<span class="fc" id="L113">            return self();</span>
         }
 
         /**
@@ -119,8 +119,8 @@ public class User {
          * @return L'instance courante du Builder.
          */
         public T id() {
-<span class="nc" id="L122">            this.id = UUID.randomUUID().toString();</span>
-<span class="nc" id="L123">            return self();</span>
+<span class="fc" id="L122">            this.id = UUID.randomUUID().toString();</span>
+<span class="fc" id="L123">            return self();</span>
         }
 
         /**

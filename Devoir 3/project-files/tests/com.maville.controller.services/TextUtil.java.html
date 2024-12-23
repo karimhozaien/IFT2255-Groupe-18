@@ -21,8 +21,8 @@ import java.util.regex.Pattern;
      * @throws NullPointerException si l'entrée est {@code null}.
      */
     public static String removeAccents(String input) {
-<span class="nc" id="L24">        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);</span>
-<span class="nc" id="L25">        return Pattern.compile(&quot;\\p{M}&quot;).matcher(normalized).replaceAll(&quot;&quot;);</span>
+<span class="fc" id="L24">        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);</span>
+<span class="fc" id="L25">        return Pattern.compile(&quot;\\p{M}&quot;).matcher(normalized).replaceAll(&quot;&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

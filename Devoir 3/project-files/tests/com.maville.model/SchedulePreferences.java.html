@@ -11,12 +11,12 @@ public class SchedulePreferences {
     private String neighbourhood;
     private String weekHours;
 
-<span class="nc" id="L14">    public SchedulePreferences(String id, String street, String neighbourhood, String weekHours) {</span>
-<span class="nc" id="L15">        this.id = id;</span>
-<span class="nc" id="L16">        this.street = street;</span>
-<span class="nc" id="L17">        this.neighbourhood = neighbourhood;</span>
-<span class="nc" id="L18">        this.weekHours = weekHours;</span>
-<span class="nc" id="L19">    }</span>
+<span class="fc" id="L14">    public SchedulePreferences(String id, String street, String neighbourhood, String weekHours) {</span>
+<span class="fc" id="L15">        this.id = id;</span>
+<span class="fc" id="L16">        this.street = street;</span>
+<span class="fc" id="L17">        this.neighbourhood = neighbourhood;</span>
+<span class="fc" id="L18">        this.weekHours = weekHours;</span>
+<span class="fc" id="L19">    }</span>
 
     /**
      * Constructeur pour initialiser une instance de préférences d'horaire.
@@ -25,12 +25,12 @@ public class SchedulePreferences {
      * @param neighbourhood Le quartier concerné par les préférences.
      * @param weekHours     Les heures hebdomadaires sous forme de chaîne formatée.
      */
-<span class="nc" id="L28">    public SchedulePreferences(String street, String neighbourhood, String weekHours) {</span>
-<span class="nc" id="L29">        this.id = UUID.randomUUID().toString();</span>
-<span class="nc" id="L30">        this.street = street;</span>
-<span class="nc" id="L31">        this.neighbourhood = neighbourhood;</span>
-<span class="nc" id="L32">        this.weekHours = weekHours;</span>
-<span class="nc" id="L33">    }</span>
+<span class="fc" id="L28">    public SchedulePreferences(String street, String neighbourhood, String weekHours) {</span>
+<span class="fc" id="L29">        this.id = UUID.randomUUID().toString();</span>
+<span class="fc" id="L30">        this.street = street;</span>
+<span class="fc" id="L31">        this.neighbourhood = neighbourhood;</span>
+<span class="fc" id="L32">        this.weekHours = weekHours;</span>
+<span class="fc" id="L33">    }</span>
 
     /**
      * Retourne l'identifiant unique de la préférence.
@@ -38,7 +38,7 @@ public class SchedulePreferences {
      * @return L'identifiant unique.
      */
     public String getId() {
-<span class="nc" id="L41">        return id;</span>
+<span class="fc" id="L41">        return id;</span>
     }
 
     /**
@@ -47,7 +47,7 @@ public class SchedulePreferences {
      * @return La rue concernée.
      */
     public String getStreet() {
-<span class="nc" id="L50">        return street;</span>
+<span class="fc" id="L50">        return street;</span>
     }
 
     /**
@@ -56,7 +56,7 @@ public class SchedulePreferences {
      * @return Le quartier concerné.
      */
     public String getNeighbourhood() {
-<span class="nc" id="L59">        return neighbourhood;</span>
+<span class="fc" id="L59">        return neighbourhood;</span>
     }
 
     /**
@@ -65,7 +65,7 @@ public class SchedulePreferences {
      * @return Les heures hebdomadaires.
      */
     public String getWeekHours() {
-<span class="nc" id="L68">        return weekHours;</span>
+<span class="fc" id="L68">        return weekHours;</span>
     }
 
     public void setWeekHours(String weekHours) {

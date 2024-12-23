@@ -9,16 +9,16 @@ import java.sql.Statement;
  * Gère la connexion à la base de données SQLite et l'initialisation des tables nécessaires.
  * Implémente le pattern singleton pour garantir une seule instance de connexion.
  */
-<span class="nc" id="L12">public class DatabaseConnectionManager {</span>
+<span class="fc" id="L12">public class DatabaseConnectionManager {</span>
     private static final String URL = &quot;jdbc:sqlite:data/mydatabase.db&quot;;
     private static DatabaseConnectionManager instance;
     private Connection connection;
 
     public static DatabaseConnectionManager getInstance() {
-<span class="nc bnc" id="L18" title="All 2 branches missed.">        if (instance == null) {</span>
-<span class="nc" id="L19">            instance = new DatabaseConnectionManager();</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L19">            instance = new DatabaseConnectionManager();</span>
         }
-<span class="nc" id="L21">        return instance;</span>
+<span class="fc" id="L21">        return instance;</span>
     }
 
     /**
@@ -29,10 +29,10 @@ import java.sql.Statement;
      * @throws SQLException si une erreur se produit lors de la connexion.
      */
     public Connection getConnection() throws SQLException {
-<span class="nc bnc" id="L32" title="All 4 branches missed.">        if (connection == null || connection.isClosed()) {</span>
-<span class="nc" id="L33">            connection = DriverManager.getConnection(URL);</span>
+<span class="pc bpc" id="L32" title="1 of 4 branches missed.">        if (connection == null || connection.isClosed()) {</span>
+<span class="fc" id="L33">            connection = DriverManager.getConnection(URL);</span>
         }
-<span class="nc" id="L35">        return connection;</span>
+<span class="fc" id="L35">        return connection;</span>
     }
 
     /**

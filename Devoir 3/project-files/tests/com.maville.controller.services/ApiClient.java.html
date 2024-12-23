@@ -5,8 +5,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-<span class="nc" id="L8">public class ApiClient {</span>
-<span class="nc" id="L9">    final OkHttpClient client = new OkHttpClient();</span>
+<span class="fc" id="L8">public class ApiClient {</span>
+<span class="fc" id="L9">    final OkHttpClient client = new OkHttpClient();</span>
     private String jsonResponse;
 
     /**
@@ -16,20 +16,20 @@ import okhttp3.Response;
      * @throws IOException Si une erreur survient lors de l'exécution de la requête HTTP.
      */
     public void connect(String myAPIUrl) throws IOException {
-<span class="nc" id="L19">        Request request = new Request.Builder()</span>
-<span class="nc" id="L20">                .url(myAPIUrl)</span>
-<span class="nc" id="L21">                .build();</span>
+<span class="fc" id="L19">        Request request = new Request.Builder()</span>
+<span class="fc" id="L20">                .url(myAPIUrl)</span>
+<span class="fc" id="L21">                .build();</span>
 
         // Effectue la connection et si ça marche pas, on catch l'erreur
-<span class="nc" id="L24">        try(Response response = client.newCall(request).execute()) {</span>
-<span class="nc bnc" id="L25" title="All 4 branches missed.">            if (response.isSuccessful() &amp;&amp; response.body() != null) {</span>
-<span class="nc" id="L26">                jsonResponse = response.body().string();</span>
+<span class="fc" id="L24">        try(Response response = client.newCall(request).execute()) {</span>
+<span class="pc bpc" id="L25" title="2 of 4 branches missed.">            if (response.isSuccessful() &amp;&amp; response.body() != null) {</span>
+<span class="fc" id="L26">                jsonResponse = response.body().string();</span>
             }
         }
-<span class="nc" id="L29">    }</span>
+<span class="fc" id="L29">    }</span>
 
     public String getJsonResponse() {
-<span class="nc" id="L32">        return jsonResponse;</span>
+<span class="fc" id="L32">        return jsonResponse;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

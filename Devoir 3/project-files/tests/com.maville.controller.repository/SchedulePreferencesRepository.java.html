@@ -15,8 +15,8 @@ import java.util.List;
  * Dépôt pour gérer les préférences horaires des résidents.
  * Permet de sauvegarder, récupérer et vérifier les préférences horaires en fonction des soumissions de projets.
  */
-<span class="nc" id="L18">public class SchedulePreferencesRepository {</span>
-<span class="nc" id="L19">    List&lt;String&gt; scheduleConflicts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L18">public class SchedulePreferencesRepository {</span>
+<span class="fc" id="L19">    List&lt;String&gt; scheduleConflicts = new ArrayList&lt;&gt;();</span>
 
     /**
      * Sauvegarde les préférences horaires dans la base de données.
@@ -24,38 +24,38 @@ import java.util.List;
      * @param schedulePreferences Les préférences horaires à sauvegarder, incluant la rue, le quartier et les heures de la semaine.
      */
     public void savePreferences(SchedulePreferences schedulePreferences) {
-<span class="nc" id="L27">        String insertSQL = &quot;INSERT INTO SchedulePreferences(id, street_name, neighbourhood, week_hours) VALUES (?, ?, ?, ?)&quot;;</span>
+<span class="fc" id="L27">        String insertSQL = &quot;INSERT INTO SchedulePreferences(id, street_name, neighbourhood, week_hours) VALUES (?, ?, ?, ?)&quot;;</span>
 
-<span class="nc" id="L29">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L30">             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {</span>
-<span class="nc" id="L31">            pstmt.setString(1, schedulePreferences.getId());</span>
-<span class="nc" id="L32">            pstmt.setString(2, schedulePreferences.getStreet());</span>
-<span class="nc" id="L33">            pstmt.setString(3, schedulePreferences.getNeighbourhood());</span>
-<span class="nc" id="L34">            pstmt.setString(4, schedulePreferences.getWeekHours());</span>
+<span class="fc" id="L29">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="fc" id="L30">             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {</span>
+<span class="fc" id="L31">            pstmt.setString(1, schedulePreferences.getId());</span>
+<span class="fc" id="L32">            pstmt.setString(2, schedulePreferences.getStreet());</span>
+<span class="fc" id="L33">            pstmt.setString(3, schedulePreferences.getNeighbourhood());</span>
+<span class="fc" id="L34">            pstmt.setString(4, schedulePreferences.getWeekHours());</span>
 
-<span class="nc" id="L36">            pstmt.executeUpdate();</span>
+<span class="fc" id="L36">            pstmt.executeUpdate();</span>
 <span class="nc" id="L37">        } catch (SQLException e) {</span>
 <span class="nc" id="L38">            MenuView.printMessage(&quot;Erreur lors de l'enregistrement de la requête : &quot; + e.getMessage());</span>
-<span class="nc" id="L39">        }</span>
-<span class="nc" id="L40">    }</span>
+<span class="fc" id="L39">        }</span>
+<span class="fc" id="L40">    }</span>
 
     private String fetchPreferences(String neighbourhood) {
-<span class="nc" id="L43">        String selectSQL = &quot;SELECT * FROM SchedulePreferences WHERE neighbourhood = ?&quot;;</span>
+<span class="fc" id="L43">        String selectSQL = &quot;SELECT * FROM SchedulePreferences WHERE neighbourhood = ?&quot;;</span>
 
-<span class="nc" id="L45">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L46">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
-<span class="nc" id="L47">            pstmt.setString(1, neighbourhood);</span>
+<span class="fc" id="L45">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="fc" id="L46">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
+<span class="fc" id="L47">            pstmt.setString(1, neighbourhood);</span>
 
-<span class="nc" id="L49">            try (ResultSet rs = pstmt.executeQuery()) {</span>
-<span class="nc bnc" id="L50" title="All 2 branches missed.">                if (rs.next()) {</span>
-<span class="nc" id="L51">                    return rs.getString(&quot;week_hours&quot;);</span>
+<span class="fc" id="L49">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">                if (rs.next()) {</span>
+<span class="fc" id="L51">                    return rs.getString(&quot;week_hours&quot;);</span>
                 } else {
                     // Il n'y a pas de préférences dans ce quartier
-<span class="nc" id="L54">                    MenuView.printMessage(&quot;Aucune préférence trouvée dans ce quartier : &quot; + neighbourhood);</span>
-<span class="nc" id="L55">                    return null;</span>
+<span class="fc" id="L54">                    MenuView.printMessage(&quot;Aucune préférence trouvée dans ce quartier : &quot; + neighbourhood);</span>
+<span class="fc" id="L55">                    return null;</span>
                 }
-<span class="nc bnc" id="L57" title="All 2 branches missed.">            }</span>
-<span class="nc bnc" id="L58" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">            }</span>
+<span class="pc bpc" id="L58" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L59">            MenuView.printMessage(&quot;Erreur lors de la connexion : &quot; + e.getMessage());</span>
 <span class="nc" id="L60">            return null;</span>
         }
@@ -68,28 +68,28 @@ import java.util.List;
      * @return Une liste de préférences horaires associées au quartier, ou une liste vide si aucune préférence n'existe.
      */
     public List&lt;SchedulePreferences&gt; getPreferencesByNeighbourhood(String neighbourhood) {
-<span class="nc" id="L71">        String querySQL = &quot;SELECT * FROM SchedulePreferences WHERE neighbourhood = ?&quot;;</span>
-<span class="nc" id="L72">        List&lt;SchedulePreferences&gt; preferences = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L71">        String querySQL = &quot;SELECT * FROM SchedulePreferences WHERE neighbourhood = ?&quot;;</span>
+<span class="fc" id="L72">        List&lt;SchedulePreferences&gt; preferences = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L74">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L75">             PreparedStatement pstmt = conn.prepareStatement(querySQL)) {</span>
-<span class="nc" id="L76">            pstmt.setString(1, neighbourhood);</span>
+<span class="fc" id="L74">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="fc" id="L75">             PreparedStatement pstmt = conn.prepareStatement(querySQL)) {</span>
+<span class="fc" id="L76">            pstmt.setString(1, neighbourhood);</span>
 
-<span class="nc" id="L78">            try (ResultSet rs = pstmt.executeQuery()) {</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">                while (rs.next()) {</span>
-<span class="nc" id="L80">                    preferences.add(new SchedulePreferences(</span>
-<span class="nc" id="L81">                            rs.getString(&quot;id&quot;),</span>
-<span class="nc" id="L82">                            rs.getString(&quot;street_name&quot;),</span>
-<span class="nc" id="L83">                            rs.getString(&quot;neighbourhood&quot;),</span>
-<span class="nc" id="L84">                            rs.getString(&quot;week_hours&quot;)</span>
+<span class="fc" id="L78">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                while (rs.next()) {</span>
+<span class="fc" id="L80">                    preferences.add(new SchedulePreferences(</span>
+<span class="fc" id="L81">                            rs.getString(&quot;id&quot;),</span>
+<span class="fc" id="L82">                            rs.getString(&quot;street_name&quot;),</span>
+<span class="fc" id="L83">                            rs.getString(&quot;neighbourhood&quot;),</span>
+<span class="fc" id="L84">                            rs.getString(&quot;week_hours&quot;)</span>
                     ));
                 }
             }
 <span class="nc" id="L88">        } catch (SQLException e) {</span>
 <span class="nc" id="L89">            MenuView.printMessage(&quot;Erreur lors de la récupération des préférences : &quot; + e.getMessage());</span>
-<span class="nc" id="L90">        }</span>
+<span class="fc" id="L90">        }</span>
 
-<span class="nc" id="L92">        return preferences;</span>
+<span class="fc" id="L92">        return preferences;</span>
     }
 
     /**
@@ -100,20 +100,20 @@ import java.util.List;
      * @return {@code true} si l'horaire soumis est compatible avec toutes les préférences, sinon {@code false}.
      */
     public boolean checkPreferences(String projectSubmissionDesiredSchedule, String neighbourhoods) {
-<span class="nc" id="L103">        scheduleConflicts.clear(); // Réinitialiser les conflits avant chaque vérification</span>
-<span class="nc" id="L104">        boolean hasConflicts = false;</span>
+<span class="fc" id="L103">        scheduleConflicts.clear(); // Réinitialiser les conflits avant chaque vérification</span>
+<span class="fc" id="L104">        boolean hasConflicts = false;</span>
 
-<span class="nc bnc" id="L106" title="All 2 branches missed.">        for (String neighbourhood : neighbourhoods.split(&quot;,&quot;)) {</span>
-<span class="nc" id="L107">            String preferences = fetchPreferences(neighbourhood);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        for (String neighbourhood : neighbourhoods.split(&quot;,&quot;)) {</span>
+<span class="fc" id="L107">            String preferences = fetchPreferences(neighbourhood);</span>
 
-<span class="nc bnc" id="L109" title="All 2 branches missed.">            if (preferences != null) {</span>
-<span class="nc" id="L110">                String[] preferenceHours = preferences.split(&quot;,&quot;);</span>
-<span class="nc" id="L111">                String[] submissionHours = projectSubmissionDesiredSchedule.split(&quot;,&quot;);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            if (preferences != null) {</span>
+<span class="fc" id="L110">                String[] preferenceHours = preferences.split(&quot;,&quot;);</span>
+<span class="fc" id="L111">                String[] submissionHours = projectSubmissionDesiredSchedule.split(&quot;,&quot;);</span>
 
-<span class="nc bnc" id="L113" title="All 2 branches missed.">                for (int i = 0; i &lt; Math.min(preferenceHours.length, submissionHours.length); i++) {</span>
-<span class="nc bnc" id="L114" title="All 2 branches missed.">                    if (!isScheduleCompatible(preferenceHours[i], submissionHours[i])) {</span>
-<span class="nc" id="L115">                        hasConflicts = true;</span>
-<span class="nc" id="L116">                        scheduleConflicts.add(getDayName(i) +</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">                for (int i = 0; i &lt; Math.min(preferenceHours.length, submissionHours.length); i++) {</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">                    if (!isScheduleCompatible(preferenceHours[i], submissionHours[i])) {</span>
+<span class="fc" id="L115">                        hasConflicts = true;</span>
+<span class="fc" id="L116">                        scheduleConflicts.add(getDayName(i) +</span>
                                 &quot; (Préférence : &quot; + preferenceHours[i] +
                                 &quot;, Soumission : &quot; + submissionHours[i] + &quot;)&quot;);
                     }
@@ -121,7 +121,7 @@ import java.util.List;
             }
         }
 
-<span class="nc bnc" id="L124" title="All 2 branches missed.">        return !hasConflicts; // Retourner true si aucun conflit, false sinon</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        return !hasConflicts; // Retourner true si aucun conflit, false sinon</span>
     }
 
     /**
@@ -168,21 +168,21 @@ import java.util.List;
     }
 
     private boolean isScheduleCompatible(String preference, String submission) {
-<span class="nc bnc" id="L171" title="All 4 branches missed.">        if (preference.equals(&quot;N/A&quot;) || submission.equals(&quot;N/A&quot;)) {</span>
-<span class="nc" id="L172">            return true;</span>
+<span class="pc bpc" id="L171" title="1 of 4 branches missed.">        if (preference.equals(&quot;N/A&quot;) || submission.equals(&quot;N/A&quot;)) {</span>
+<span class="fc" id="L172">            return true;</span>
         }
 
-<span class="nc" id="L175">        String[] prefRange = preference.split(&quot;-&quot;);</span>
-<span class="nc" id="L176">        String[] subRange = submission.split(&quot;-&quot;);</span>
+<span class="fc" id="L175">        String[] prefRange = preference.split(&quot;-&quot;);</span>
+<span class="fc" id="L176">        String[] subRange = submission.split(&quot;-&quot;);</span>
 
-<span class="nc bnc" id="L178" title="All 4 branches missed.">        if (prefRange.length == 2 &amp;&amp; subRange.length == 2) {</span>
-<span class="nc" id="L179">            int prefStart = parseTime(prefRange[0]);</span>
-<span class="nc" id="L180">            int prefEnd = parseTime(prefRange[1]);</span>
-<span class="nc" id="L181">            int subStart = parseTime(subRange[0]);</span>
-<span class="nc" id="L182">            int subEnd = parseTime(subRange[1]);</span>
+<span class="pc bpc" id="L178" title="2 of 4 branches missed.">        if (prefRange.length == 2 &amp;&amp; subRange.length == 2) {</span>
+<span class="fc" id="L179">            int prefStart = parseTime(prefRange[0]);</span>
+<span class="fc" id="L180">            int prefEnd = parseTime(prefRange[1]);</span>
+<span class="fc" id="L181">            int subStart = parseTime(subRange[0]);</span>
+<span class="fc" id="L182">            int subEnd = parseTime(subRange[1]);</span>
 
             // Vérifier si les plages horaires ne se chevauchent PAS
-<span class="nc bnc" id="L185" title="All 4 branches missed.">            return subStart &gt;= prefStart &amp;&amp; subEnd &lt;= prefEnd; // Conflit détecté</span>
+<span class="pc bpc" id="L185" title="1 of 4 branches missed.">            return subStart &gt;= prefStart &amp;&amp; subEnd &lt;= prefEnd; // Conflit détecté</span>
         }
 
         // Si les formats ne sont pas valides, considérer comme conflit
@@ -190,16 +190,16 @@ import java.util.List;
     }
 
     private int parseTime(String time) {
-<span class="nc" id="L193">        String[] parts = time.split(&quot;:&quot;);</span>
-<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (parts.length == 2) {</span>
-<span class="nc" id="L195">            return Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);</span>
+<span class="fc" id="L193">        String[] parts = time.split(&quot;:&quot;);</span>
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">        if (parts.length == 2) {</span>
+<span class="fc" id="L195">            return Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);</span>
         }
 <span class="nc" id="L197">        throw new IllegalArgumentException(&quot;Format d'heure invalide : &quot; + time);</span>
     }
 
     private String getDayName(int dayIndex) {
-<span class="nc" id="L201">        String[] days = {&quot;lundi&quot;, &quot;mardi&quot;, &quot;mercredi&quot;, &quot;jeudi&quot;, &quot;vendredi&quot;, &quot;samedi&quot;, &quot;dimanche&quot;};</span>
-<span class="nc" id="L202">        return days[dayIndex];</span>
+<span class="fc" id="L201">        String[] days = {&quot;lundi&quot;, &quot;mardi&quot;, &quot;mercredi&quot;, &quot;jeudi&quot;, &quot;vendredi&quot;, &quot;samedi&quot;, &quot;dimanche&quot;};</span>
+<span class="fc" id="L202">        return days[dayIndex];</span>
     }
 
     /**
@@ -208,7 +208,7 @@ import java.util.List;
      * @return Une liste de chaînes décrivant les conflits d'horaires.
      */
     public List&lt;String&gt; getScheduleConflicts() {
-<span class="nc" id="L211">        return scheduleConflicts;</span>
+<span class="fc" id="L211">        return scheduleConflicts;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

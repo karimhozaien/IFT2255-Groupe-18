@@ -19,16 +19,16 @@ public class Resident extends User {
      * @param builder Le Builder contenant les données nécessaires à la création de l'objet.
      */
     private Resident(ResidentBuilder builder) {
-<span class="nc" id="L22">        super(builder);</span>
-<span class="nc" id="L23">        this.birthday = builder.birthday;</span>
-<span class="nc" id="L24">        this.phoneNumber = builder.phoneNumber;</span>
-<span class="nc" id="L25">        this.address = builder.address;</span>
-<span class="nc" id="L26">    }</span>
+<span class="fc" id="L22">        super(builder);</span>
+<span class="fc" id="L23">        this.birthday = builder.birthday;</span>
+<span class="fc" id="L24">        this.phoneNumber = builder.phoneNumber;</span>
+<span class="fc" id="L25">        this.address = builder.address;</span>
+<span class="fc" id="L26">    }</span>
 
     /**
      * Classe interne utilisée pour construire des objets Resident de manière fluide.
      */
-<span class="nc" id="L31">    public static class ResidentBuilder extends User.Builder&lt;ResidentBuilder&gt; {</span>
+<span class="fc" id="L31">    public static class ResidentBuilder extends User.Builder&lt;ResidentBuilder&gt; {</span>
         private String birthday;
         private String phoneNumber;
         private String address;
@@ -40,8 +40,8 @@ public class Resident extends User {
          * @return L'instance courante de ResidentBuilder.
          */
         public ResidentBuilder birthday(String birthday) {
-<span class="nc" id="L43">            this.birthday = birthday;</span>
-<span class="nc" id="L44">            return this;</span>
+<span class="fc" id="L43">            this.birthday = birthday;</span>
+<span class="fc" id="L44">            return this;</span>
         }
 
         /**
@@ -51,8 +51,8 @@ public class Resident extends User {
          * @return L'instance courante de ResidentBuilder.
          */
         public ResidentBuilder phoneNumber(String phoneNumber) {
-<span class="nc" id="L54">            this.phoneNumber = phoneNumber;</span>
-<span class="nc" id="L55">            return this;</span>
+<span class="fc" id="L54">            this.phoneNumber = phoneNumber;</span>
+<span class="fc" id="L55">            return this;</span>
         }
 
         /**
@@ -62,8 +62,8 @@ public class Resident extends User {
          * @return L'instance courante de ResidentBuilder.
          */
         public ResidentBuilder address(String address) {
-<span class="nc" id="L65">            this.address = address;</span>
-<span class="nc" id="L66">            return this;</span>
+<span class="fc" id="L65">            this.address = address;</span>
+<span class="fc" id="L66">            return this;</span>
         }
 
         /**
@@ -73,7 +73,7 @@ public class Resident extends User {
          */
         @Override
         protected ResidentBuilder self() {
-<span class="nc" id="L76">            return this;</span>
+<span class="fc" id="L76">            return this;</span>
         }
 
         /**
@@ -83,7 +83,7 @@ public class Resident extends User {
          */
         @Override
         public Resident build() {
-<span class="nc" id="L86">            return new Resident(this);</span>
+<span class="fc" id="L86">            return new Resident(this);</span>
         }
     }
 
@@ -93,7 +93,7 @@ public class Resident extends User {
      * @return La date de naissance du résident.
      */
     public String getBirthday() {
-<span class="nc" id="L96">        return this.birthday;</span>
+<span class="fc" id="L96">        return this.birthday;</span>
     }
 
     /**
@@ -102,7 +102,7 @@ public class Resident extends User {
      * @return Le numéro de téléphone du résident.
      */
     public String getPhoneNumber() {
-<span class="nc" id="L105">        return this.phoneNumber;</span>
+<span class="fc" id="L105">        return this.phoneNumber;</span>
     }
 
     /**
@@ -111,7 +111,7 @@ public class Resident extends User {
      * @return L'adresse résidentielle du résident.
      */
     public String getResidentialAddress() {
-<span class="nc" id="L114">        return this.address;</span>
+<span class="fc" id="L114">        return this.address;</span>
     }
 
     /**

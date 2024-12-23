@@ -19,10 +19,10 @@ public class UserRepository {
     private UserRepository() {}
 
     public static UserRepository getInstance() {
-<span class="nc bnc" id="L22" title="All 2 branches missed.">        if (instance == null) {</span>
-<span class="nc" id="L23">            instance = new UserRepository();</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L23">            instance = new UserRepository();</span>
         }
-<span class="nc" id="L25">        return instance;</span>
+<span class="fc" id="L25">        return instance;</span>
     }
 
     /**
@@ -33,26 +33,26 @@ public class UserRepository {
      * @return L'ID de l'utilisateur si les informations sont valides ; {@code null} sinon.
      */
     public String[] fetchUser(List&lt;String&gt; userInfo) {
-<span class="nc" id="L36">        String email = userInfo.get(0);</span>
-<span class="nc" id="L37">        String password = userInfo.get(1);</span>
-<span class="nc" id="L38">        String selectSQL = &quot;SELECT * FROM Users WHERE email = ?&quot;;</span>
+<span class="fc" id="L36">        String email = userInfo.get(0);</span>
+<span class="fc" id="L37">        String password = userInfo.get(1);</span>
+<span class="fc" id="L38">        String selectSQL = &quot;SELECT * FROM Users WHERE email = ?&quot;;</span>
 
         // Établir la connexion
-<span class="nc" id="L41">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L42">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
+<span class="fc" id="L41">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="fc" id="L42">             PreparedStatement pstmt = conn.prepareStatement(selectSQL)) {</span>
 
-<span class="nc" id="L44">            pstmt.setString(1, email);</span>
+<span class="fc" id="L44">            pstmt.setString(1, email);</span>
 
-<span class="nc" id="L46">            try (ResultSet rs = pstmt.executeQuery()) {</span>
-<span class="nc bnc" id="L47" title="All 2 branches missed.">                if (rs.next()) {</span>
-<span class="nc" id="L48">                    String hashedPasswordFromDB = rs.getString(&quot;password&quot;);</span>
-<span class="nc" id="L49">                    String idFromDB = rs.getString(&quot;id&quot;);</span>
-<span class="nc" id="L50">                    String userType = rs.getString(&quot;user_type&quot;);</span>
-<span class="nc" id="L51">                    String residentialAddress = rs.getString(&quot;residential_address&quot;);</span>
+<span class="fc" id="L46">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                if (rs.next()) {</span>
+<span class="fc" id="L48">                    String hashedPasswordFromDB = rs.getString(&quot;password&quot;);</span>
+<span class="fc" id="L49">                    String idFromDB = rs.getString(&quot;id&quot;);</span>
+<span class="fc" id="L50">                    String userType = rs.getString(&quot;user_type&quot;);</span>
+<span class="fc" id="L51">                    String residentialAddress = rs.getString(&quot;residential_address&quot;);</span>
 
                     // Vérification du hachage du mot de passe
-<span class="nc bnc" id="L54" title="All 2 branches missed.">                    if (PasswordUtil.verifyPassword(password, hashedPasswordFromDB)) {</span>
-<span class="nc" id="L55">                        return new String[] {idFromDB, userType, residentialAddress};</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">                    if (PasswordUtil.verifyPassword(password, hashedPasswordFromDB)) {</span>
+<span class="fc" id="L55">                        return new String[] {idFromDB, userType, residentialAddress};</span>
                     } else {
                         // Mot de passe incorrect ?
 <span class="nc" id="L58">                        System.out.println(&quot;Mot de passe invalide.&quot;);</span>
@@ -60,11 +60,11 @@ public class UserRepository {
                     }
                 } else {
                     // Le email n'existe pas dans la DB
-<span class="nc" id="L63">                    System.out.println(&quot;Aucun utilisateur trouvé avec cette adresse : &quot; + email);</span>
-<span class="nc" id="L64">                    return null;</span>
+<span class="fc" id="L63">                    System.out.println(&quot;Aucun utilisateur trouvé avec cette adresse : &quot; + email);</span>
+<span class="fc" id="L64">                    return null;</span>
                 }
-<span class="nc bnc" id="L66" title="All 4 branches missed.">            }</span>
-<span class="nc bnc" id="L67" title="All 8 branches missed.">        } catch (SQLException e) {</span>
+<span class="pc bpc" id="L66" title="3 of 4 branches missed.">            }</span>
+<span class="pc bpc" id="L67" title="6 of 8 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L68">            System.out.println(&quot;Erreur lors de la connexion : &quot; + e.getMessage());</span>
 <span class="nc" id="L69">            return null;</span>
         }
@@ -77,38 +77,38 @@ public class UserRepository {
      * @param user L'utilisateur à enregistrer, qui peut être un {@code Resident} ou un {@code Intervenant}.
      */
     public void saveUser(User user) throws SQLException {
-<span class="nc" id="L80">        String insertSQL = &quot;INSERT INTO Users(id, name, password, email, user_type, identifier, company_type, birthday, phone_number, residential_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)&quot;;</span>
+<span class="fc" id="L80">        String insertSQL = &quot;INSERT INTO Users(id, name, password, email, user_type, identifier, company_type, birthday, phone_number, residential_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)&quot;;</span>
 
-<span class="nc" id="L82">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
-<span class="nc" id="L83">             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {</span>
+<span class="fc" id="L82">        try (Connection conn = DatabaseConnectionManager.getInstance().getConnection();</span>
+<span class="fc" id="L83">             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {</span>
 
-<span class="nc" id="L85">            pstmt.setString(1, user.getID());</span>
-<span class="nc" id="L86">            pstmt.setString(2, user.getName());</span>
-<span class="nc" id="L87">            pstmt.setString(3, PasswordUtil.hashPassword(user.getPassword()));</span>
-<span class="nc" id="L88">            pstmt.setString(4, user.getEmail());</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">            pstmt.setString(5, user instanceof Resident ? &quot;resident&quot; : &quot;intervenant&quot;);</span>
+<span class="fc" id="L85">            pstmt.setString(1, user.getID());</span>
+<span class="fc" id="L86">            pstmt.setString(2, user.getName());</span>
+<span class="fc" id="L87">            pstmt.setString(3, PasswordUtil.hashPassword(user.getPassword()));</span>
+<span class="fc" id="L88">            pstmt.setString(4, user.getEmail());</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">            pstmt.setString(5, user instanceof Resident ? &quot;resident&quot; : &quot;intervenant&quot;);</span>
 
-<span class="nc bnc" id="L91" title="All 2 branches missed.">            if (user instanceof Intervenant intervenant) {</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">            if (user instanceof Intervenant intervenant) {</span>
 <span class="nc" id="L92">                pstmt.setInt(6, intervenant.getIdentifier());</span>
 <span class="nc" id="L93">                pstmt.setString(7, intervenant.getCompanyType().toString());</span>
 <span class="nc" id="L94">                pstmt.setNull(8, java.sql.Types.NULL);</span>
 <span class="nc" id="L95">                pstmt.setNull(9, java.sql.Types.NULL);</span>
 <span class="nc" id="L96">                pstmt.setNull(10, java.sql.Types.NULL);</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">            } else if (user instanceof Resident resident) {</span>
-<span class="nc" id="L98">                pstmt.setNull(6, java.sql.Types.NULL);</span>
-<span class="nc" id="L99">                pstmt.setNull(7, java.sql.Types.NULL);</span>
-<span class="nc" id="L100">                pstmt.setString(8, resident.getBirthday());</span>
-<span class="nc" id="L101">                pstmt.setString(9, resident.getPhoneNumber());</span>
-<span class="nc" id="L102">                pstmt.setString(10, resident.getResidentialAddress());</span>
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">            } else if (user instanceof Resident resident) {</span>
+<span class="fc" id="L98">                pstmt.setNull(6, java.sql.Types.NULL);</span>
+<span class="fc" id="L99">                pstmt.setNull(7, java.sql.Types.NULL);</span>
+<span class="fc" id="L100">                pstmt.setString(8, resident.getBirthday());</span>
+<span class="fc" id="L101">                pstmt.setString(9, resident.getPhoneNumber());</span>
+<span class="fc" id="L102">                pstmt.setString(10, resident.getResidentialAddress());</span>
             }
 
-<span class="nc" id="L105">            pstmt.executeUpdate();</span>
+<span class="fc" id="L105">            pstmt.executeUpdate();</span>
             //System.out.println(&quot;L'utilisateur a été sauvegardé.&quot;); // Message helper
-<span class="nc" id="L107">        } catch (SQLException e) {</span>
-<span class="nc" id="L108">            System.out.println(&quot;Erreur lors de l'enregistrement : &quot; + e.getMessage());</span>
-<span class="nc" id="L109">            throw e;</span>
-<span class="nc" id="L110">        }</span>
-<span class="nc" id="L111">    }</span>
+<span class="fc" id="L107">        } catch (SQLException e) {</span>
+<span class="fc" id="L108">            System.out.println(&quot;Erreur lors de l'enregistrement : &quot; + e.getMessage());</span>
+<span class="fc" id="L109">            throw e;</span>
+<span class="fc" id="L110">        }</span>
+<span class="fc" id="L111">    }</span>
 
     /**
      * Récupère tous les utilisateurs de la base de données. Uniquement leur ID et adresse

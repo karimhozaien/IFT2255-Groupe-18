@@ -15,10 +15,10 @@ public class Notification {
     private List&lt;String&gt; seenResidents;
 
     // Constructeur sans description (utilisé lors du fetch DB)
-<span class="nc" id="L18">    public Notification() {</span>
-<span class="nc" id="L19">        this.residentsId = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L20">        this.seenResidents = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L21">    }</span>
+<span class="fc" id="L18">    public Notification() {</span>
+<span class="fc" id="L19">        this.residentsId = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L20">        this.seenResidents = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L21">    }</span>
 
     /**
      * Constructeur pour créer une notification avec une description.
@@ -26,12 +26,12 @@ public class Notification {
      *
      * @param description La description de la notification.
      */
-<span class="nc" id="L29">    public Notification(String description) {</span>
-<span class="nc" id="L30">        this.id = java.util.UUID.randomUUID().toString();</span>
-<span class="nc" id="L31">        this.description = description;</span>
-<span class="nc" id="L32">        this.residentsId = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L33">        this.seenResidents = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L34">    }</span>
+<span class="fc" id="L29">    public Notification(String description) {</span>
+<span class="fc" id="L30">        this.id = java.util.UUID.randomUUID().toString();</span>
+<span class="fc" id="L31">        this.description = description;</span>
+<span class="fc" id="L32">        this.residentsId = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L33">        this.seenResidents = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L34">    }</span>
 
     // Getters et Setters
     /**
@@ -39,56 +39,56 @@ public class Notification {
      *
      * @return L'identifiant unique de la notification.
      */
-<span class="nc" id="L42">    public String getId() { return id; }</span>
+<span class="fc" id="L42">    public String getId() { return id; }</span>
 
     /**
      * Définit l'identifiant unique de la notification.
      *
      * @param id L'identifiant unique à définir.
      */
-<span class="nc" id="L49">    public void setId(String id) { this.id = id; }</span>
+<span class="fc" id="L49">    public void setId(String id) { this.id = id; }</span>
 
     /**
      * Retourne la description de la notification.
      *
      * @return La description de la notification.
      */
-<span class="nc" id="L56">    public String getDescription() { return description; }</span>
+<span class="fc" id="L56">    public String getDescription() { return description; }</span>
 
     /**
      * Définit la description de la notification.
      *
      * @param description La description à définir.
      */
-<span class="nc" id="L63">    public void setDescription(String description) { this.description = description; }</span>
+<span class="fc" id="L63">    public void setDescription(String description) { this.description = description; }</span>
 
     /**
      * Retourne la liste des identifiants des résidents concernés par la notification.
      *
      * @return La liste des identifiants des résidents.
      */
-<span class="nc" id="L70">    public List&lt;String&gt; getResidents() { return residentsId; }</span>
+<span class="fc" id="L70">    public List&lt;String&gt; getResidents() { return residentsId; }</span>
 
     /**
      * Définit la liste des résidents concernés par la notification.
      *
      * @param residentsId La liste des identifiants des résidents à définir.
      */
-<span class="nc" id="L77">    public void setResidents(List&lt;String&gt; residentsId) { this.residentsId = residentsId; }</span>
+<span class="fc" id="L77">    public void setResidents(List&lt;String&gt; residentsId) { this.residentsId = residentsId; }</span>
 
     /**
      * Retourne la liste des résidents ayant vu la notification.
      *
      * @return La liste des résidents ayant vu la notification.
      */
-<span class="nc" id="L84">    public List&lt;String&gt; getSeenResidents() { return seenResidents; }</span>
+<span class="fc" id="L84">    public List&lt;String&gt; getSeenResidents() { return seenResidents; }</span>
 
     /**
      * Définit la liste des résidents ayant vu la notification.
      *
      * @param seenResidents La liste des résidents à définir.
      */
-<span class="nc" id="L91">    public void setSeenResidents(List&lt;String&gt; seenResidents) { this.seenResidents = seenResidents; }</span>
+<span class="fc" id="L91">    public void setSeenResidents(List&lt;String&gt; seenResidents) { this.seenResidents = seenResidents; }</span>
 
     /**
      * Ajoute un résident à la liste des résidents concernés par la notification.
@@ -98,10 +98,10 @@ public class Notification {
      * @param residentId L'identifiant du résident à ajouter.
      */
     public void addResident(String residentId) {
-<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (!this.residentsId.contains(residentId)) {</span>
-<span class="nc" id="L102">            this.residentsId.add(residentId);</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if (!this.residentsId.contains(residentId)) {</span>
+<span class="fc" id="L102">            this.residentsId.add(residentId);</span>
         }
-<span class="nc" id="L104">    }</span>
+<span class="fc" id="L104">    }</span>
 
     /**
      * Supprime un résident de la liste des résidents concernés par la notification.

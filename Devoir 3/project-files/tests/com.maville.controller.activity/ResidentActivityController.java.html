@@ -6,11 +6,13 @@ import com.maville.controller.repository.WorkRepository;
 import com.maville.controller.services.Authenticate;
 import com.maville.controller.services.PostalCodeFinder;
 import com.maville.model.Notification;
+import com.maville.model.Project;
 import com.maville.model.SchedulePreferences;
 import com.maville.model.WorkRequestForm;
 import com.maville.view.MenuView;
 
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -25,10 +27,10 @@ public class ResidentActivityController {
     private final Scanner scanner;
     private final WorkRepository workRepo;
 
-<span class="nc" id="L28">    public ResidentActivityController() {</span>
-<span class="nc" id="L29">        scanner = new Scanner(System.in);</span>
-<span class="nc" id="L30">        workRepo = new WorkRepository();</span>
-<span class="nc" id="L31">    }</span>
+<span class="nc" id="L30">    public ResidentActivityController() {</span>
+<span class="nc" id="L31">        scanner = new Scanner(System.in);</span>
+<span class="nc" id="L32">        workRepo = new WorkRepository();</span>
+<span class="nc" id="L33">    }</span>
 
     /**
      * Affiche les travaux en cours et planifiés, avec la possibilité de filtrer
@@ -36,29 +38,80 @@ public class ResidentActivityController {
      * Demande à l'utilisateur de sélectionner un filtre et affiche les résultats correspondants.
      */
     public void consultWorks() {
-        try {
-<span class="nc" id="L40">            MenuView.askFilter(&quot;Quartier&quot;, &quot;Type de travaux&quot;, &quot;Autre&quot;);</span>
+<span class="nc" id="L41">        boolean validInput = false;</span>
 
-<span class="nc" id="L42">            int option = scanner.nextInt();</span>
-<span class="nc bnc" id="L43" title="All 4 branches missed.">            switch (option) {</span>
-                case 1:
-<span class="nc" id="L45">                    MenuView.printMessage(&quot;Entrez le nom du quartier : &quot;);</span>
-<span class="nc" id="L46">                    String name = scanner.next();</span>
-<span class="nc" id="L47">                    MenuView.showResults(workRepo.getFilteredProjects(&quot;quartier&quot;, name));</span>
-<span class="nc" id="L48">                    break;</span>
-                case 2:
-<span class="nc" id="L50">                    MenuView.printMessage(&quot;Entrez le type de travaux : &quot;);</span>
-<span class="nc" id="L51">                    String type = scanner.next();</span>
-<span class="nc" id="L52">                    MenuView.showResults(workRepo.getFilteredProjects(&quot;travail&quot;, type));</span>
-<span class="nc" id="L53">                    break;</span>
-                case 3:
-<span class="nc" id="L55">                    MenuView.showResults(workRepo.getOngoingProjects());</span>
-                    break;
+        try {
+            // Boucle pour s'assurer que l'utilisateur choisit une option valide pour le type de projet
+<span class="nc bnc" id="L45" title="All 2 branches missed.">            while (!validInput) {</span>
+<span class="nc" id="L46">                MenuView.askSimpleOptions(&quot;Souhaitez-vous consulter les projets en cours ou à venir ?&quot;,</span>
+                        &quot;Quitter&quot;, &quot;Projets en cours&quot;, &quot;Projets à venir&quot;);
+
+                try {
+<span class="nc" id="L50">                    int projectTypeOption = scanner.nextInt();</span>
+<span class="nc" id="L51">                    scanner.nextLine(); // Consommer le saut de ligne</span>
+
+                    List&lt;Project&gt; projects;
+<span class="nc bnc" id="L54" title="All 2 branches missed.">                    if (projectTypeOption == 1) {</span>
+                        // Récupérer les projets en cours
+<span class="nc" id="L56">                        projects = workRepo.getOngoingProjects();</span>
+<span class="nc" id="L57">                        validInput = true; // Entrée valide, sortir de la boucle</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">                    } else if (projectTypeOption == 2) {</span>
+                        // Récupérer les projets à venir (filtrés à moins de 3 mois)
+<span class="nc" id="L60">                        projects = workRepo.getPlannedProjectsWithinThreeMonths();</span>
+<span class="nc" id="L61">                        validInput = true; // Entrée valide, sortir de la boucle</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">                    } else if (projectTypeOption == 0) {</span>
+<span class="nc" id="L63">                        MenuView.printMessage(&quot;Retour au menu principal.&quot;);</span>
+<span class="nc" id="L64">                        return;</span>
+                    } else {
+<span class="nc" id="L66">                        MenuView.printMessage(&quot;Choix invalide. Veuillez entrer 0, 1 ou 2.&quot;);</span>
+<span class="nc" id="L67">                        continue;</span>
+                    }
+
+                    // Boucle pour le filtrage des projets
+<span class="nc" id="L71">                    boolean validFilter = false;</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">                    while (!validFilter) {</span>
+<span class="nc" id="L73">                        MenuView.askFilter(&quot;Quartier&quot;, &quot;Type de travaux&quot;, &quot;Tous les projets&quot;);</span>
+
+                        try {
+<span class="nc" id="L76">                            int filterOption = scanner.nextInt();</span>
+<span class="nc" id="L77">                            scanner.nextLine(); // Nettoyer le tampon</span>
+
+<span class="nc bnc" id="L79" title="All 4 branches missed.">                            switch (filterOption) {</span>
+                                case 1:
+<span class="nc" id="L81">                                    MenuView.printMessage(&quot;Entrez le nom du quartier : &quot;);</span>
+<span class="nc" id="L82">                                    String neighbourhood = scanner.nextLine();</span>
+<span class="nc" id="L83">                                    MenuView.showResults(workRepo.getFilteredProjects(&quot;quartier&quot;, neighbourhood, projects));</span>
+<span class="nc" id="L84">                                    validFilter = true; // Entrée valide</span>
+<span class="nc" id="L85">                                    break;</span>
+                                case 2:
+<span class="nc" id="L87">                                    MenuView.printMessage(&quot;Choisissez le type de travaux : &quot;);</span>
+<span class="nc" id="L88">                                    String workType = MenuView.askWorkType();</span>
+<span class="nc" id="L89">                                    MenuView.showResults(workRepo.getFilteredProjects(&quot;travail&quot;, workType, projects));</span>
+<span class="nc" id="L90">                                    validFilter = true; // Entrée valide</span>
+<span class="nc" id="L91">                                    break;</span>
+                                case 3:
+<span class="nc" id="L93">                                    MenuView.showResults(projects);</span>
+<span class="nc" id="L94">                                    validFilter = true; // Entrée valide</span>
+<span class="nc" id="L95">                                    break;</span>
+                                default:
+<span class="nc" id="L97">                                    MenuView.printMessage(&quot;Choix invalide. Veuillez entrer 1, 2 ou 3.&quot;);</span>
+                                    break;
+                            }
+<span class="nc" id="L100">                        } catch (InputMismatchException e) {</span>
+<span class="nc" id="L101">                            MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un nombre valide.&quot;);</span>
+<span class="nc" id="L102">                            scanner.nextLine(); // Consommer la saisie incorrecte</span>
+<span class="nc" id="L103">                        }</span>
+                    }
+<span class="nc" id="L105">                } catch (InputMismatchException e) {</span>
+<span class="nc" id="L106">                    MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un nombre valide.&quot;);</span>
+<span class="nc" id="L107">                    scanner.nextLine(); // Consommer la saisie incorrecte</span>
+<span class="nc" id="L108">                }</span>
             }
-<span class="nc" id="L58">        } catch (IOException e) {</span>
-<span class="nc" id="L59">            e.printStackTrace();</span>
-<span class="nc" id="L60">        }</span>
-<span class="nc" id="L61">    }</span>
+<span class="nc" id="L110">        } catch (IOException e) {</span>
+<span class="nc" id="L111">            MenuView.printMessage(&quot;Une erreur s'est produite lors de la récupération des données.&quot;);</span>
+<span class="nc" id="L112">            e.printStackTrace();</span>
+<span class="nc" id="L113">        }</span>
+<span class="nc" id="L114">    }</span>
 
     /**
      * Affiche les entraves routières en cours et planifiées, avec la possibilité de filtrer
@@ -66,30 +119,54 @@ public class ResidentActivityController {
      * Demande à l'utilisateur de sélectionner un filtre et affiche les résultats correspondants.
      */
     public void consultRoadObstructions() {
-<span class="nc" id="L69">        MenuView.askFilter(&quot;Rue&quot;, &quot;Type de travaux&quot;, &quot;Autre&quot;);</span>
-        try {
-<span class="nc" id="L71">            int option = scanner.nextInt();</span>
-<span class="nc" id="L72">            scanner.nextLine();</span>
-<span class="nc bnc" id="L73" title="All 4 branches missed.">            switch (option) {</span>
-                case 1:
-<span class="nc" id="L75">                    MenuView.printMessage(&quot;Entrez le nom de la rue : &quot;);</span>
-<span class="nc" id="L76">                    String name = scanner.nextLine();</span>
-<span class="nc" id="L77">                    MenuView.showResults(workRepo.getFilteredRoadObstructions(&quot;rue&quot;, name));</span>
-<span class="nc" id="L78">                    break;</span>
-                case 2:
-<span class="nc" id="L80">                    MenuView.printMessage(&quot;Entrez le type de travaux : &quot;);</span>
-<span class="nc" id="L81">                    String type = scanner.nextLine();</span>
-<span class="nc" id="L82">                    List&lt;String&gt; filteredRoadObstructions = workRepo.getFilteredRoadObstructions(&quot;travail&quot;, type);</span>
-<span class="nc" id="L83">                    MenuView.showResults(filteredRoadObstructions);</span>
-<span class="nc" id="L84">                    break;</span>
-                case 3:
-<span class="nc" id="L86">                    MenuView.showResults(workRepo.getRoadObstructions());</span>
-                    break;
-            }
-<span class="nc" id="L89">        } catch (IOException e) {</span>
-<span class="nc" id="L90">            e.printStackTrace();</span>
-<span class="nc" id="L91">        }</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L122">        boolean validInput = false;</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        while (!validInput) {</span>
+            try {
+<span class="nc" id="L125">                MenuView.askFilter(&quot;Rue&quot;, &quot;Type de travaux&quot;, &quot;Autre&quot;);</span>
+<span class="nc" id="L126">                int option = scanner.nextInt();</span>
+<span class="nc" id="L127">                scanner.nextLine(); // Consommer la nouvelle ligne</span>
+                List&lt;String&gt; filteredRoadObstructions;
+
+<span class="nc bnc" id="L130" title="All 4 branches missed.">                switch (option) {</span>
+                    case 1:
+<span class="nc" id="L132">                        validInput = true; // L'entrée est correcte</span>
+<span class="nc" id="L133">                        MenuView.printMessage(&quot;Entrez le nom de la rue : &quot;);</span>
+<span class="nc" id="L134">                        String name = scanner.nextLine();</span>
+<span class="nc" id="L135">                        filteredRoadObstructions = workRepo.getFilteredRoadObstructions(&quot;rue&quot;, name);</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">                        if (!filteredRoadObstructions.isEmpty()) {</span>
+<span class="nc" id="L137">                            MenuView.showResults(filteredRoadObstructions);</span>
+                        } else {
+<span class="nc" id="L139">                            MenuView.printMessage(&quot;Aucune entrave selon cette rue.&quot;);</span>
+                        }
+<span class="nc" id="L141">                        break;</span>
+                    case 2:
+<span class="nc" id="L143">                        validInput = true; // L'entrée est correcte</span>
+<span class="nc" id="L144">                        MenuView.printMessage(&quot;Entrez le type de travaux : &quot;);</span>
+<span class="nc" id="L145">                        String type = MenuView.askWorkType();</span>
+<span class="nc" id="L146">                        filteredRoadObstructions = workRepo.getFilteredRoadObstructions(&quot;travail&quot;, type);</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">                        if (!filteredRoadObstructions.isEmpty()) {</span>
+<span class="nc" id="L148">                            MenuView.showResults(filteredRoadObstructions);</span>
+                        } else {
+<span class="nc" id="L150">                            MenuView.printMessage(&quot;Aucune entrave selon ce type de travaux.&quot;);</span>
+                        }
+<span class="nc" id="L152">                        break;</span>
+                    case 3:
+<span class="nc" id="L154">                        validInput = true; // L'entrée est correcte</span>
+<span class="nc" id="L155">                        MenuView.showResults(workRepo.getRoadObstructions());</span>
+<span class="nc" id="L156">                        break;</span>
+                    default:
+<span class="nc" id="L158">                        MenuView.printMessage(&quot;Option invalide. Veuillez entrer un nombre entre 1 et 3.&quot;);</span>
+                        break;
+                }
+<span class="nc" id="L161">            } catch (InputMismatchException e) {</span>
+<span class="nc" id="L162">                MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un nombre entre 1 et 3.&quot;);</span>
+<span class="nc" id="L163">                scanner.nextLine(); // Consommer la saisie incorrecte</span>
+<span class="nc" id="L164">            } catch (IOException e) {</span>
+<span class="nc" id="L165">                MenuView.printMessage(&quot;Une erreur s'est produite lors de la récupération des données.&quot;);</span>
+<span class="nc" id="L166">                e.printStackTrace();</span>
+<span class="nc" id="L167">            }</span>
+        }
+<span class="nc" id="L169">    }</span>
 
     /**
      * Recherche des travaux en fonction d'un terme donné par l'utilisateur,
@@ -97,287 +174,288 @@ public class ResidentActivityController {
      * Affiche les résultats correspondant au terme de recherche.
      */
     public void searchWorks() {
-<span class="nc" id="L100">        MenuView.printMessage(&quot;Entrez un terme de recherche (titre, quartier ou type de travaux) :&quot;);</span>
+<span class="nc" id="L177">        MenuView.printMessage(&quot;Entrez un terme de recherche (titre, quartier ou type de travaux) :&quot;);</span>
         try {
-<span class="nc" id="L102">            String searchTerm = scanner.nextLine();  // Get the search term</span>
-<span class="nc" id="L103">            MenuView.showResults(workRepo.getFilteredProjects(searchTerm));</span>
-<span class="nc" id="L104">        } catch (IOException e) {</span>
-<span class="nc" id="L105">            e.printStackTrace();</span>
-<span class="nc" id="L106">        }</span>
-<span class="nc" id="L107">    }</span>
+<span class="nc" id="L179">            String searchTerm = scanner.nextLine();  // Get the search term</span>
+<span class="nc" id="L180">            MenuView.showResults(workRepo.getFilteredProjects(searchTerm));</span>
+<span class="nc" id="L181">        } catch (IOException e) {</span>
+<span class="nc" id="L182">            e.printStackTrace();</span>
+<span class="nc" id="L183">        }</span>
+<span class="nc" id="L184">    }</span>
 
     /**
      * Permet au résident de partager ses préférences horaires pour les travaux.
      * Les préférences sont sauvegardées dans la base de données.
      */
     public void participateToSchedule() {
-<span class="nc" id="L114">        SchedulePreferencesRepository preferencesRepository = new SchedulePreferencesRepository();</span>
+<span class="nc" id="L191">        SchedulePreferencesRepository preferencesRepository = new SchedulePreferencesRepository();</span>
 
         // Obtenir le quartier de l'utilisateur à partir de son code postal
-<span class="nc" id="L117">        PostalCodeFinder postalCodeFinder = new PostalCodeFinder();</span>
-<span class="nc" id="L118">        String neighbourhood = postalCodeFinder.getPostalCode(Authenticate.getFetchedUserInfo()[2]);</span>
+<span class="nc" id="L194">        PostalCodeFinder postalCodeFinder = new PostalCodeFinder();</span>
+<span class="nc" id="L195">        String neighbourhood = postalCodeFinder.getPostalCode(Authenticate.getFetchedUserInfo()[2]);</span>
 
-<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (neighbourhood == null) {</span>
-<span class="nc" id="L121">            MenuView.printMessage(&quot;Votre quartier n'existe pas.&quot;); // si l'utilisateur n'a pas une adresse au quebec</span>
-<span class="nc" id="L122">            return;</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (neighbourhood == null) {</span>
+<span class="nc" id="L198">            MenuView.printMessage(&quot;Votre quartier n'existe pas.&quot;); // si l'utilisateur n'a pas une adresse au quebec</span>
+<span class="nc" id="L199">            return;</span>
         }
 
-<span class="nc" id="L125">        String parseNeighbourhood = neighbourhood.split(&quot; &quot;)[0];</span>
+<span class="nc" id="L202">        String parseNeighbourhood = neighbourhood.split(&quot; &quot;)[0];</span>
 
-<span class="nc" id="L127">        MenuView.printMessage(&quot;Bienvenue dans les préférences horaires.&quot;);</span>
-<span class="nc" id="L128">        MenuView.printMessage(&quot;Ici, vous pouvez partager une intervalle de &quot; +</span>
+<span class="nc" id="L204">        MenuView.printMessage(&quot;Bienvenue dans les préférences horaires.&quot;);</span>
+<span class="nc" id="L205">        MenuView.printMessage(&quot;Ici, vous pouvez partager une intervalle de &quot; +</span>
                 &quot;vous préférez que les travaux se fassent dans votre quartier.&quot;);
         // Demande à l'utilisateur s'il veut ajouter ou modifier une plage horaire
 
-<span class="nc" id="L132">        boolean exitLoop = false;</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">        while (!exitLoop) {</span>
-<span class="nc" id="L134">            MenuView.askSimpleOptions(&quot;Souhaitez-vous ajouter une nouvelle plage horaire ou modifier une plage existante ?&quot;,</span>
+<span class="nc" id="L209">        boolean exitLoop = false;</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        while (!exitLoop) {</span>
+<span class="nc" id="L211">            MenuView.askSimpleOptions(&quot;Souhaitez-vous ajouter une nouvelle plage horaire ou modifier une plage existante ?&quot;,</span>
                     &quot;Quitter&quot;, &quot;Ajouter&quot;, &quot;Modifier&quot;);
 
-<span class="nc" id="L137">            int choice = scanner.nextInt();</span>
-<span class="nc" id="L138">            scanner.nextLine(); // Nettoie le tampon</span>
-<span class="nc bnc" id="L139" title="All 4 branches missed.">            switch (choice) {</span>
+<span class="nc" id="L214">            int choice = scanner.nextInt();</span>
+<span class="nc" id="L215">            scanner.nextLine(); // Nettoie le tampon</span>
+<span class="nc bnc" id="L216" title="All 4 branches missed.">            switch (choice) {</span>
                 case 0:
-<span class="nc" id="L141">                    exitLoop = true;</span>
-<span class="nc" id="L142">                    break;</span>
+<span class="nc" id="L218">                    exitLoop = true;</span>
+<span class="nc" id="L219">                    break;</span>
 
                 case 1: // Ajouter une nouvelle plage horaire
-<span class="nc" id="L145">                    List&lt;String&gt; scheduleInfoAdd = MenuView.askSchedulePreferences();</span>
-<span class="nc" id="L146">                    SchedulePreferences newPreferences = new SchedulePreferences(</span>
-<span class="nc" id="L147">                            scheduleInfoAdd.get(0),</span>
+<span class="nc" id="L222">                    List&lt;String&gt; scheduleInfoAdd = MenuView.askSchedulePreferences();</span>
+<span class="nc" id="L223">                    SchedulePreferences newPreferences = new SchedulePreferences(</span>
+<span class="nc" id="L224">                            scheduleInfoAdd.get(0),</span>
                             parseNeighbourhood,
-<span class="nc" id="L149">                            scheduleInfoAdd.get(1)</span>
+<span class="nc" id="L226">                            scheduleInfoAdd.get(1)</span>
                     );
-<span class="nc" id="L151">                    preferencesRepository.savePreferences(newPreferences);</span>
-<span class="nc" id="L152">                    MenuView.printMessage(&quot;Vos préférences ont été ajoutées avec succès !&quot;);</span>
-<span class="nc" id="L153">                    break;</span>
+<span class="nc" id="L228">                    preferencesRepository.savePreferences(newPreferences);</span>
+<span class="nc" id="L229">                    MenuView.printMessage(&quot;Vos préférences ont été ajoutées avec succès !&quot;);</span>
+<span class="nc" id="L230">                    break;</span>
 
                 case 2: // Modifier une plage horaire existante
                     // Récupérer les préférences existantes pour ce quartier
-<span class="nc" id="L157">                    List&lt;SchedulePreferences&gt; existingPreferences = preferencesRepository.getPreferencesByNeighbourhood(parseNeighbourhood);</span>
+<span class="nc" id="L234">                    List&lt;SchedulePreferences&gt; existingPreferences = preferencesRepository.getPreferencesByNeighbourhood(parseNeighbourhood);</span>
 
-<span class="nc bnc" id="L159" title="All 2 branches missed.">                    if (existingPreferences.isEmpty()) {</span>
-<span class="nc" id="L160">                        MenuView.printMessage(&quot;Aucune préférence trouvée pour votre quartier.&quot;);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">                    if (existingPreferences.isEmpty()) {</span>
+<span class="nc" id="L237">                        MenuView.printMessage(&quot;Aucune préférence trouvée pour votre quartier.&quot;);</span>
                     } else {
                         // Afficher les rues disponibles dans les préférences
-<span class="nc" id="L163">                        MenuView.printMessage(&quot;Les rues disponibles dans ce quartier sont :&quot;);</span>
-<span class="nc" id="L164">                        existingPreferences.forEach(pref -&gt; MenuView.printMessage(&quot;- &quot; + pref.getStreet()));</span>
+<span class="nc" id="L240">                        MenuView.printMessage(&quot;Les rues disponibles dans ce quartier sont :&quot;);</span>
+<span class="nc" id="L241">                        existingPreferences.forEach(pref -&gt; MenuView.printMessage(&quot;- &quot; + pref.getStreet()));</span>
 
                         // Demander le nom de la rue pour laquelle modifier les préférences
-<span class="nc" id="L167">                        MenuView.printMessage(&quot;Entrez le nom de la rue pour laquelle vous souhaitez modifier les préférences :&quot;);</span>
-<span class="nc" id="L168">                        String streetName = MenuView.askSingleInput(&quot;&quot;);</span>
+<span class="nc" id="L244">                        MenuView.printMessage(&quot;Entrez le nom de la rue pour laquelle vous souhaitez modifier les préférences :&quot;);</span>
+<span class="nc" id="L245">                        String streetName = MenuView.askSingleInput(&quot;&quot;);</span>
 
                         // Vérifier si des préférences existent pour cette rue
-<span class="nc" id="L171">                        SchedulePreferences preferencesToUpdate = existingPreferences.stream()</span>
-<span class="nc" id="L172">                                .filter(p -&gt; p.getStreet().equalsIgnoreCase(streetName))</span>
-<span class="nc" id="L173">                                .findFirst()</span>
-<span class="nc" id="L174">                                .orElse(null);</span>
+<span class="nc" id="L248">                        SchedulePreferences preferencesToUpdate = existingPreferences.stream()</span>
+<span class="nc" id="L249">                                .filter(p -&gt; p.getStreet().equalsIgnoreCase(streetName))</span>
+<span class="nc" id="L250">                                .findFirst()</span>
+<span class="nc" id="L251">                                .orElse(null);</span>
 
-<span class="nc bnc" id="L176" title="All 2 branches missed.">                        if (preferencesToUpdate == null) {</span>
-<span class="nc" id="L177">                            MenuView.printMessage(&quot;Aucune préférence trouvée pour cette rue et votre quartier. Vous pouvez &quot; +</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">                        if (preferencesToUpdate == null) {</span>
+<span class="nc" id="L254">                            MenuView.printMessage(&quot;Aucune préférence trouvée pour cette rue et votre quartier. Vous pouvez &quot; +</span>
                                     &quot;l'ajouter en tant que nouvelle préférence.&quot;);
                         } else {
                             // Modifier les préférences
-<span class="nc" id="L181">                            MenuView.printMessage(&quot;Entrez les nouvelles plages horaires :&quot;);</span>
-<span class="nc" id="L182">                            String newSchedule = MenuView.collectWeeklySchedules();</span>
-<span class="nc" id="L183">                            preferencesToUpdate.setWeekHours(newSchedule);</span>
+<span class="nc" id="L258">                            MenuView.printMessage(&quot;Entrez les nouvelles plages horaires :&quot;);</span>
+<span class="nc" id="L259">                            String newSchedule = MenuView.collectWeeklySchedules();</span>
+<span class="nc" id="L260">                            preferencesToUpdate.setWeekHours(newSchedule);</span>
 
                             // Mettre à jour les préférences dans la base de données
-<span class="nc" id="L186">                            boolean updateSuccessful = preferencesRepository.updatePreferences(preferencesToUpdate);</span>
-<span class="nc bnc" id="L187" title="All 2 branches missed.">                            if (updateSuccessful) {</span>
-<span class="nc" id="L188">                                MenuView.printMessage(&quot;Vos préférences ont été mises à jour avec succès !&quot;);</span>
+<span class="nc" id="L263">                            boolean updateSuccessful = preferencesRepository.updatePreferences(preferencesToUpdate);</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">                            if (updateSuccessful) {</span>
+<span class="nc" id="L265">                                MenuView.printMessage(&quot;Vos préférences ont été mises à jour avec succès !&quot;);</span>
                             } else {
-<span class="nc" id="L190">                                MenuView.printMessage(&quot;La mise à jour des préférences a échoué. Veuillez réessayer.&quot;);</span>
+<span class="nc" id="L267">                                MenuView.printMessage(&quot;La mise à jour des préférences a échoué. Veuillez réessayer.&quot;);</span>
                             }
                         }
                     }
-<span class="nc" id="L194">                    break;</span>
+<span class="nc" id="L271">                    break;</span>
 
                 default:
-<span class="nc" id="L197">                    MenuView.printMessage(&quot;Choix invalide. Veuillez réessayer.&quot;);</span>
+<span class="nc" id="L274">                    MenuView.printMessage(&quot;Choix invalide. Veuillez réessayer.&quot;);</span>
             }
-<span class="nc" id="L199">        }</span>
-<span class="nc" id="L200">    }</span>
+<span class="nc" id="L276">        }</span>
+<span class="nc" id="L277">    }</span>
 
     /**
      * Soumet une requête de travaux à partir d'informations fournies par l'utilisateur.
      * Les détails sont sauvegardés dans la base de données.
      */
     public void submitWorkRequest() {
-<span class="nc" id="L207">        boolean exitLoop = false;</span>
-<span class="nc bnc" id="L208" title="All 2 branches missed.">        while (!exitLoop) {</span>
-<span class="nc" id="L209">            MenuView.askSimpleOptions(&quot;Voulez-vous soumettre une nouvelle requête ou consulter vos requêtes ?&quot;,</span>
+<span class="nc" id="L284">        boolean exitLoop = false;</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">        while (!exitLoop) {</span>
+<span class="nc" id="L286">            MenuView.askSimpleOptions(&quot;Voulez-vous soumettre une nouvelle requête ou consulter vos requêtes ?&quot;,</span>
                     &quot;Quitter&quot;, &quot;Ajouter&quot;, &quot;Consulter&quot;);
 
-<span class="nc" id="L212">            int choice = scanner.nextInt();</span>
-<span class="nc" id="L213">            scanner.nextLine(); // Nettoie le tampon</span>
-<span class="nc bnc" id="L214" title="All 4 branches missed.">            switch (choice) {</span>
+<span class="nc" id="L289">            int choice = scanner.nextInt();</span>
+<span class="nc" id="L290">            scanner.nextLine(); // Nettoie le tampon</span>
+<span class="nc bnc" id="L291" title="All 4 branches missed.">            switch (choice) {</span>
                 case 0:
-<span class="nc" id="L216">                    exitLoop = true;</span>
-<span class="nc" id="L217">                    break;</span>
+<span class="nc" id="L293">                    exitLoop = true;</span>
+<span class="nc" id="L294">                    break;</span>
                 case 1:
-<span class="nc" id="L219">                    addWorkRequest();</span>
-<span class="nc" id="L220">                    break;</span>
+<span class="nc" id="L296">                    addWorkRequest();</span>
+<span class="nc" id="L297">                    MenuView.printMessage(&quot;L'enregistrement de la requête a été faite!&quot;);</span>
+<span class="nc" id="L298">                    break;</span>
                 case 2:
-<span class="nc" id="L222">                    List&lt;WorkRequestForm&gt; workRequests = consultUserWorkRequests();</span>
-<span class="nc bnc" id="L223" title="All 2 branches missed.">                    if (workRequests.isEmpty()) {</span>
-<span class="nc" id="L224">                        MenuView.printMessage(&quot;Vous n'avez soumis aucune requête pour l'instant.&quot;);</span>
+<span class="nc" id="L300">                    List&lt;WorkRequestForm&gt; workRequests = consultUserWorkRequests();</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">                    if (workRequests.isEmpty()) {</span>
+<span class="nc" id="L302">                        MenuView.printMessage(&quot;Vous n'avez soumis aucune requête pour l'instant.&quot;);</span>
                     } else {
-<span class="nc" id="L226">                        MenuView.printMessage(&quot;Voici vos requêtes soumises :&quot;);</span>
-<span class="nc" id="L227">                        MenuView.showResults(workRequests);</span>
+<span class="nc" id="L304">                        MenuView.printMessage(&quot;Voici vos requêtes soumises :&quot;);</span>
+<span class="nc" id="L305">                        MenuView.showResults(workRequests);</span>
 
-<span class="nc" id="L229">                        askAboutWorkRequestCandidacies(workRequests);</span>
+<span class="nc" id="L307">                        askAboutWorkRequestCandidacies(workRequests);</span>
                     }
-<span class="nc" id="L231">                    break;</span>
+<span class="nc" id="L309">                    break;</span>
                 default:
                     break;
             }
-<span class="nc" id="L235">        }</span>
+<span class="nc" id="L313">        }</span>
 
-<span class="nc" id="L237">    }</span>
+<span class="nc" id="L315">    }</span>
 
     private void addWorkRequest() {
-<span class="nc" id="L240">        List&lt;String&gt; workRequestInfo = MenuView.askFormInfo();</span>
-<span class="nc" id="L241">        WorkRequestForm workRequestForm = new WorkRequestForm(</span>
-<span class="nc" id="L242">                Authenticate.getUserId(),</span>
-<span class="nc" id="L243">                workRequestInfo.get(0),</span>
-<span class="nc" id="L244">                workRequestInfo.get(1),</span>
-<span class="nc" id="L245">                workRequestInfo.get(2),</span>
-<span class="nc" id="L246">                workRequestInfo.get(3)</span>
+<span class="nc" id="L318">        List&lt;String&gt; workRequestInfo = MenuView.askFormInfo();</span>
+<span class="nc" id="L319">        WorkRequestForm workRequestForm = new WorkRequestForm(</span>
+<span class="nc" id="L320">                Authenticate.getUserId(),</span>
+<span class="nc" id="L321">                workRequestInfo.get(0),</span>
+<span class="nc" id="L322">                workRequestInfo.get(1),</span>
+<span class="nc" id="L323">                workRequestInfo.get(2),</span>
+<span class="nc" id="L324">                workRequestInfo.get(3)</span>
         );
-<span class="nc" id="L248">        WorkRepository workRepo = new WorkRepository();</span>
-<span class="nc" id="L249">        workRepo.saveWorkRequest(workRequestForm);</span>
-<span class="nc" id="L250">    }</span>
+<span class="nc" id="L326">        WorkRepository workRepo = new WorkRepository();</span>
+<span class="nc" id="L327">        workRepo.saveWorkRequest(workRequestForm);</span>
+<span class="nc" id="L328">    }</span>
 
     private List&lt;WorkRequestForm&gt; consultUserWorkRequests() {
-<span class="nc" id="L253">        String userId = Authenticate.getUserId(); // Récupérer l'ID de l'utilisateur courant</span>
-<span class="nc" id="L254">        WorkRepository workRepo = new WorkRepository();</span>
+<span class="nc" id="L331">        String userId = Authenticate.getUserId(); // Récupérer l'ID de l'utilisateur courant</span>
+<span class="nc" id="L332">        WorkRepository workRepo = new WorkRepository();</span>
 
-<span class="nc" id="L256">        return workRepo.fetchWorkRequestsByUserId(userId);</span>
+<span class="nc" id="L334">        return workRepo.fetchWorkRequestsByUserId(userId);</span>
     }
 
     private void askAboutWorkRequestCandidacies(List&lt;WorkRequestForm&gt; workRequests) {
-<span class="nc" id="L260">        boolean exitLoop = false;</span>
-<span class="nc bnc" id="L261" title="All 2 branches missed.">        while (!exitLoop) {</span>
+<span class="nc" id="L338">        boolean exitLoop = false;</span>
+<span class="nc bnc" id="L339" title="All 2 branches missed.">        while (!exitLoop) {</span>
             try {
-<span class="nc" id="L263">                String input = MenuView.askLongInput(&quot;Voulez-vous accepter une des candidatures ?&quot;,</span>
+<span class="nc" id="L341">                String input = MenuView.askLongInput(&quot;Voulez-vous accepter une des candidatures ?&quot;,</span>
                         &quot;[1] Oui&quot;, &quot;[2] Non&quot;);
-<span class="nc" id="L265">                int option = Integer.parseInt(input); // Si un lettre est entrée, erreur</span>
-<span class="nc bnc" id="L266" title="All 3 branches missed.">                switch (option) {</span>
-<span class="nc" id="L267">                    case 1 -&gt; acceptCandidacy(workRequests);</span>
-<span class="nc" id="L268">                    case 2 -&gt; exitLoop = true;</span>
-<span class="nc" id="L269">                    default -&gt; MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide.&quot;);</span>
+<span class="nc" id="L343">                int option = Integer.parseInt(input); // Si un lettre est entrée, erreur</span>
+<span class="nc bnc" id="L344" title="All 3 branches missed.">                switch (option) {</span>
+<span class="nc" id="L345">                    case 1 -&gt; acceptCandidacy(workRequests);</span>
+<span class="nc" id="L346">                    case 2 -&gt; exitLoop = true;</span>
+<span class="nc" id="L347">                    default -&gt; MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide.&quot;);</span>
                 }
-<span class="nc" id="L271">            } catch (NumberFormatException e) {</span>
-<span class="nc" id="L272">                MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide et non une lettre.&quot;);</span>
-<span class="nc" id="L273">            }</span>
+<span class="nc" id="L349">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L350">                MenuView.printMessage(&quot;Entrée invalide. Veuillez entrer un numéro valide et non une lettre.&quot;);</span>
+<span class="nc" id="L351">            }</span>
         }
-<span class="nc" id="L275">    }</span>
+<span class="nc" id="L353">    }</span>
 
     private void acceptCandidacy(List&lt;WorkRequestForm&gt; workRequests) {
         int option;
         while (true) {
             try {
-<span class="nc" id="L281">                String input = MenuView.askSingleInput(&quot;Entrez le numéro de la requête dont vous voulez accepter &quot; +</span>
+<span class="nc" id="L359">                String input = MenuView.askSingleInput(&quot;Entrez le numéro de la requête dont vous voulez accepter &quot; +</span>
                         &quot;la candidature : &quot;);
-<span class="nc" id="L283">                option = Integer.parseInt(input);</span>
-<span class="nc bnc" id="L284" title="All 4 branches missed.">                if (option &gt; 0 &amp;&amp; option &lt;= workRequests.size()) {</span>
-<span class="nc" id="L285">                    break;</span>
+<span class="nc" id="L361">                option = Integer.parseInt(input);</span>
+<span class="nc bnc" id="L362" title="All 4 branches missed.">                if (option &gt; 0 &amp;&amp; option &lt;= workRequests.size()) {</span>
+<span class="nc" id="L363">                    break;</span>
                 }
-<span class="nc" id="L287">            } catch (NumberFormatException e) {</span>
-<span class="nc" id="L288">                MenuView.printMessage(&quot;Numéro de la requête invalide.&quot;);</span>
-<span class="nc" id="L289">            }</span>
+<span class="nc" id="L365">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L366">                MenuView.printMessage(&quot;Numéro de la requête invalide.&quot;);</span>
+<span class="nc" id="L367">            }</span>
         }
 
-<span class="nc" id="L292">        WorkRequestForm workRequest = workRequests.get(option - 1);</span>
+<span class="nc" id="L370">        WorkRequestForm workRequest = workRequests.get(option - 1);</span>
 
         // Demander à l'utilisateur de sélectionner un intervenant
-<span class="nc" id="L295">        List&lt;String&gt; submissions = workRequest.getSubmissions();</span>
-<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (submissions.isEmpty()) {</span>
-<span class="nc" id="L297">            MenuView.printMessage(&quot;Aucune soumission disponible pour cette requête.&quot;);</span>
-<span class="nc" id="L298">            return;</span>
+<span class="nc" id="L373">        List&lt;String&gt; submissions = workRequest.getSubmissions();</span>
+<span class="nc bnc" id="L374" title="All 2 branches missed.">        if (submissions.isEmpty()) {</span>
+<span class="nc" id="L375">            MenuView.printMessage(&quot;Aucune soumission disponible pour cette requête.&quot;);</span>
+<span class="nc" id="L376">            return;</span>
         }
 
         // Afficher les soumissions formatées
-<span class="nc" id="L302">        MenuView.printMessage(&quot;Soumissions disponibles :&quot;);</span>
-<span class="nc bnc" id="L303" title="All 2 branches missed.">        for (int i = 0; i &lt; submissions.size(); i++) {</span>
-<span class="nc" id="L304">            String formattedSubmission = parseSingleSubmission(submissions.get(i));</span>
-<span class="nc bnc" id="L305" title="All 2 branches missed.">            if (!formattedSubmission.isEmpty()) {</span>
-<span class="nc" id="L306">                MenuView.printMessage((i + 1) + &quot;. &quot; + formattedSubmission);</span>
+<span class="nc" id="L380">        MenuView.printMessage(&quot;Soumissions disponibles :&quot;);</span>
+<span class="nc bnc" id="L381" title="All 2 branches missed.">        for (int i = 0; i &lt; submissions.size(); i++) {</span>
+<span class="nc" id="L382">            String formattedSubmission = parseSingleSubmission(submissions.get(i));</span>
+<span class="nc bnc" id="L383" title="All 2 branches missed.">            if (!formattedSubmission.isEmpty()) {</span>
+<span class="nc" id="L384">                MenuView.printMessage((i + 1) + &quot;. &quot; + formattedSubmission);</span>
             }
         }
 
         int submissionOption;
         while (true) {
             try {
-<span class="nc" id="L313">                String input = MenuView.askSingleInput(&quot;Entrez le numéro de la soumission que vous voulez accepter : &quot;);</span>
-<span class="nc" id="L314">                submissionOption = Integer.parseInt(input);</span>
-<span class="nc bnc" id="L315" title="All 4 branches missed.">                if (submissionOption &gt; 0 &amp;&amp; submissionOption &lt;= submissions.size()) {</span>
-<span class="nc" id="L316">                    break;</span>
+<span class="nc" id="L391">                String input = MenuView.askSingleInput(&quot;Entrez le numéro de la soumission que vous voulez accepter : &quot;);</span>
+<span class="nc" id="L392">                submissionOption = Integer.parseInt(input);</span>
+<span class="nc bnc" id="L393" title="All 4 branches missed.">                if (submissionOption &gt; 0 &amp;&amp; submissionOption &lt;= submissions.size()) {</span>
+<span class="nc" id="L394">                    break;</span>
                 }
-<span class="nc" id="L318">            } catch (NumberFormatException e) {</span>
-<span class="nc" id="L319">                MenuView.printMessage(&quot;Numéro de la soumission invalide.&quot;);</span>
-<span class="nc" id="L320">            }</span>
+<span class="nc" id="L396">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L397">                MenuView.printMessage(&quot;Numéro de la soumission invalide.&quot;);</span>
+<span class="nc" id="L398">            }</span>
         }
 
         // Extraire uniquement l'ID de la soumission sélectionnée
-<span class="nc" id="L324">        String selectedSubmission = submissions.get(submissionOption - 1);</span>
-<span class="nc" id="L325">        String selectedSubmissionId = extractSubmissionId(selectedSubmission);</span>
-<span class="nc" id="L326">        System.out.println(selectedSubmissionId);</span>
+<span class="nc" id="L402">        String selectedSubmission = submissions.get(submissionOption - 1);</span>
+<span class="nc" id="L403">        String selectedSubmissionId = extractSubmissionId(selectedSubmission);</span>
+<span class="nc" id="L404">        System.out.println(selectedSubmissionId);</span>
 
-<span class="nc bnc" id="L328" title="All 2 branches missed.">        if (selectedSubmissionId != null) {</span>
+<span class="nc bnc" id="L406" title="All 2 branches missed.">        if (selectedSubmissionId != null) {</span>
             // Mettre à jour la liste des soumissions avec uniquement l'ID sélectionné
-<span class="nc" id="L330">            workRequest.setChosenIntervenant(selectedSubmissionId);</span>
-<span class="nc" id="L331">            MenuView.printMessage(&quot;La soumission sélectionnée a été mise à jour avec succès !&quot;);</span>
+<span class="nc" id="L408">            workRequest.setChosenIntervenant(selectedSubmissionId);</span>
+<span class="nc" id="L409">            MenuView.printMessage(&quot;La soumission sélectionnée a été mise à jour avec succès !&quot;);</span>
 
             // Ajouter un message optionnel
-<span class="nc" id="L334">            String optionalMessage = MenuView.askSingleInput(&quot;Entrez un message pour l'intervenant (optionnel) : &quot;);</span>
-<span class="nc" id="L335">            workRequest.setClosingMessage(optionalMessage);</span>
+<span class="nc" id="L412">            String optionalMessage = MenuView.askSingleInput(&quot;Entrez un message pour l'intervenant (optionnel) : &quot;);</span>
+<span class="nc" id="L413">            workRequest.setClosingMessage(optionalMessage);</span>
 
             // Mettre à jour la requête dans la base de données
-<span class="nc" id="L338">            workRepo.updatingCandidacySubmission(workRequest);</span>
-<span class="nc" id="L339">        } else {</span>
-<span class="nc" id="L340">            MenuView.printMessage(&quot;Erreur : Impossible de trouver l'ID de la soumission sélectionnée.&quot;);</span>
+<span class="nc" id="L416">            workRepo.updatingCandidacySubmission(workRequest);</span>
+<span class="nc" id="L417">        } else {</span>
+<span class="nc" id="L418">            MenuView.printMessage(&quot;Erreur : Impossible de trouver l'ID de la soumission sélectionnée.&quot;);</span>
         }
-<span class="nc" id="L342">    }</span>
+<span class="nc" id="L420">    }</span>
 
     public String parseSingleSubmission(String submission) {
         // Regex pour une soumission complète avec ID et dates
-<span class="nc" id="L346">        String regexFull = &quot;^([^:]+):\\{start_date:\\s*([^,]+),\\s*end_date:\\s*([^}]+)}$&quot;;</span>
+<span class="nc" id="L424">        String regexFull = &quot;^([^:]+):\\{start_date:\\s*([^,]+),\\s*end_date:\\s*([^}]+)}$&quot;;</span>
         // Regex pour une soumission contenant uniquement l'ID
-<span class="nc" id="L348">        String regexIdOnly = &quot;^([^:]+)$&quot;;</span>
+<span class="nc" id="L426">        String regexIdOnly = &quot;^([^:]+)$&quot;;</span>
 
-<span class="nc" id="L350">        Pattern patternFull = Pattern.compile(regexFull);</span>
-<span class="nc" id="L351">        Pattern patternIdOnly = Pattern.compile(regexIdOnly);</span>
+<span class="nc" id="L428">        Pattern patternFull = Pattern.compile(regexFull);</span>
+<span class="nc" id="L429">        Pattern patternIdOnly = Pattern.compile(regexIdOnly);</span>
 
-<span class="nc" id="L353">        Matcher matcherFull = patternFull.matcher(submission);</span>
-<span class="nc" id="L354">        Matcher matcherIdOnly = patternIdOnly.matcher(submission);</span>
+<span class="nc" id="L431">        Matcher matcherFull = patternFull.matcher(submission);</span>
+<span class="nc" id="L432">        Matcher matcherIdOnly = patternIdOnly.matcher(submission);</span>
 
-<span class="nc bnc" id="L356" title="All 2 branches missed.">        if (matcherFull.matches()) {</span>
+<span class="nc bnc" id="L434" title="All 2 branches missed.">        if (matcherFull.matches()) {</span>
             // Cas avec ID et dates
-<span class="nc" id="L358">            String intervenantId = matcherFull.group(1).trim();</span>
-<span class="nc" id="L359">            String startDate = matcherFull.group(2).trim();</span>
-<span class="nc" id="L360">            String endDate = matcherFull.group(3).trim();</span>
-<span class="nc" id="L361">            return intervenantId + &quot;, start_date: &quot; + startDate + &quot;, end_date: &quot; + endDate;</span>
-<span class="nc bnc" id="L362" title="All 2 branches missed.">        } else if (matcherIdOnly.matches()) {</span>
+<span class="nc" id="L436">            String intervenantId = matcherFull.group(1).trim();</span>
+<span class="nc" id="L437">            String startDate = matcherFull.group(2).trim();</span>
+<span class="nc" id="L438">            String endDate = matcherFull.group(3).trim();</span>
+<span class="nc" id="L439">            return intervenantId + &quot;, start_date: &quot; + startDate + &quot;, end_date: &quot; + endDate;</span>
+<span class="nc bnc" id="L440" title="All 2 branches missed.">        } else if (matcherIdOnly.matches()) {</span>
             // Cas avec ID uniquement
-<span class="nc" id="L364">            return matcherIdOnly.group(1).trim();</span>
+<span class="nc" id="L442">            return matcherIdOnly.group(1).trim();</span>
         }
 
-<span class="nc" id="L367">        return &quot;&quot;; // Retourne une chaîne vide si le format est invalide</span>
+<span class="nc" id="L445">        return &quot;&quot;; // Retourne une chaîne vide si le format est invalide</span>
     }
 
     private String extractSubmissionId(String submission) {
         // Regex to capture only the UUID before the &quot;{&quot;
-<span class="nc" id="L372">        String regex = &quot;^([a-f0-9\\-]+):\\{&quot;;</span>
-<span class="nc" id="L373">        Pattern pattern = Pattern.compile(regex);</span>
-<span class="nc" id="L374">        Matcher matcher = pattern.matcher(submission);</span>
+<span class="nc" id="L450">        String regex = &quot;^([a-f0-9\\-]+):\\{&quot;;</span>
+<span class="nc" id="L451">        Pattern pattern = Pattern.compile(regex);</span>
+<span class="nc" id="L452">        Matcher matcher = pattern.matcher(submission);</span>
 
-<span class="nc bnc" id="L376" title="All 2 branches missed.">        if (matcher.find()) { // Use find() for partial matches</span>
-<span class="nc" id="L377">            return matcher.group(1).trim(); // Return the UUID (ID)</span>
+<span class="nc bnc" id="L454" title="All 2 branches missed.">        if (matcher.find()) { // Use find() for partial matches</span>
+<span class="nc" id="L455">            return matcher.group(1).trim(); // Return the UUID (ID)</span>
         }
 
-<span class="nc" id="L380">        return null; // Return null if no match is found</span>
+<span class="nc" id="L458">        return null; // Return null if no match is found</span>
     }
 
     /**
@@ -385,25 +463,25 @@ public class ResidentActivityController {
      * Marque automatiquement les notifications comme &quot;vues&quot; après affichage.
      */
     public void consultNotifications() {
-<span class="nc" id="L388">        String userId = Authenticate.getUserId();</span>
-<span class="nc" id="L389">        MenuView.printMessage(&quot;Current user id : &quot; + userId); //helper</span>
+<span class="nc" id="L466">        String userId = Authenticate.getUserId();</span>
+<span class="nc" id="L467">        MenuView.printMessage(&quot;Current user id : &quot; + userId); //helper</span>
 
-<span class="nc" id="L391">        NotificationRepository notifRepo = NotificationRepository.getInstance();</span>
-<span class="nc" id="L392">        List&lt;Notification&gt; notifications = notifRepo.fetchNotificationsByResidentId(userId);</span>
+<span class="nc" id="L469">        NotificationRepository notifRepo = NotificationRepository.getInstance();</span>
+<span class="nc" id="L470">        List&lt;Notification&gt; notifications = notifRepo.fetchNotificationsByResidentId(userId);</span>
 
         // Regarde si le current user (resident) a des notifications
-<span class="nc bnc" id="L395" title="All 2 branches missed.">        for (Notification notification : notifications) {</span>
-<span class="nc" id="L396">            boolean seen = notification.getSeenResidents().contains(userId);</span>
+<span class="nc bnc" id="L473" title="All 2 branches missed.">        for (Notification notification : notifications) {</span>
+<span class="nc" id="L474">            boolean seen = notification.getSeenResidents().contains(userId);</span>
 
             // Afficher la description avec le flag [Vue] si vu
-<span class="nc bnc" id="L399" title="All 2 branches missed.">            if (seen) {</span>
-<span class="nc" id="L400">                MenuView.printMessage(&quot;[Vue] &quot; + notification.getDescription());</span>
+<span class="nc bnc" id="L477" title="All 2 branches missed.">            if (seen) {</span>
+<span class="nc" id="L478">                MenuView.printMessage(&quot;[Vue] &quot; + notification.getDescription());</span>
             } else {
-<span class="nc" id="L402">                MenuView.printMessage(notification.getDescription());</span>
+<span class="nc" id="L480">                MenuView.printMessage(notification.getDescription());</span>
                 // Marquer comme vu après affichage
-<span class="nc" id="L404">                notifRepo.markNotificationAsSeen(notification.getId(), userId);</span>
+<span class="nc" id="L482">                notifRepo.markNotificationAsSeen(notification.getId(), userId);</span>
             }
-<span class="nc" id="L406">        }</span>
-<span class="nc" id="L407">    }</span>
+<span class="nc" id="L484">        }</span>
+<span class="nc" id="L485">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
