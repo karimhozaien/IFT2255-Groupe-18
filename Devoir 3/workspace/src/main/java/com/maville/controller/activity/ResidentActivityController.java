@@ -12,6 +12,7 @@ import com.maville.model.WorkRequestForm;
 import com.maville.view.MenuView;
 
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -37,51 +38,77 @@ public class ResidentActivityController {
      * Demande à l'utilisateur de sélectionner un filtre et affiche les résultats correspondants.
      */
     public void consultWorks() {
+        boolean validInput = false;
+
         try {
-            // Demander à l'utilisateur de choisir le type de projet
-            MenuView.askSimpleOptions("Souhaitez-vous consulter les projets en cours ou à venir ?",
-                    "Quitter", "Projets en cours", "Projets à venir");
+            // Boucle pour s'assurer que l'utilisateur choisit une option valide pour le type de projet
+            while (!validInput) {
+                MenuView.askSimpleOptions("Souhaitez-vous consulter les projets en cours ou à venir ?",
+                        "Quitter", "Projets en cours", "Projets à venir");
 
-            int projectTypeOption = scanner.nextInt();
-            scanner.nextLine();
+                try {
+                    int projectTypeOption = scanner.nextInt();
+                    scanner.nextLine(); // Consommer le saut de ligne
 
-            List<Project> projects;
-            if (projectTypeOption == 1) {
-                // Récupérer les projets en cours
-                projects = workRepo.getOngoingProjects();
-            } else if (projectTypeOption == 2) {
-                // Récupérer les projets à venir (filtrés à moins de 3 mois)
-                projects = workRepo.getPlannedProjectsWithinThreeMonths();
-            } else {
-                MenuView.printMessage("Choix invalide. Retour au menu principal.");
-                return;
-            }
+                    List<Project> projects;
+                    if (projectTypeOption == 1) {
+                        // Récupérer les projets en cours
+                        projects = workRepo.getOngoingProjects();
+                        validInput = true; // Entrée valide, sortir de la boucle
+                    } else if (projectTypeOption == 2) {
+                        // Récupérer les projets à venir (filtrés à moins de 3 mois)
+                        projects = workRepo.getPlannedProjectsWithinThreeMonths();
+                        validInput = true; // Entrée valide, sortir de la boucle
+                    } else if (projectTypeOption == 0) {
+                        MenuView.printMessage("Retour au menu principal.");
+                        return;
+                    } else {
+                        MenuView.printMessage("Choix invalide. Veuillez entrer 0, 1 ou 2.");
+                        continue;
+                    }
 
-            // Demander à l'utilisateur de filtrer par quartier ou type de travaux
-            MenuView.askFilter("Quartier", "Type de travaux", "Tous les projets");
+                    // Boucle pour le filtrage des projets
+                    boolean validFilter = false;
+                    while (!validFilter) {
+                        MenuView.askFilter("Quartier", "Type de travaux", "Tous les projets");
 
-            int filterOption = scanner.nextInt();
-            scanner.nextLine(); // Nettoyer le tampon
+                        try {
+                            int filterOption = scanner.nextInt();
+                            scanner.nextLine(); // Nettoyer le tampon
 
-            switch (filterOption) {
-                case 1:
-                    MenuView.printMessage("Entrez le nom du quartier : ");
-                    String neighbourhood = scanner.nextLine();
-                    MenuView.showResults(workRepo.getFilteredProjects("quartier", neighbourhood, projects));
-                    break;
-                case 2:
-                    MenuView.printMessage("Entrez le type de travaux : ");
-                    String workType = scanner.nextLine();
-                    MenuView.showResults(workRepo.getFilteredProjects("travail", workType, projects));
-                    break;
-                case 3:
-                    MenuView.showResults(projects);
-                    break;
-                default:
-                    MenuView.printMessage("Choix invalide. Retour au menu principal.");
-                    break;
+                            switch (filterOption) {
+                                case 1:
+                                    MenuView.printMessage("Entrez le nom du quartier : ");
+                                    String neighbourhood = scanner.nextLine();
+                                    MenuView.showResults(workRepo.getFilteredProjects("quartier", neighbourhood, projects));
+                                    validFilter = true; // Entrée valide
+                                    break;
+                                case 2:
+                                    MenuView.printMessage("Choisissez le type de travaux : ");
+                                    String workType = MenuView.askWorkType();
+                                    MenuView.showResults(workRepo.getFilteredProjects("travail", workType, projects));
+                                    validFilter = true; // Entrée valide
+                                    break;
+                                case 3:
+                                    MenuView.showResults(projects);
+                                    validFilter = true; // Entrée valide
+                                    break;
+                                default:
+                                    MenuView.printMessage("Choix invalide. Veuillez entrer 1, 2 ou 3.");
+                                    break;
+                            }
+                        } catch (InputMismatchException e) {
+                            MenuView.printMessage("Entrée invalide. Veuillez entrer un nombre valide.");
+                            scanner.nextLine(); // Consommer la saisie incorrecte
+                        }
+                    }
+                } catch (InputMismatchException e) {
+                    MenuView.printMessage("Entrée invalide. Veuillez entrer un nombre valide.");
+                    scanner.nextLine(); // Consommer la saisie incorrecte
+                }
             }
         } catch (IOException e) {
+            MenuView.printMessage("Une erreur s'est produite lors de la récupération des données.");
             e.printStackTrace();
         }
     }
@@ -92,28 +119,52 @@ public class ResidentActivityController {
      * Demande à l'utilisateur de sélectionner un filtre et affiche les résultats correspondants.
      */
     public void consultRoadObstructions() {
-        MenuView.askFilter("Rue", "Type de travaux", "Autre");
-        try {
-            int option = scanner.nextInt();
-            scanner.nextLine();
-            switch (option) {
-                case 1:
-                    MenuView.printMessage("Entrez le nom de la rue : ");
-                    String name = scanner.nextLine();
-                    MenuView.showResults(workRepo.getFilteredRoadObstructions("rue", name));
-                    break;
-                case 2:
-                    MenuView.printMessage("Entrez le type de travaux : ");
-                    String type = scanner.nextLine();
-                    List<String> filteredRoadObstructions = workRepo.getFilteredRoadObstructions("travail", type);
-                    MenuView.showResults(filteredRoadObstructions);
-                    break;
-                case 3:
-                    MenuView.showResults(workRepo.getRoadObstructions());
-                    break;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                MenuView.askFilter("Rue", "Type de travaux", "Autre");
+                int option = scanner.nextInt();
+                scanner.nextLine(); // Consommer la nouvelle ligne
+                List<String> filteredRoadObstructions;
+
+                switch (option) {
+                    case 1:
+                        validInput = true; // L'entrée est correcte
+                        MenuView.printMessage("Entrez le nom de la rue : ");
+                        String name = scanner.nextLine();
+                        filteredRoadObstructions = workRepo.getFilteredRoadObstructions("rue", name);
+                        if (!filteredRoadObstructions.isEmpty()) {
+                            MenuView.showResults(filteredRoadObstructions);
+                        } else {
+                            MenuView.printMessage("Aucune entrave selon cette rue.");
+                        }
+                        break;
+                    case 2:
+                        validInput = true; // L'entrée est correcte
+                        MenuView.printMessage("Entrez le type de travaux : ");
+                        String type = MenuView.askWorkType();
+                        filteredRoadObstructions = workRepo.getFilteredRoadObstructions("travail", type);
+                        if (!filteredRoadObstructions.isEmpty()) {
+                            MenuView.showResults(filteredRoadObstructions);
+                        } else {
+                            MenuView.printMessage("Aucune entrave selon ce type de travaux.");
+                        }
+                        break;
+                    case 3:
+                        validInput = true; // L'entrée est correcte
+                        MenuView.showResults(workRepo.getRoadObstructions());
+                        break;
+                    default:
+                        MenuView.printMessage("Option invalide. Veuillez entrer un nombre entre 1 et 3.");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                MenuView.printMessage("Entrée invalide. Veuillez entrer un nombre entre 1 et 3.");
+                scanner.nextLine(); // Consommer la saisie incorrecte
+            } catch (IOException e) {
+                MenuView.printMessage("Une erreur s'est produite lors de la récupération des données.");
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

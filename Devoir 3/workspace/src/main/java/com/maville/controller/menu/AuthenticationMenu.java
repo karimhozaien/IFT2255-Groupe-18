@@ -177,12 +177,32 @@ public class AuthenticationMenu extends Menu {
     private List<String> collectUserInfo(String[] infoMessages) {
         List<String> userInfo = new ArrayList<>();
         for (String message : infoMessages) {
-            AuthenticationView.printMessage(message);
-            String input = SCANNER.nextLine();
+            String input = "";
+            boolean isValid = false;
+
+            while (!isValid) {
+                AuthenticationView.printMessage(message);
+                input = SCANNER.nextLine();
+
+                // Special validation for "Identifiant de la ville"
+                if (message.equals("Identifiant de la ville")) {
+                    if (input.matches("\\d{8}")) { // Matches exactly 8 digits
+                        isValid = true;
+                    } else {
+                        AuthenticationView.printMessage("L'identifiant doit être un nombre composé de 8 chiffres. " +
+                                "Veuillez réessayer.");
+                    }
+                } else {
+                    // For all other messages, accept any input
+                    isValid = true;
+                }
+            }
+
             userInfo.add(input);
         }
         return userInfo;
     }
+
 
     /**
      * Demande à l'utilisateur de sélectionner le type d'intervenant
