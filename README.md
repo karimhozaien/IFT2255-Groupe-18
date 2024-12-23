@@ -142,6 +142,10 @@ Rendez-vous dans le dossier `./Devoir\ 3/workspace/` à partir de votre terminal
 ./run.sh --build
 ```
 
+## Installer l'application complète
+
+Pour installer l'application complète, il vous faudra un JDK (Nous avons utilisé 23.0.1) et Maven (3.9.9). Il faudra ensuite cloner le repositoire et télécharger les dépendances Maven disponibles dans pom.xml. Vous pourriez ensuite compiler et exécuter le projet et les tests.
+
 ## Tester l'application
 Les 18 tests unitaires se retrouvent dans le chemin workspace/src/test/java/com/maville. Ils sont accessibles via le répertoire GitHub dans le dossier Devoir 3. Pour plus de détails sur comment les exécuter, voir la fin du rapport.
 
